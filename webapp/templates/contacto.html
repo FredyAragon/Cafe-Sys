@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contacto - Café Python</title>
+    <link rel="stylesheet" href="../static/css/global.css">
+    <link rel="stylesheet" href="../static/css/contacto.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <a href="index.html" style="text-decoration:none;">
+                <h1 class="logo">Café Python</h1>
+            </a>
+            
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="menu.html">Menú</a></li>
+                    <li><a href="nosotros.html">Nosotros</a></li>
+                    <li><a href="ubicacion.html">Ubicación</a></li>
+                    <li><a href="contacto.html">Contacto</a></li>
+                    
+                    <li>
+                        <a href="carrito.html">
+                            🛒 <span id="contador-carrito" style="background:red; padding:2px 5px; border-radius:50%; font-size:0.8rem;">0</span>
+                        </a>
+                    </li>
+
+                    <div id="nav-invitado" style="display:flex; gap:15px; margin-left:15px;">
+                        <li><a href="login.html">Ingresar</a></li>
+                        <li><a href="registro.html" style="background:#e67e22; padding:5px 10px; border-radius:4px;">Registro</a></li>
+                    </div>
+
+                    <div id="nav-usuario" style="display:none; gap:10px; align-items:center; margin-left:15px;">
+                        <span class="user-display">👤 <span id="header-nombre-usuario">Usuario</span></span>
+                        <button onclick="cerrarSesion()" class="btn-logout">Salir</button>
+                    </div>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="contact-wrapper">
+            <h2>Contáctanos</h2>
+            <p>¿Tienes dudas o quieres reservar? Envíanos un mensaje.</p>
+            
+            <form action="/enviar_mensaje" method="POST" class="contact-form" id="miFormulario">
+                <div class="form-group">
+                    <label for="nombre">Nombre:</label>
+                    <input type="text" id="nombre" name="nombre" required placeholder="Tu nombre">
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required placeholder="tucorreo@ejemplo.com">
+                </div>
+
+                <div class="form-group">
+                    <label for="mensaje">Mensaje:</label>
+                    <textarea id="mensaje" name="mensaje" rows="5" required placeholder="Escribe tu mensaje aquí..."></textarea>
+                </div>
+
+                <button type="submit" class="btn-submit">Enviar Mensaje</button>
+            </form>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <p>&copy; 2025 Café Python. Desarrollado para clase de IDWeb.</p>
+    </footer>
+    
+    <script type="module" src="../static/js/script.js"></script>
+</body>
+</html>

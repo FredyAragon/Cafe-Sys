@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Café Python - Inicio</title>
+    
+    <link rel="stylesheet" href="../static/css/global.css">
+    <link rel="stylesheet" href="../static/css/inicio.css">
+
+</head>
+<body>
+
+    <header class="site-header">
+        <div class="container">
+            <a href="index.html" style="text-decoration:none;">
+                <h1 class="logo">Café Python</h1>
+            </a>
+            
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="menu.html">Menú</a></li>
+                    <li><a href="nosotros.html">Nosotros</a></li>
+                    <li><a href="ubicacion.html">Ubicación</a></li>
+                    <li><a href="contacto.html">Contacto</a></li>
+                    
+                    <li>
+                        <a href="carrito.html">
+                            🛒 <span id="contador-carrito" style="background:red; padding:2px 5px; border-radius:50%; font-size:0.8rem;">0</span>
+                        </a>
+                    </li>
+
+                    <div id="nav-invitado" style="display:flex; gap:15px; margin-left:15px;">
+                        <li><a href="login.html">Ingresar</a></li>
+                        <li><a href="registro.html" style="background:#e67e22; padding:5px 10px; border-radius:4px;">Registro</a></li>
+                    </div>
+
+                    <div id="nav-usuario" style="display:none; gap:10px; align-items:center; margin-left:15px;">
+                        <span class="user-display">👤 <span id="header-nombre-usuario">Usuario</span></span>
+                        <button onclick="cerrarSesion()" class="btn-logout">Salir</button>
+                    </div>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="hero-content">
+                <h2>El mejor café</h2>
+                <p>Disfruta de nuestra selección de granos y tecnicas.</p>
+                <a href="menu.html" class="btn">Ver Menú</a>
+            </div>
+        </section>
+
+        <section class="features container">
+            <div class="feature-card">
+                <div class="feature-inner">
+                    <div class="feature-front">
+                        <h3>☕ Granos Selectos</h3>
+                        <p>Click para saber más 👆</p>
+                    </div>
+                    <div class="feature-back">
+                        <h3>Origen Etíope</h3>
+                        <p>Traemos granos de altura cultivados a mano, con notas frutales y un aroma inigualable.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-inner">
+                    <div class="feature-front">
+                        <h3>🚀 Buen WiFi</h3>
+                        <p>Click para ver velocidad 👆</p>
+                    </div>
+                    <div class="feature-back">
+                        <h3>Fibra Óptica</h3>
+                        <p>300Mbps simétricos. Ideal para hacer deploy, videollamadas o descargar librerías pesadas.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-inner">
+                    <div class="feature-front">
+                        <h3>🍰 Pastelería</h3>
+                        <p>Click para antojarte 👆</p>
+                    </div>
+                    <div class="feature-back">
+                        <h3>Hecho en casa</h3>
+                        <p>Horneamos cada mañana. Nuestro Cheesecake de frutos rojos es el favorito de los devs.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <p>&copy; 2025 Café Python. Desarrollado para clase de IDWeb.</p>
+    </footer>
+
+    <script type="module" src="../static/js/script.js"></script>
+</body>
+</html>

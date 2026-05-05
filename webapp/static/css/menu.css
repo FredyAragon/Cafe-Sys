@@ -1,0 +1,123 @@
+/* === MENU.CSS RECARGADO === */
+
+.page-title { 
+    text-align: center; 
+    margin: 40px 0; 
+    color: #2c3e50; 
+    font-size: 2.5rem;
+}
+
+/* Grid System */
+.menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+    gap: 30px;
+    padding-bottom: 50px;
+}
+
+/* Diseño de la Tarjeta */
+.product-card {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden; /* Para que la imagen no se salga de las esquinas */
+    box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* Para que todas midan lo mismo */
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+}
+
+.product-img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-bottom: 1px solid #eee;
+}
+
+/* Contenido de la tarjeta */
+.card-content {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1; /* Empuja el botón hacia abajo */
+}
+
+.product-card h3 { 
+    color: #2c3e50; 
+    margin-bottom: 10px; 
+    font-size: 1.4rem;
+}
+
+.product-card p {
+    color: #7f8c8d;
+    font-size: 0.95rem;
+    margin-bottom: 20px;
+    flex-grow: 1;
+}
+
+/* Pie de la tarjeta: Precio y Botón */
+.card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto; /* Asegura que se quede al fondo */
+}
+
+.price {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+/* Botón de Agregar Estilizado */
+.btn-add {
+    background-color: #e67e22;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s, transform 0.1s;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+}
+
+.btn-add:hover {
+    background-color: #d35400;
+}
+
+.btn-add:active {
+    transform: scale(0.95); /* Efecto de click */
+}
+
+/* === NOTIFICACIÓN FLOTANTE (TOAST) === */
+#toast-box {
+    visibility: hidden; 
+    min-width: 250px; 
+    background-color: #27ae60; /* Verde éxito */
+    color: #fff; 
+    text-align: center; 
+    border-radius: 5px; 
+    padding: 16px; 
+    position: fixed; 
+    z-index: 1000; 
+    left: 50%; 
+    bottom: 30px; 
+    transform: translateX(-50%);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    font-weight: bold;
+    opacity: 0;
+    transition: opacity 0.5s, bottom 0.5s;
+}
+
+#toast-box.show {
+    visibility: visible;
+    opacity: 1;
+    bottom: 50px; /* Sube un poquito al aparecer */
+}
