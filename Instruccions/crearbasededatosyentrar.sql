@@ -1,0 +1,4 @@
+CREATE DATABASE CafeteriaDB;
+GO
+USE CafeteriaDB;
+GO
