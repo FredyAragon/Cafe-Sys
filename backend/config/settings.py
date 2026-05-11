@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'api',
 ]
 
 MIDDLEWARE = [
@@ -77,7 +78,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'cafeteriadb',
         'USER': 'postgres',
-        'PASSWORD': '',
+        'PASSWORD': '12345678g',
         'HOST': 'localhost',
         'PORT': '8085',
     }
