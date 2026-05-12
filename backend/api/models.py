@@ -77,11 +77,40 @@ class ProductoPromocion(models.Model):
         db_table = 'producto_promocion'
         unique_together = ('producto', 'promocion')
 
+class Departamentos(models.Model):
+    nombre = models.CharField(max_length=100)
+
+    class Meta:
+        db_table = 'departamentos'
+
+    def __str__(self):
+        return self.nombre
+    
+class Provincias(models.Model):
+    nombre = models.CharField(max_length=100)
+    departamento = models.ForeignKey(Departamentos, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = 'provincias'
+
+    def __str__(self):
+        return self.nombre
+    
+class Vehiculos(models.Model):
+    placa = models.CharField(max_length=20)
+    modelo = models.CharField(max_length=100)
+    activo = models.BooleanField(default=True)
+
+    class Meta:
+        db_table = 'vehiculos'
+
+    def __str__(self):
+        return self.placa
+
 class Ubicaciones(models.Model):
     usuario = models.ForeignKey(Usuarios, on_delete=models.CASCADE)
     alias = models.CharField(max_length=100, blank=True, null=True)
     direccion = models.CharField(max_length=255)
-    distrito_id = models.IntegerField(blank=True, null=True)
     referencia = models.TextField(blank=True, null=True)
     predeterminada = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -91,23 +120,6 @@ class Ubicaciones(models.Model):
 
     def __str__(self):
         return self.direccion
-
-class Carrito(models.Model):
-    usuario = models.ForeignKey(Usuarios, on_delete=models.CASCADE)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        db_table = 'carrito'
-
-
-class CarritoDetalle(models.Model):
-    carrito = models.ForeignKey(Carrito, on_delete=models.CASCADE)
-    producto = models.ForeignKey(Productos, on_delete=models.CASCADE)
-    cantidad = models.IntegerField()
-
-    class Meta:
-        db_table = 'carrito_detalle'
-        unique_together = ('carrito', 'producto')
 
 class Ingredientes(models.Model):
     nombre = models.CharField(max_length=100)
