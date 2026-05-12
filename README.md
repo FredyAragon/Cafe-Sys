@@ -1,6 +1,4 @@
-import google.ds_python_interpreter
-
-md_content = """# ☕ CafeSys - Cafeteria System
+# ☕ CafeSys - Cafeteria System
 
 ## 🧾 Descripción del Proyecto
 
@@ -30,6 +28,3 @@ md_content = """# ☕ CafeSys - Cafeteria System
 ---
 *Este documento fue generado para la documentación técnica de CafeSys.*
 """
-
-with open("CafeSys_Proyecto.md", "w", encoding="utf-8") as f:
-    f.write(md_content)
