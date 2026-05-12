@@ -1,20 +1,121 @@
 # ☕ CafeSys - Cafeteria System
 
-## 🧾 Descripción del Proyecto
+# ☕ Cafe-Sys — Backend (Django + PostgreSQL)
 
-**CafeSys** es una aplicación web diseñada para la gestión integral y eficiente de una cafetería. La plataforma facilita la interacción entre el negocio y sus consumidores, optimizando los procesos internos y mejorando la experiencia del usuario final.
+Sistema backend del proyecto Cafe-Sys, desarrollado con Django REST Framework y conectado a una base de datos PostgreSQL ya existente.
 
-### Funcionalidades Principales
-
-* **Para Clientes:** Permite visualizar el menú actualizado en tiempo real y realizar pedidos de forma rápida y sencilla desde cualquier dispositivo.
-* **Para Administradores:** Ofrece herramientas robustas para la gestión de pedidos, control exhaustivo de stock de productos y administración general de los recursos del negocio.
-
-### Objetivos del Sistema
-* 🚀 **Optimizar** la atención al cliente.
-* ⏳ **Reducir** los tiempos de espera.
-* 📊 **Mejorar** la organización interna mediante una interfaz accesible y moderna.
+Este backend expone una API REST para la gestión de productos, usuarios, pedidos, inventario, promociones y demás componentes del sistema.
 
 ---
+
+## 🚀 Repositorio
+
+Rama de trabajo del backend: **Cafe-Sys** (`rama: Gustavo`)
+
+Para clonar directamente:
+
+```bash
+git clone https://github.com/FredyAragon/Cafe-Sys.git
+```
+
+---
+
+## 🧰 Tecnologías utilizadas
+
+- Python 3.13
+- Django
+- Django REST Framework
+- PostgreSQL
+- ORM de Django
+- Django Admin
+
+---
+
+## 📁 Estructura principal
+
+```
+Cafe-Sys/
+└── backend/
+     ├── api/
+     ├── config/
+     ├── manage.py
+     ├── requirements.txt
+     └── .gitignore
+```
+
+---
+
+## ⚙️ Requisitos previos
+
+Antes de levantar el proyecto debes tener instalado:
+
+- Python 3.10+
+- PostgreSQL en ejecución
+- La base de datos del proyecto ya creada y poblada
+
+> ⚠️ **Importante:** Django no crea la base de datos. Django se conecta a la base de datos PostgreSQL ya existente.
+
+---
+
+## ▶️ Cómo levantar el proyecto
+
+Desde la raíz del repositorio:
+
+```bash
+git clone https://github.com/FredyAragon/Cafe-Sys.git
+```
+
+```bash
+cd Cafe-Sys/backend
+```
+
+```bash
+python -m venv venv
+```
+
+```bash
+venv\Scripts\activate
+```
+
+```bash
+pip install -r requirements.txt
+```
+
+```bash
+python manage.py runserver 8081
+```
+
+El servidor quedará activo en:
+
+```
+http://localhost:8081
+```
+
+---
+
+## 🔐 Acceso al panel de administración (Django Admin)
+
+Crear superusuario:
+
+```bash
+python manage.py createsuperuser
+```
+
+Luego ingresar a:
+
+```
+http://localhost:8081/admin
+```
+
+Desde aquí se pueden:
+
+- Crear productos
+- Registrar usuarios
+- Gestionar pedidos
+- Editar promociones
+- Administrar inventario
+
+Todo desde interfaz gráfica.
 
 ## 👥 Roles del Equipo
 
