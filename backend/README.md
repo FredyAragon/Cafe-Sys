@@ -129,16 +129,11 @@ python manage.py runserver
 | Users | Usuarios del sistema |
 | Categories | Categorías de productos |
 | Products | Productos del catálogo |
-| Ingredients | Ingredientes de los productos |
-| Ingredients_Products | Receta de cada producto (N:M) |
 | Inventory | Stock de productos |
 | Promotions | Promociones y descuentos |
 | Products_Promotions | Productos con promoción (N:M) |
-| Departments | Departamentos del Perú |
-| Provinces | Provincias |
-| Districts | Distritos |
 | Vehicles | Vehículos de reparto |
-| Deliverymen | Repartidores |
+| Drivers | Conductores |
 | Locations | Direcciones de entrega del cliente |
 | Orders | Pedidos |
 | Orders_Products | Detalle de pedidos (N:M) |
@@ -153,7 +148,7 @@ python manage.py runserver
 El script SQL con el modelo físico completo se encuentra en:
 
 ```
-bd/bd.sql
+bd/cafeteriadb.sql
 ```
 
 El DER del sistema se encuentra en:
@@ -167,4 +162,7 @@ bd/DER-dbdiagram.io.png
 ## Autor
 
 Fredy Aragón  
+Diego Arce
+Gustavo Carrillo
+José Rojas
 Universidad Nacional de San Agustín de Arequipa

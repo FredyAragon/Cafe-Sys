@@ -1,288 +1,355 @@
 -- ============================================
 -- BASE DE DATOS : CAFESYS
 -- PostgreSQL
+-- MODELO FINAL - 15 TABLAS
 -- ============================================
 
--- =========================
+-- ============================================
 -- ROLES
--- =========================
+-- ============================================
 CREATE TABLE roles (
     id SERIAL PRIMARY KEY,
     nombre VARCHAR(50) NOT NULL UNIQUE,
     descripcion TEXT,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- =========================
--- USUARIOS
--- =========================
-CREATE TABLE usuarios (
+-- ============================================
+-- USERS
+-- ============================================
+CREATE TABLE users (
     id SERIAL PRIMARY KEY,
+
     nombre VARCHAR(100) NOT NULL,
     apellido VARCHAR(100) NOT NULL,
+
     email VARCHAR(255) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
 
     rol_id INTEGER NOT NULL,
-    
-    activo BOOLEAN NOT NULL DEFAULT TRUE,
 
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    activo BOOLEAN DEFAULT TRUE,
 
-    CONSTRAINT fk_usuarios_roles
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_users_roles
         FOREIGN KEY (rol_id)
         REFERENCES roles(id)
         ON DELETE RESTRICT
 );
 
--- =========================
--- CATEGORIAS
--- =========================
-CREATE TABLE categorias (
+-- ============================================
+-- CATEGORIES
+-- ============================================
+CREATE TABLE categories (
     id SERIAL PRIMARY KEY,
+
     nombre VARCHAR(100) NOT NULL,
     descripcion TEXT,
+
     imagen_url VARCHAR(255),
 
-    activo BOOLEAN NOT NULL DEFAULT TRUE,
+    activo BOOLEAN DEFAULT TRUE,
 
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- =========================
--- PRODUCTOS
--- =========================
-CREATE TABLE productos (
+-- ============================================
+-- PRODUCTS
+-- ============================================
+CREATE TABLE products (
     id SERIAL PRIMARY KEY,
 
     nombre VARCHAR(150) NOT NULL,
     descripcion TEXT,
 
     precio NUMERIC(10,2) NOT NULL
-        CHECK (precio > 0),
+        CHECK(precio > 0),
 
     imagen_url VARCHAR(255),
 
-    categoria_id INTEGER NOT NULL,
+    category_id INTEGER NOT NULL,
 
-    activo BOOLEAN NOT NULL DEFAULT TRUE,
+    activo BOOLEAN DEFAULT TRUE,
 
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT fk_productos_categorias
-        FOREIGN KEY (categoria_id)
-        REFERENCES categorias(id)
+    CONSTRAINT fk_products_categories
+        FOREIGN KEY (category_id)
+        REFERENCES categories(id)
         ON DELETE RESTRICT
 );
 
--- =========================
--- INGREDIENTES
--- =========================
-CREATE TABLE ingredientes (
+-- ============================================
+-- INVENTORIES
+-- ============================================
+CREATE TABLE inventories (
     id SERIAL PRIMARY KEY,
 
-    nombre VARCHAR(100) NOT NULL,
-    unidad_medida VARCHAR(20) NOT NULL,
+    product_id INTEGER NOT NULL,
 
-    activo BOOLEAN NOT NULL DEFAULT TRUE,
+    stock INTEGER NOT NULL
+        CHECK(stock >= 0),
 
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    stock_minimo INTEGER NOT NULL
+        CHECK(stock_minimo >= 0),
+
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_inventories_products
+        FOREIGN KEY (product_id)
+        REFERENCES products(id)
+        ON DELETE CASCADE
 );
 
--- =========================
--- PROMOCIONES
--- =========================
-CREATE TABLE promociones (
+-- ============================================
+-- PROMOTIONS
+-- ============================================
+CREATE TABLE promotions (
     id SERIAL PRIMARY KEY,
 
     nombre VARCHAR(150) NOT NULL,
     descripcion TEXT,
 
     descuento NUMERIC(5,2) NOT NULL
-        CHECK (descuento > 0 AND descuento <= 100),
+        CHECK(descuento > 0 AND descuento <= 100),
 
     tipo_descuento VARCHAR(20) NOT NULL,
 
     fecha_inicio DATE NOT NULL,
     fecha_fin DATE NOT NULL,
 
-    activo BOOLEAN NOT NULL DEFAULT TRUE,
+    activo BOOLEAN DEFAULT TRUE,
 
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT chk_fechas_promocion
-        CHECK (fecha_fin >= fecha_inicio)
+    CONSTRAINT chk_fechas_promotions
+        CHECK(fecha_fin >= fecha_inicio)
 );
 
--- =========================
--- DEPARTAMENTOS
--- =========================
-CREATE TABLE departamentos (
+-- ============================================
+-- PRODUCTS_PROMOTIONS
+-- ============================================
+CREATE TABLE products_promotions (
     id SERIAL PRIMARY KEY,
 
-    nombre VARCHAR(100) NOT NULL
+    product_id INTEGER NOT NULL,
+    promotion_id INTEGER NOT NULL,
+
+    CONSTRAINT fk_products_promotions_products
+        FOREIGN KEY (product_id)
+        REFERENCES products(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_products_promotions_promotions
+        FOREIGN KEY (promotion_id)
+        REFERENCES promotions(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT uq_products_promotions
+        UNIQUE(product_id, promotion_id)
 );
 
--- =========================
--- PROVINCIAS
--- =========================
-CREATE TABLE provincias (
+-- ============================================
+-- LOCATIONS
+-- ============================================
+CREATE TABLE locations (
     id SERIAL PRIMARY KEY,
 
-    nombre VARCHAR(100) NOT NULL,
-
-    departamento_id INTEGER NOT NULL,
-
-    CONSTRAINT fk_provincias_departamentos
-        FOREIGN KEY (departamento_id)
-        REFERENCES departamentos(id)
-        ON DELETE CASCADE
-);
-
--- =========================
--- VEHICULOS
--- =========================
-CREATE TABLE vehiculos (
-    id SERIAL PRIMARY KEY,
-
-    placa VARCHAR(20) NOT NULL UNIQUE,
-    modelo VARCHAR(100) NOT NULL,
-
-    activo BOOLEAN NOT NULL DEFAULT TRUE
-);
-
--- =========================
--- UBICACIONES
--- =========================
-CREATE TABLE ubicaciones (
-    id SERIAL PRIMARY KEY,
-
-    usuario_id INTEGER NOT NULL,
+    user_id INTEGER NOT NULL,
 
     alias VARCHAR(100),
 
     direccion VARCHAR(255) NOT NULL,
-
     referencia TEXT,
 
-    predeterminada BOOLEAN NOT NULL DEFAULT FALSE,
+    predeterminada BOOLEAN DEFAULT FALSE,
 
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT fk_ubicaciones_usuarios
-        FOREIGN KEY (usuario_id)
-        REFERENCES usuarios(id)
+    CONSTRAINT fk_locations_users
+        FOREIGN KEY (user_id)
+        REFERENCES users(id)
         ON DELETE CASCADE
 );
 
--- =========================
--- PEDIDOS
--- =========================
-CREATE TABLE pedidos (
+-- ============================================
+-- ORDERS
+-- ============================================
+CREATE TABLE orders (
     id SERIAL PRIMARY KEY,
 
-    usuario_id INTEGER NOT NULL,
-    ubicacion_id INTEGER NOT NULL,
+    user_id INTEGER NOT NULL,
+    location_id INTEGER NOT NULL,
 
     estado VARCHAR(20) NOT NULL,
 
     total NUMERIC(10,2) NOT NULL
-        CHECK (total >= 0),
+        CHECK(total >= 0),
 
     notas TEXT,
 
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT fk_pedidos_usuarios
-        FOREIGN KEY (usuario_id)
-        REFERENCES usuarios(id)
+    CONSTRAINT fk_orders_users
+        FOREIGN KEY (user_id)
+        REFERENCES users(id)
         ON DELETE CASCADE,
 
-    CONSTRAINT fk_pedidos_ubicaciones
-        FOREIGN KEY (ubicacion_id)
-        REFERENCES ubicaciones(id)
+    CONSTRAINT fk_orders_locations
+        FOREIGN KEY (location_id)
+        REFERENCES locations(id)
         ON DELETE RESTRICT
 );
 
--- =========================
--- DETALLE_PEDIDOS
--- =========================
-CREATE TABLE detalle_pedidos (
+-- ============================================
+-- ORDER_DETAILS
+-- ============================================
+CREATE TABLE order_details (
     id SERIAL PRIMARY KEY,
 
-    pedido_id INTEGER,
-    producto_id INTEGER,
+    order_id INTEGER NOT NULL,
+    product_id INTEGER NOT NULL,
 
-    cantidad INTEGER
-        CHECK (cantidad > 0),
+    cantidad INTEGER NOT NULL
+        CHECK(cantidad > 0),
 
-    precio_unitario NUMERIC(10,2)
-        CHECK (precio_unitario > 0),
+    precio_unitario NUMERIC(10,2) NOT NULL
+        CHECK(precio_unitario > 0),
 
-    subtotal NUMERIC(10,2)
-        CHECK (subtotal >= 0),
+    subtotal NUMERIC(10,2) NOT NULL
+        CHECK(subtotal >= 0),
 
-    CONSTRAINT fk_detalle_pedidos_pedidos
-        FOREIGN KEY (pedido_id)
-        REFERENCES pedidos(id)
+    CONSTRAINT fk_order_details_orders
+        FOREIGN KEY (order_id)
+        REFERENCES orders(id)
         ON DELETE CASCADE,
 
-    CONSTRAINT fk_detalle_pedidos_productos
-        FOREIGN KEY (producto_id)
-        REFERENCES productos(id)
+    CONSTRAINT fk_order_details_products
+        FOREIGN KEY (product_id)
+        REFERENCES products(id)
         ON DELETE RESTRICT
 );
 
--- =========================
--- PRODUCTO_INGREDIENTE
--- =========================
-CREATE TABLE producto_ingrediente (
+-- ============================================
+-- DRIVERS
+-- ============================================
+CREATE TABLE drivers (
     id SERIAL PRIMARY KEY,
 
-    producto_id INTEGER NOT NULL,
-    ingrediente_id INTEGER NOT NULL,
+    user_id INTEGER NOT NULL,
 
-    cantidad NUMERIC(10,2) NOT NULL
-        CHECK (cantidad > 0),
+    licencia VARCHAR(50) NOT NULL UNIQUE,
 
-    CONSTRAINT fk_producto_ingrediente_productos
-        FOREIGN KEY (producto_id)
-        REFERENCES productos(id)
-        ON DELETE CASCADE,
+    telefono VARCHAR(20),
 
-    CONSTRAINT fk_producto_ingrediente_ingredientes
-        FOREIGN KEY (ingrediente_id)
-        REFERENCES ingredientes(id)
-        ON DELETE CASCADE,
+    activo BOOLEAN DEFAULT TRUE,
 
-    CONSTRAINT uq_producto_ingrediente
-        UNIQUE(producto_id, ingrediente_id)
+    CONSTRAINT fk_drivers_users
+        FOREIGN KEY (user_id)
+        REFERENCES users(id)
+        ON DELETE CASCADE
 );
 
--- =========================
--- PRODUCTO_PROMOCION
--- =========================
-CREATE TABLE producto_promocion (
+-- ============================================
+-- VEHICLES
+-- ============================================
+CREATE TABLE vehicles (
     id SERIAL PRIMARY KEY,
 
-    producto_id INTEGER NOT NULL,
-    promocion_id INTEGER NOT NULL,
+    driver_id INTEGER NOT NULL,
 
-    CONSTRAINT fk_producto_promocion_productos
-        FOREIGN KEY (producto_id)
-        REFERENCES productos(id)
+    placa VARCHAR(20) NOT NULL UNIQUE,
+    modelo VARCHAR(100) NOT NULL,
+
+    activo BOOLEAN DEFAULT TRUE,
+
+    CONSTRAINT fk_vehicles_drivers
+        FOREIGN KEY (driver_id)
+        REFERENCES drivers(id)
+        ON DELETE CASCADE
+);
+
+-- ============================================
+-- DELIVERIES
+-- ============================================
+CREATE TABLE deliveries (
+    id SERIAL PRIMARY KEY,
+
+    order_id INTEGER NOT NULL,
+    driver_id INTEGER NOT NULL,
+    vehicle_id INTEGER NOT NULL,
+
+    estado VARCHAR(20) NOT NULL,
+
+    fecha_salida TIMESTAMP,
+    fecha_entrega TIMESTAMP,
+
+    CONSTRAINT fk_deliveries_orders
+        FOREIGN KEY (order_id)
+        REFERENCES orders(id)
         ON DELETE CASCADE,
 
-    CONSTRAINT fk_producto_promocion_promociones
-        FOREIGN KEY (promocion_id)
-        REFERENCES promociones(id)
+    CONSTRAINT fk_deliveries_drivers
+        FOREIGN KEY (driver_id)
+        REFERENCES drivers(id)
         ON DELETE CASCADE,
 
-    CONSTRAINT uq_producto_promocion
-        UNIQUE(producto_id, promocion_id)
+    CONSTRAINT fk_deliveries_vehicles
+        FOREIGN KEY (vehicle_id)
+        REFERENCES vehicles(id)
+        ON DELETE CASCADE
+);
+
+-- ============================================
+-- REVIEWS
+-- ============================================
+CREATE TABLE reviews (
+    id SERIAL PRIMARY KEY,
+
+    user_id INTEGER NOT NULL,
+    product_id INTEGER NOT NULL,
+
+    calificacion INTEGER NOT NULL
+        CHECK(calificacion >= 1 AND calificacion <= 5),
+
+    comentario TEXT,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_reviews_users
+        FOREIGN KEY (user_id)
+        REFERENCES users(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_reviews_products
+        FOREIGN KEY (product_id)
+        REFERENCES products(id)
+        ON DELETE CASCADE
+);
+
+-- ============================================
+-- MESSAGES
+-- ============================================
+CREATE TABLE messages (
+    id SERIAL PRIMARY KEY,
+
+    user_id INTEGER NOT NULL,
+
+    asunto VARCHAR(150) NOT NULL,
+    mensaje TEXT NOT NULL,
+
+    leido BOOLEAN DEFAULT FALSE,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_messages_users
+        FOREIGN KEY (user_id)
+        REFERENCES users(id)
+        ON DELETE CASCADE
 );
 
 -- ============================================
@@ -292,31 +359,16 @@ CREATE TABLE producto_promocion (
 INSERT INTO roles(nombre, descripcion)
 VALUES
 ('Administrador', 'Acceso completo'),
-('Cliente', 'Usuario cliente');
+('Cliente', 'Usuario cliente'),
+('Repartidor', 'Encargado de entregas');
 
-INSERT INTO categorias(nombre)
+INSERT INTO categories(nombre)
 VALUES
 ('Cafés'),
 ('Postres'),
 ('Bebidas');
 
-INSERT INTO departamentos(nombre)
-VALUES
-('Arequipa'),
-('Lima');
-
-INSERT INTO provincias(nombre, departamento_id)
-VALUES
-('Arequipa', 1),
-('Lima', 2);
-
-INSERT INTO ingredientes(nombre, unidad_medida)
-VALUES
-('Cafe molido', 'g'),
-('Leche', 'ml'),
-('Azucar', 'g');
-
-INSERT INTO promociones(
+INSERT INTO promotions(
     nombre,
     descripcion,
     descuento,
@@ -327,9 +379,25 @@ INSERT INTO promociones(
 VALUES
 (
     'Promo Verano',
-    'Descuento temporada verano',
+    'Descuento de verano',
     15,
     'porcentaje',
     '2026-01-01',
     '2026-03-31'
+);
+
+INSERT INTO users(
+    nombre,
+    apellido,
+    email,
+    password_hash,
+    rol_id
+)
+VALUES
+(
+    'Fredy',
+    'Aragon',
+    'fredy@gmail.com',
+    '123456',
+    1
 );
