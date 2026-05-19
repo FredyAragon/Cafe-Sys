@@ -1,110 +1,88 @@
-# ☕ Cafe-Sys — Base de Datos (PostgreSQL + Supabase)
+# Base de Datos — Sistema de Cafetería ☕
 
-Sistema de base de datos del proyecto Cafe-Sys, diseñado con un modelo
-relacional en PostgreSQL e implementado en Supabase como plataforma BaaS.
+## Descripción
+Este módulo contiene el diseño y estructura de la base de datos del sistema de cafetería desarrollado con Django y PostgreSQL.
 
-Este módulo contiene el modelo lógico DER, los scripts SQL de creación
-e inserción de datos para la gestión de productos, usuarios, pedidos,
-promociones y demás componentes del sistema.
+La base de datos permite gestionar:
 
----
-
-## 🚀 Repositorio
-
-Rama de trabajo de la base de datos: **Cafe-Sys** (`rama: Gustavo`)
-
-Para clonar directamente:
-
-```bash
-git clone https://github.com/FredyAragon/Cafe-Sys.git
-git checkout Gustavo
-```
+- Usuarios y roles
+- Categorías de productos
+- Productos e ingredientes
+- Promociones
+- Pedidos y detalle de pedidos
+- Ubicaciones de entrega
+- Departamentos y provincias
+- Vehículos
 
 ---
 
-## 🧰 Tecnologías utilizadas
+# Tecnologías utilizadas
 
 - PostgreSQL
-- Supabase (BaaS — Backend as a Service)
-- SQL estándar
-- dbdiagram.io (modelado DER)
+- SQL
+- Django ORM
+- dbdiagram.io
 
 ---
 
-## 📁 Estructura principal
-Cafe-Sys/
-└── bd/
-├── bd.sql
-├── .gitignore
-└── README.md
+# Archivos del módulo BD
+
+| Archivo | Descripción |
+|---|---|
+| `cafeteriadb.sql` | Script SQL para crear toda la base de datos |
+| `DER-dbdiagram.io.png` | Imagen del DER generado en dbdiagram.io |
+| `README.md` | Documentación del módulo |
+| `.gitignore` | Archivos ignorados por Git |
 
 ---
 
-## ⚙️ Requisitos previos
+# Estructura de la Base de Datos
 
-Antes de ejecutar los scripts debes tener:
+La base de datos contiene las siguientes tablas:
 
-- Cuenta activa en Supabase
-- Proyecto creado en el dashboard de Supabase
-- Acceso al editor SQL de Supabase
-
-> ⚠️ **Importante:** Los scripts deben ejecutarse en orden. Las tablas
-> con claves foráneas dependen de que sus tablas referenciadas existan
-> previamente.
+1. roles
+2. usuarios
+3. categorias
+4. productos
+5. ingredientes
+6. producto_ingrediente
+7. promociones
+8. producto_promocion
+9. departamentos
+10. provincias
+11. vehiculos
+12. ubicaciones
+13. pedidos
+14. detalle_pedidos
 
 ---
 
-## ▶️ Cómo ejecutar la base de datos
+# Relaciones principales
 
-Desde el dashboard de Supabase:
-supabase.com/dashboard → Tu proyecto → SQL Editor → New Query
+- Un usuario pertenece a un rol
+- Un producto pertenece a una categoría
+- Un pedido pertenece a un usuario
+- Un pedido contiene múltiples productos
+- Un producto puede tener múltiples ingredientes
+- Un producto puede tener múltiples promociones
 
-Pegar y ejecutar el contenido de:
-bd/bd.sql
+---
 
-Verificar las tablas creadas:
+# DER
+
+El diagrama entidad-relación fue generado usando:
+
+https://dbdiagram.io
+
+Archivo relacionado:
+
+- `DER-dbdiagram.io.png`
+
+---
+
+# Cómo usar el script SQL
+
+## 1. Crear la base de datos
 
 ```sql
-SELECT table_name
-FROM information_schema.tables
-WHERE table_schema = 'public'
-ORDER BY table_name;
-```
-
----
-
-## 🗂️ Tablas del sistema
-
-| # | Tabla | Descripción |
-|---|---|---|
-| 1 | roles | Roles de usuario (admin, cliente) |
-| 2 | usuarios | Clientes y administradores |
-| 3 | categorias | Categorías de productos |
-| 4 | productos | Productos del menú |
-| 5 | ingredientes | Ingredientes de cada producto |
-| 6 | promociones | Descuentos y ofertas |
-| 7 | departamentos | Ubigeo — departamentos |
-| 8 | provincias | Ubigeo — provincias |
-| 9 | vehiculos | Vehículos de reparto |
-| 10 | ubicaciones | Direcciones de entrega |
-| 11 | pedidos | Pedidos realizados |
-| 12 | detalle_pedidos | Detalle de cada pedido |
-| 13 | producto_ingrediente | Relación N:M producto-ingrediente |
-| 14 | producto_promocion | Relación N:M producto-promoción |
-
----
-
-## 🔍 Acceso al panel de Supabase
-
-Ingresar a:
-https://supabase.com/dashboard
-
-Desde aquí se pueden:
-
-- Visualizar las tablas creadas
-- Consultar y editar registros
-- Ejecutar queries SQL
-- Gestionar relaciones y claves foráneas
-- Exportar la base de datos
-
-Todo desde interfaz gráfica.
+CREATE DATABASE cafeteriadb;
