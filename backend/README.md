@@ -1,142 +1,170 @@
-Backend — CafeSys ☕
-Descripción
+# Backend — CafeSys
 
-CafeSys es un sistema web de gestión para cafeterías desarrollado con Django y PostgreSQL.
+Sistema web de gestión para cafeterías desarrollado con Django y PostgreSQL. Permite administrar usuarios, productos, pedidos y entregas, con un panel administrativo generado automáticamente por Django Admin.
 
-El backend permite administrar:
+---
 
-Usuarios y roles
-Categorías de productos
-Productos e ingredientes
-Promociones
-Pedidos
-Ubicaciones de entrega
-Vehículos
+## Tecnologías
 
-Además, se implementó Django Admin para generar automáticamente los módulos CRUD del sistema.
+| Tecnología | Descripción |
+| :--- | :--- |
+| Python | Lenguaje de programación |
+| Django | Framework backend |
+| PostgreSQL | Sistema gestor de base de datos |
+| Django REST Framework | API REST |
+| Django Admin | Panel administrativo automático |
+| python-decouple | Gestión de variables de entorno |
+| Git & GitHub | Control de versiones |
+| Virtualenv | Gestión de entorno virtual |
 
-Tecnologías utilizadas
-Tecnología	Descripción
-Python	Lenguaje de programación
-Django	Framework backend
-PostgreSQL	Sistema gestor de base de datos
-Django Admin	Panel administrativo
-Git & GitHub	Control de versiones
-Virtualenv	Gestión de entorno virtual
-Estructura del proyecto
+---
+
+## Estructura del proyecto
+
+```bash
 Backend/
-│
 ├── api/
 │   ├── migrations/
 │   ├── admin.py
 │   ├── apps.py
 │   ├── models.py
+│   ├── serializers.py
 │   ├── views.py
 │   └── urls.py
-│
 ├── config/
 │   ├── settings.py
 │   ├── urls.py
 │   ├── asgi.py
 │   └── wsgi.py
-│
 ├── venv/
+├── .env
+├── .gitignore
 ├── manage.py
 ├── requirements.txt
-├── .gitignore
 └── README.md
-Instalación del proyecto
-1. Clonar el repositorio
+```
+
+---
+
+## Instalación
+
+### 1. Clonar el repositorio
+
+```bash
 git clone <URL_REPOSITORIO>
-2. Ingresar al proyecto
 cd Backend
-3. Crear entorno virtual
+```
+
+### 2. Crear y activar el entorno virtual
+
+```bash
 python -m venv venv
-4. Activar entorno virtual
-Windows PowerShell
+
+# Windows PowerShell
 .\venv\Scripts\Activate
-5. Instalar dependencias
+
+# Linux / macOS
+source venv/bin/activate
+```
+
+### 3. Instalar dependencias
+
+```bash
 pip install -r requirements.txt
-Configuración de PostgreSQL
+```
 
-Editar el archivo:
+---
 
-config/settings.py
+## Configuración
 
-Configurar la conexión:
+Crear un archivo `.env` en la carpeta `Backend/` con las credenciales de la base de datos:
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'cafeteriadb',
-        'USER': 'postgres',
-        'PASSWORD': '1234',
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
-}
-Migraciones
-Crear migraciones
+```env
+DB_NAME=postgres
+DB_USER=postgres
+DB_PASSWORD=tu_password
+DB_HOST=localhost
+DB_PORT=5432
+```
+
+El archivo `config/settings.py` lee esas variables automáticamente mediante `python-decouple`.
+
+---
+
+## Base de datos
+
+### Migraciones
+
+```bash
 python manage.py makemigrations
-Aplicar migraciones
 python manage.py migrate
-Crear superusuario
+```
+
+### Crear superusuario
+
+```bash
 python manage.py createsuperuser
-Ejecutar servidor
+```
+
+---
+
+## Ejecución
+
+```bash
 python manage.py runserver
+```
 
-Servidor local:
+| URL | Descripción |
+| :--- | :--- |
+| http://127.0.0.1:8000/api/ | API REST |
+| http://127.0.0.1:8000/admin/ | Panel de administración |
 
-http://127.0.0.1:8000/
-Django Admin
+---
 
-Acceso al panel administrativo:
+## Modelos implementados
 
-http://127.0.0.1:8000/admin
+| Modelo | Descripción |
+| :--- | :--- |
+| Roles | Roles del sistema (admin, cliente) |
+| Users | Usuarios del sistema |
+| Categories | Categorías de productos |
+| Products | Productos del catálogo |
+| Ingredients | Ingredientes de los productos |
+| Ingredients_Products | Receta de cada producto (N:M) |
+| Inventory | Stock de productos |
+| Promotions | Promociones y descuentos |
+| Products_Promotions | Productos con promoción (N:M) |
+| Departments | Departamentos del Perú |
+| Provinces | Provincias |
+| Districts | Distritos |
+| Vehicles | Vehículos de reparto |
+| Deliverymen | Repartidores |
+| Locations | Direcciones de entrega del cliente |
+| Orders | Pedidos |
+| Orders_Products | Detalle de pedidos (N:M) |
+| Deliveries | Envíos |
+| Messages | Mensajes de contacto |
+| Reviews | Reseñas de productos |
 
-Desde el panel se pueden administrar automáticamente todos los modelos implementados.
+---
 
-Modelos implementados
-Roles
-Usuarios
-Categorias
-Productos
-Ingredientes
-ProductoIngrediente
-Promociones
-ProductoPromocion
-Departamentos
-Provincias
-Vehiculos
-Ubicaciones
-Pedidos
-DetallePedidos
-Características implementadas
+## Base de datos
 
-✅ Modelos en Django
-✅ Relaciones One-to-Many (FK)
-✅ Relaciones Many-to-Many (N:M)
-✅ Migraciones automáticas
-✅ Django Admin
-✅ PostgreSQL
-✅ CRUD automático
-✅ Restricciones de integridad
-✅ DER (Diagrama Entidad Relación)
-✅ Entorno virtual
-✅ Organización modular del proyecto
+El script SQL con el modelo físico completo se encuentra en:
 
-Base de datos
-
-La base de datos utilizada es PostgreSQL.
-
-El script SQL se encuentra en:
-
-BD/cafeteriadb.sql
+```
+bd/bd.sql
+```
 
 El DER del sistema se encuentra en:
 
-BD/DER-dbdiagram.io.png
-Autor
+```
+bd/DER-dbdiagram.io.png
+```
 
-Fredy Aragón
-Universidad Nacional de San Agustín
+---
+
+## Autor
+
+Fredy Aragón  
+Universidad Nacional de San Agustín de Arequipa
