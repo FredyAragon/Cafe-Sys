@@ -79,9 +79,9 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'cafeteriadb',
         'USER': 'postgres',
-        'PASSWORD': '12345678g',
+        'PASSWORD': '1234',
         'HOST': 'localhost',
-        'PORT': '8085',
+        'PORT': '5432',
     }
 }
 
