@@ -6,13 +6,15 @@ Este módulo contiene el diseño y estructura de la base de datos del sistema de
 La base de datos permite gestionar:
 
 - Usuarios y roles
-- Categorías de productos
-- Productos e ingredientes
+- Categorías y productos
+- Inventario
 - Promociones
-- Pedidos y detalle de pedidos
+- Pedidos y detalles de pedidos
 - Ubicaciones de entrega
-- Departamentos y provincias
-- Vehículos
+- Conductores y vehículos
+- Entregas
+- Reseñas
+- Mensajes
 
 ---
 
@@ -41,19 +43,20 @@ La base de datos permite gestionar:
 La base de datos contiene las siguientes tablas:
 
 1. roles
-2. usuarios
-3. categorias
-4. productos
-5. ingredientes
-6. producto_ingrediente
-7. promociones
-8. producto_promocion
-9. departamentos
-10. provincias
-11. vehiculos
-12. ubicaciones
-13. pedidos
-14. detalle_pedidos
+2. users
+3. categories
+4. products
+5. inventories
+6. promotions
+7. products_promotions
+8. orders
+9. order_details
+10. locations
+11. deliveries
+12. drivers
+13. vehicles
+14. reviews
+15. messages
 
 ---
 

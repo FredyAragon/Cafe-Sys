@@ -1,17 +1,25 @@
 from rest_framework import serializers
-from .models import Productos, Usuarios, Pedidos
+from .models import *
 
-class ProductosSerializer(serializers.ModelSerializer):
+class RolesSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Productos
+        model = Roles
         fields = '__all__'
 
-class UsuariosSerializer(serializers.ModelSerializer):
+
+class UsersSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Usuarios
+        model = Users
         fields = '__all__'
 
-class PedidosSerializer(serializers.ModelSerializer):
+
+class CategoriesSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Pedidos
+        model = Categories
+        fields = '__all__'
+
+
+class ProductsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Products
         fields = '__all__'
