@@ -20,7 +20,7 @@ services:
 
   backend:
     build:
-      context: ./Backend
+      context: ./backend
     container_name: cafesys_backend
 
     command: >
@@ -29,14 +29,14 @@ services:
                 python manage.py runserver 0.0.0.0:8081"
 
     volumes:
-      - ./Backend:/app
+      - ./backend:/app
     ports:
       - "8081:8081"
     depends_on:
       db:
         condition: service_healthy
     env_file:
-      - ./Backend/.env
+      - ./backend/.env
 
 volumes:
   postgres_data:
