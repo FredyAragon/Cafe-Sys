@@ -1,10 +1,10 @@
-# Backend — CafeSys
+# ☕ CafeSys — Backend
 
-Sistema web de gestión para cafeterías desarrollado con Django y PostgreSQL. Permite administrar usuarios, productos, pedidos y entregas, con un panel administrativo generado automáticamente por Django Admin.
+Sistema web de gestión para cafeterías desarrollado con **Django** y **PostgreSQL**. Permite administrar usuarios, productos, pedidos y entregas, con un panel administrativo generado automáticamente por Django Admin.
 
 ---
 
-## Tecnologías
+## 🧰 Tecnologías
 
 | Tecnología | Descripción |
 | :--- | :--- |
@@ -14,14 +14,15 @@ Sistema web de gestión para cafeterías desarrollado con Django y PostgreSQL. P
 | Django REST Framework | API REST |
 | Django Admin | Panel administrativo automático |
 | python-decouple | Gestión de variables de entorno |
+| Docker & Docker Compose | Contenedorización del proyecto |
 | Git & GitHub | Control de versiones |
 | Virtualenv | Gestión de entorno virtual |
 
 ---
 
-## Estructura del proyecto
+## 📁 Estructura del proyecto
 
-```bash
+```
 Backend/
 ├── api/
 │   ├── migrations/
@@ -36,9 +37,9 @@ Backend/
 │   ├── urls.py
 │   ├── asgi.py
 │   └── wsgi.py
-├── venv/
 ├── .env
 ├── .gitignore
+├── create_superuser.py
 ├── manage.py
 ├── requirements.txt
 └── README.md
@@ -46,7 +47,7 @@ Backend/
 
 ---
 
-## Instalación
+## ⚙️ Instalación local
 
 ### 1. Clonar el repositorio
 
@@ -73,42 +74,29 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
----
+### 4. Configurar variables de entorno
 
-## Configuración
-
-Crear un archivo `.env` en la carpeta `Backend/` con las credenciales de la base de datos:
+Crear un archivo `.env` en `Backend/` con las credenciales de la base de datos:
 
 ```env
-DB_NAME=postgres
+DB_NAME=cafeteriadb
 DB_USER=postgres
 DB_PASSWORD=tu_password
 DB_HOST=localhost
 DB_PORT=5432
+SECRET_KEY=tu_secret_key
+DEBUG=True
 ```
 
-El archivo `config/settings.py` lee esas variables automáticamente mediante `python-decouple`.
-
----
-
-## Base de datos
-
-### Migraciones
+### 5. Aplicar migraciones y crear superusuario
 
 ```bash
 python manage.py makemigrations
 python manage.py migrate
-```
-
-### Crear superusuario
-
-```bash
 python manage.py createsuperuser
 ```
 
----
-
-## Ejecución
+### 6. Ejecutar el servidor
 
 ```bash
 python manage.py runserver
@@ -121,7 +109,43 @@ python manage.py runserver
 
 ---
 
-## Modelos implementados
+## 🐳 Docker
+
+### Levantar con Docker Compose
+
+```bash
+docker-compose up --build
+```
+
+Las migraciones y el superusuario se crean automáticamente al iniciar el contenedor.
+
+| URL | Descripción |
+| :--- | :--- |
+| http://localhost:8081/api/ | API REST |
+| http://localhost:8081/admin/ | Panel de administración |
+
+**Credenciales del admin:**
+
+| Campo | Valor |
+| :--- | :--- |
+| Usuario | `admin` |
+| Contraseña | `admin1234` |
+
+---
+
+## 🌐 Endpoints principales
+
+| Método | Endpoint | Descripción |
+| :--- | :--- | :--- |
+| GET | `/api/productos/` | Listar productos |
+| POST | `/api/productos/` | Crear producto |
+| GET | `/api/pedidos/` | Listar pedidos |
+| POST | `/api/pedidos/` | Crear pedido |
+| GET | `/api/usuarios/` | Listar usuarios |
+
+---
+
+## 🗄️ Modelos implementados
 
 | Modelo | Descripción |
 | :--- | :--- |
@@ -143,15 +167,15 @@ python manage.py runserver
 
 ---
 
-## Base de datos
+## 📊 Base de datos
 
-El script SQL con el modelo físico completo se encuentra en:
+El script SQL con el modelo físico completo:
 
 ```
 bd/cafeteriadb.sql
 ```
 
-El DER del sistema se encuentra en:
+El Diagrama Entidad-Relación del sistema:
 
 ```
 bd/DER-dbdiagram.io.png
@@ -159,10 +183,14 @@ bd/DER-dbdiagram.io.png
 
 ---
 
-## Autor
+## 👥 Equipo
 
-Fredy Aragón  
-Diego Arce
-Gustavo Carrillo
-José Rojas
-Universidad Nacional de San Agustín de Arequipa
+| Nombre | Rol |
+| :--- | :--- |
+| Fredy José Aragón Carpio | Desarrollador Backend |
+| Diego Marcelo Arce Coaquira | Desarrollador y Diseñador Frontend |
+| Gustavo Alonso Carrillo Villalta | Desarrollador de Base de Datos |
+| José Manuel Rojas Bravo | Desarrollador Full-Stack |
+
+**Universidad Nacional de San Agustín de Arequipa**
+Escuela Profesional de Ingeniería de Sistemas
