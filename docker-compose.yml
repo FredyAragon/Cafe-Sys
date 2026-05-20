@@ -1,39 +1,42 @@
-version: '3.9'
-
 services:
 
   db:
     image: postgres:17
     container_name: cafesys_db
-
     environment:
       POSTGRES_DB: cafeteriadb
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 1234
-
     ports:
-      - "5432:5432"
-
+      - "8085:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./BD/cafeteriadb.sql:/docker-entrypoint-initdb.d/cafeteriadb.sql
+        - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+        test: ["CMD-SHELL", "pg_isready -U postgres"]
+        interval: 5s
+        timeout: 5s
+        retries: 5
+        start_period: 10s
 
   backend:
     build:
       context: ./Backend
-
     container_name: cafesys_backend
 
-    command: python manage.py runserver 0.0.0.0:8000
+    command: >
+          sh -c "python manage.py migrate &&
+                python create_superuser.py &&
+                python manage.py runserver 0.0.0.0:8081"
 
     volumes:
       - ./Backend:/app
-
     ports:
-      - "8000:8000"
-
+      - "8081:8081"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+    env_file:
+      - ./Backend/.env
 
 volumes:
   postgres_data:
