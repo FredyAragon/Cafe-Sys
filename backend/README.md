@@ -1,6 +1,6 @@
 # ☕ CafeSys — Backend
 
-Sistema web de gestión para cafeterías desarrollado con **Django** y **PostgreSQL**. Permite administrar usuarios, productos, pedidos y entregas, con un panel administrativo generado automáticamente por Django Admin.
+Sistema web de gestión para cafeterías desarrollado con **Django** y **SupaBase**. Permite administrar usuarios, productos, pedidos y entregas, con un panel administrativo generado automáticamente por Django Admin.
 
 ---
 
@@ -10,7 +10,7 @@ Sistema web de gestión para cafeterías desarrollado con **Django** y **Postgre
 | :--- | :--- |
 | Python | Lenguaje de programación |
 | Django | Framework backend |
-| PostgreSQL | Sistema gestor de base de datos |
+| SupaBase | Sistema gestor de base de datos |
 | Django REST Framework | API REST |
 | Django Admin | Panel administrativo automático |
 | python-decouple | Gestión de variables de entorno |
@@ -52,9 +52,11 @@ Backend/
 ### 1. Clonar el repositorio
 
 ```bash
-git clone <URL_REPOSITORIO>
+git clone https://github.com/FredyAragon/Cafe-Sys.git
+
 cd Backend
 ```
+
 
 ### 2. Crear y activar el entorno virtual
 
@@ -74,26 +76,11 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 4. Configurar variables de entorno
-
-Crear un archivo `.env` en `Backend/` con las credenciales de la base de datos:
-
-```env
-DB_NAME=cafeteriadb
-DB_USER=postgres
-DB_PASSWORD=tu_password
-DB_HOST=localhost
-DB_PORT=5432
-SECRET_KEY=tu_secret_key
-DEBUG=True
-```
-
-### 5. Aplicar migraciones y crear superusuario
+### 4. Aplicar migraciones y crear superusuario
 
 ```bash
 python manage.py makemigrations
 python manage.py migrate
-python manage.py createsuperuser
 ```
 
 ### 6. Ejecutar el servidor
@@ -129,7 +116,7 @@ Las migraciones y el superusuario se crean automáticamente al iniciar el conten
 | Campo | Valor |
 | :--- | :--- |
 | Usuario | `admin` |
-| Contraseña | `admin1234` |
+| Contraseña | `admin` |
 
 ---
 
