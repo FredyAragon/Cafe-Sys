@@ -15,8 +15,8 @@ class Categories(models.Model):
     modified    = models.DateTimeField(auto_now=True)
     
     # 2. Forzar el nombre de la columna en la BD para cumplir con la rúbrica y evitar el "_id_id"
-    created_id  = models.ForeignKey('api.Users', on_delete=models.SET_NULL, null=True, blank=True, related_name='categories_created', db_column='created_id')
-    modified_id = models.ForeignKey('api.Users', on_delete=models.SET_NULL, null=True, blank=True, related_name='categories_modified', db_column='modified_id')
+    created_id  = models.ForeignKey('Users', on_delete=models.SET_NULL, null=True, blank=True, related_name='categories_created', db_column='created_id')
+    modified_id = models.ForeignKey('Users', on_delete=models.SET_NULL, null=True, blank=True, related_name='categories_modified', db_column='modified_id')
 
     class Meta:
         db_table = 'categories'

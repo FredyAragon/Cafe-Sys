@@ -7,8 +7,8 @@ class ProductsPromotions(models.Model):
     id          = models.AutoField(primary_key=True)
     
     # 2. Relaciones corregidas (Nombre limpio en Python, columnas exactas del DER en la BD)
-    product     = models.ForeignKey('api.Products', on_delete=models.CASCADE, related_name='product_promotions', db_column='product_id')
-    promotion   = models.ForeignKey('api.Promotions', on_delete=models.CASCADE, related_name='product_promotions', db_column='promotion_id')
+    product     = models.ForeignKey('Products', on_delete=models.CASCADE, related_name='product_promotions', db_column='product_id')
+    promotion   = models.ForeignKey('Promotions', on_delete=models.CASCADE, related_name='product_promotions', db_column='promotion_id')
     
     status      = models.CharField(max_length=20, default='active',
                     choices=[('active', 'Active'), ('inactive', 'Inactive')])
@@ -16,8 +16,8 @@ class ProductsPromotions(models.Model):
     modified    = models.DateTimeField(auto_now=True)
     
     # 3. Campos de auditoría forzados para la BD según el DER
-    created_id  = models.ForeignKey('api.Users', on_delete=models.SET_NULL, null=True, blank=True, related_name='products_promotions_created', db_column='created_id')
-    modified_id = models.ForeignKey('api.Users', on_delete=models.SET_NULL, null=True, blank=True, related_name='products_promotions_modified', db_column='modified_id')
+    created_id  = models.ForeignKey('Users', on_delete=models.SET_NULL, null=True, blank=True, related_name='products_promotions_created', db_column='created_id')
+    modified_id = models.ForeignKey('Users', on_delete=models.SET_NULL, null=True, blank=True, related_name='products_promotions_modified', db_column='modified_id')
 
     class Meta:
         db_table = 'products_promotions'

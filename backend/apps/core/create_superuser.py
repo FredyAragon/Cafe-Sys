@@ -1,7 +1,10 @@
 import os
+import sys
 import django
  
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
+sys.path.append('/app')
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'cafesys.settings')
 django.setup()
  
 from django.contrib.auth import get_user_model

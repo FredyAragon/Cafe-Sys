@@ -7,7 +7,7 @@ class Inventories(models.Model):
     id          = models.AutoField(primary_key=True)
     
     # 2. Relación corregida (Nombre limpio en Python, columna exacta del DER en la BD)
-    product     = models.OneToOneField('api.Products', on_delete=models.CASCADE, related_name='inventory', db_column='product_id')
+    product     = models.OneToOneField('Products', on_delete=models.CASCADE, related_name='inventory', db_column='product_id')
     
     stock       = models.IntegerField(default=0, validators=[MinValueValidator(0)])
     minStock    = models.IntegerField(default=5, validators=[MinValueValidator(0)])
@@ -17,8 +17,8 @@ class Inventories(models.Model):
     modified    = models.DateTimeField(auto_now=True)
     
     # 3. Campos de auditoría forzados para la BD según el DER
-    created_id  = models.ForeignKey('api.Users', on_delete=models.SET_NULL, null=True, blank=True, related_name='inventories_created', db_column='created_id')
-    modified_id = models.ForeignKey('api.Users', on_delete=models.SET_NULL, null=True, blank=True, related_name='inventories_modified', db_column='modified_id')
+    created_id  = models.ForeignKey('Users', on_delete=models.SET_NULL, null=True, blank=True, related_name='inventories_created', db_column='created_id')
+    modified_id = models.ForeignKey('Users', on_delete=models.SET_NULL, null=True, blank=True, related_name='inventories_modified', db_column='modified_id')
 
     class Meta:
         db_table = 'inventories'

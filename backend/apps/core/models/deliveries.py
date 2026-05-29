@@ -15,9 +15,9 @@ class Deliveries(models.Model):
     id = models.AutoField(primary_key=True)
 
     # 2. Relaciones corregidas (Nombre limpio en Python, nombre exacto del DER en PostgreSQL)
-    order   = models.OneToOneField('api.Orders', on_delete=models.CASCADE, related_name='delivery', db_column='order_id')
-    driver  = models.ForeignKey('api.Drivers', on_delete=models.SET_NULL, null=True, blank=True, related_name='deliveries', db_column='driver_id')
-    vehicle = models.ForeignKey('api.Vehicles', on_delete=models.SET_NULL, null=True, blank=True, related_name='deliveries', db_column='vehicle_id')
+    order   = models.OneToOneField('Orders', on_delete=models.CASCADE, related_name='delivery', db_column='order_id')
+    driver  = models.ForeignKey('Drivers', on_delete=models.SET_NULL, null=True, blank=True, related_name='deliveries', db_column='driver_id')
+    vehicle = models.ForeignKey('Vehicles', on_delete=models.SET_NULL, null=True, blank=True, related_name='deliveries', db_column='vehicle_id')
     
     deliveryStatus = models.CharField(max_length=20, choices=DELIVERY_STATUS, default='pending')
     departureAt    = models.DateTimeField(blank=True, null=True)
@@ -29,8 +29,8 @@ class Deliveries(models.Model):
     modified       = models.DateTimeField(auto_now=True)
     
     # 3. Auditoría forzada para cumplir con el DER sin duplicar el "_id_id"
-    created_id     = models.ForeignKey('api.Users', on_delete=models.SET_NULL, null=True, blank=True, related_name='deliveries_created', db_column='created_id')
-    modified_id    = models.ForeignKey('api.Users', on_delete=models.SET_NULL, null=True, blank=True, related_name='deliveries_modified', db_column='modified_id')
+    created_id     = models.ForeignKey('Users', on_delete=models.SET_NULL, null=True, blank=True, related_name='deliveries_created', db_column='created_id')
+    modified_id    = models.ForeignKey('Users', on_delete=models.SET_NULL, null=True, blank=True, related_name='deliveries_modified', db_column='modified_id')
 
     class Meta:
         db_table = 'deliveries'
