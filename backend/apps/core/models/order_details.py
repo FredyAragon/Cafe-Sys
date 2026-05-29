@@ -7,8 +7,8 @@ class OrderDetails(models.Model):
     id          = models.AutoField(primary_key=True)
     
     # 2. Relaciones corregidas (Nombre limpio en Python, columnas exactas del DER en la BD)
-    order       = models.ForeignKey('api.Orders', on_delete=models.CASCADE, related_name='details', db_column='order_id')
-    product     = models.ForeignKey('api.Products', on_delete=models.PROTECT, related_name='order_details', db_column='product_id')
+    order       = models.ForeignKey('Orders', on_delete=models.CASCADE, related_name='details', db_column='order_id')
+    product     = models.ForeignKey('Products', on_delete=models.PROTECT, related_name='order_details', db_column='product_id')
     
     quantity    = models.IntegerField(validators=[MinValueValidator(1)])
     unitPrice   = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0.01)])
@@ -19,8 +19,8 @@ class OrderDetails(models.Model):
     modified    = models.DateTimeField(auto_now=True)
     
     # 3. Campos de auditoría forzados para la BD según el DER
-    created_id  = models.ForeignKey('api.Users', on_delete=models.SET_NULL, null=True, blank=True, related_name='order_details_created', db_column='created_id')
-    modified_id = models.ForeignKey('api.Users', on_delete=models.SET_NULL, null=True, blank=True, related_name='order_details_modified', db_column='modified_id')
+    created_id  = models.ForeignKey('Users', on_delete=models.SET_NULL, null=True, blank=True, related_name='order_details_created', db_column='created_id')
+    modified_id = models.ForeignKey('Users', on_delete=models.SET_NULL, null=True, blank=True, related_name='order_details_modified', db_column='modified_id')
 
     class Meta:
         db_table = 'order_details'

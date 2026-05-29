@@ -8,7 +8,7 @@ class Drivers(models.Model):
     id          = models.AutoField(primary_key=True)
     
     # 2. Relación corregida (Nombre limpio en Python, columna exacta del DER en la BD)
-    user        = models.OneToOneField('api.Users', on_delete=models.CASCADE, related_name='driver', db_column='user_id')
+    user        = models.OneToOneField('Users', on_delete=models.CASCADE, related_name='driver', db_column='user_id')
     
     license     = models.CharField(max_length=50, unique=True, validators=[validate_not_blank])
     phone       = models.CharField(max_length=20, blank=True, null=True, validators=[MinLengthValidator(7)])
@@ -18,8 +18,8 @@ class Drivers(models.Model):
     modified    = models.DateTimeField(auto_now=True)
     
     # 3. Campos de auditoría forzados para la BD
-    created_id  = models.ForeignKey('api.Users', on_delete=models.SET_NULL, null=True, blank=True, related_name='drivers_created', db_column='created_id')
-    modified_id = models.ForeignKey('api.Users', on_delete=models.SET_NULL, null=True, blank=True, related_name='drivers_modified', db_column='modified_id')
+    created_id  = models.ForeignKey('Users', on_delete=models.SET_NULL, null=True, blank=True, related_name='drivers_created', db_column='created_id')
+    modified_id = models.ForeignKey('Users', on_delete=models.SET_NULL, null=True, blank=True, related_name='drivers_modified', db_column='modified_id')
 
     class Meta:
         db_table = 'drivers'

@@ -13,7 +13,7 @@ class Users(models.Model):
     passwordHash = models.CharField(max_length=255, validators=[MinLengthValidator(8)])
     
     # 2. Relación corregida (Nombre limpio en Python, columna exacta del DER en la BD)
-    role         = models.ForeignKey('api.Roles', on_delete=models.PROTECT, related_name='users', db_column='role_id')
+    role         = models.ForeignKey('Roles', on_delete=models.PROTECT, related_name='users', db_column='role_id')
     
     status       = models.CharField(max_length=20, default='active',
                      choices=[('active', 'Active'), ('inactive', 'Inactive')])
@@ -21,8 +21,8 @@ class Users(models.Model):
     modified     = models.DateTimeField(auto_now=True)
     
     # 3. Campos de auditoría forzados para la BD según el DER
-    created_id   = models.ForeignKey('api.Users', on_delete=models.SET_NULL, null=True, blank=True, related_name='users_created', db_column='created_id')
-    modified_id  = models.ForeignKey('api.Users', on_delete=models.SET_NULL, null=True, blank=True, related_name='users_modified', db_column='modified_id')
+    created_id   = models.ForeignKey('Users', on_delete=models.SET_NULL, null=True, blank=True, related_name='users_created', db_column='created_id')
+    modified_id  = models.ForeignKey('Users', on_delete=models.SET_NULL, null=True, blank=True, related_name='users_modified', db_column='modified_id')
 
     class Meta:
         db_table = 'users'

@@ -13,7 +13,7 @@ class Products(models.Model):
     imageUrl    = models.CharField(max_length=255, blank=True, null=True, validators=[validate_http_url])
     
     # 2. Relación corregida (Nombre limpio en Python, columna exacta del DER en la BD)
-    category    = models.ForeignKey('api.Categories', on_delete=models.PROTECT, related_name='products', db_column='category_id')
+    category    = models.ForeignKey('Categories', on_delete=models.PROTECT, related_name='products', db_column='category_id')
     
     status      = models.CharField(max_length=20, default='active',
                     choices=[('active', 'Active'), ('inactive', 'Inactive')])
@@ -21,8 +21,8 @@ class Products(models.Model):
     modified    = models.DateTimeField(auto_now=True)
     
     # 3. Campos de auditoría forzados para la BD según el DER
-    created_id  = models.ForeignKey('api.Users', on_delete=models.SET_NULL, null=True, blank=True, related_name='products_created', db_column='created_id')
-    modified_id = models.ForeignKey('api.Users', on_delete=models.SET_NULL, null=True, blank=True, related_name='products_modified', db_column='modified_id')
+    created_id  = models.ForeignKey('Users', on_delete=models.SET_NULL, null=True, blank=True, related_name='products_created', db_column='created_id')
+    modified_id = models.ForeignKey('Users', on_delete=models.SET_NULL, null=True, blank=True, related_name='products_modified', db_column='modified_id')
 
     class Meta:
         db_table = 'products'

@@ -1,0 +1,17 @@
+import os
+import sys
+import django
+
+sys.path.append('/app')
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'cafesys.settings')
+django.setup()
+
+from django.contrib.auth import get_user_model
+User = get_user_model()
+
+if not User.objects.filter(username='admin').exists():
+    User.objects.create_superuser('admin', 'admin@cafesys.com', 'admin1234')
+    print('Superusuario creado: admin / admin1234')
+else:
+    print('Superusuario ya existe.')

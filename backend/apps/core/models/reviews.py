@@ -7,8 +7,8 @@ class Reviews(models.Model):
     id          = models.AutoField(primary_key=True)
     
     # 2. Relaciones corregidas (Nombre limpio en Python, columnas exactas del DER en la BD)
-    user        = models.ForeignKey('api.Users', on_delete=models.CASCADE, related_name='reviews', db_column='user_id')
-    product     = models.ForeignKey('api.Products', on_delete=models.CASCADE, related_name='reviews', db_column='product_id')
+    user        = models.ForeignKey('Users', on_delete=models.CASCADE, related_name='reviews', db_column='user_id')
+    product     = models.ForeignKey('Products', on_delete=models.CASCADE, related_name='reviews', db_column='product_id')
     
     rating      = models.SmallIntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
     comment     = models.TextField(blank=True, null=True)
@@ -18,8 +18,8 @@ class Reviews(models.Model):
     modified    = models.DateTimeField(auto_now=True)
     
     # 3. Campos de auditoría forzados para la BD según el DER
-    created_id  = models.ForeignKey('api.Users', on_delete=models.SET_NULL, null=True, blank=True, related_name='reviews_created', db_column='created_id')
-    modified_id = models.ForeignKey('api.Users', on_delete=models.SET_NULL, null=True, blank=True, related_name='reviews_modified', db_column='modified_id')
+    created_id  = models.ForeignKey('Users', on_delete=models.SET_NULL, null=True, blank=True, related_name='reviews_created', db_column='created_id')
+    modified_id = models.ForeignKey('Users', on_delete=models.SET_NULL, null=True, blank=True, related_name='reviews_modified', db_column='modified_id')
 
     class Meta:
         db_table = 'reviews'

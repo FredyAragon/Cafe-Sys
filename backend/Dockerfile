@@ -12,6 +12,6 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
-EXPOSE 8081
+EXPOSE 10000
 
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8081"]
+CMD ["gunicorn", "cafesys.wsgi:application", "--bind", "0.0.0.0:10000"]
