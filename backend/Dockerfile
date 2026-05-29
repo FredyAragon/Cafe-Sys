@@ -12,6 +12,7 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
+RUN python manage.py collectstatic --noinput
 EXPOSE 10000
 
 CMD ["gunicorn", "cafesys.wsgi:application", "--bind", "0.0.0.0:10000"]
