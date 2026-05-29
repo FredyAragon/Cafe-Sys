@@ -6,7 +6,7 @@ services:
     container_name: cafesys_backend
 
     command: >
-          sh -c "python manage.py migrate &&
+          sh -c "python manage.py migrate --fake-initial &&          
           python -m apps.core.create_superuser &&
           python manage.py runserver 0.0.0.0:8081"
 
