@@ -1,146 +1,68 @@
 # ☕ Cafe-Sys
 
-Sistema web de gestión para cafeterías desarrollado como proyecto académico utilizando tecnologías web modernas.
-
-Cafe-Sys permite administrar productos, usuarios, pedidos, promociones, inventario y entregas mediante una arquitectura modular compuesta por backend, frontend y base de datos.
+Sistema web de gestión para cafeterías — backend con Django en Render, frontend con Angular en Vercel y base de datos PostgreSQL en Supabase.
 
 ---
 
-# 📌 Objetivo del proyecto
+## Links del proyecto
 
-El objetivo de Cafe-Sys es digitalizar y optimizar los procesos de una cafetería, permitiendo:
-
-- Gestión de productos y categorías
-- Administración de usuarios y roles
-- Control de inventario
-- Gestión de pedidos
-- Administración de promociones
-- Seguimiento de entregas
-- Gestión de vehículos y conductores
-- Registro de reseñas y mensajes
-
----
-
-# 🧰 Tecnologías utilizadas
-
-| Área | Tecnologías |
+| Recurso | URL |
 | :--- | :--- |
-| Backend | Django, Django REST Framework |
-| Base de Datos | PostgreSQL |
-| Frontend | HTML, CSS, JavaScript |
-| Control de versiones | Git & GitHub |
-| Modelado BD | dbdiagram.io |
+| Backend (Render) | `https://cafesys-backend.onrender.com` |
+| Base de datos (Supabase) | `https://supabase.com/dashboard/project/uybtqkpxkcivbzpgcsrm` |
+| Repositorio | https://github.com/FredyAragon/Cafe-Sys |
 
 ---
 
-# 📁 Estructura general del proyecto
+## Stack
 
-```bash
+| Área | Tecnología |
+| :--- | :--- |
+| Backend | Python · Django · Django REST Framework |
+| Base de datos | PostgreSQL 17 · Supabase |
+| Frontend | Angular v21 |
+| Deploy | Render · Docker · Docker Compose |
+| Control de versiones | Git & GitHub |
+
+---
+
+## Estructura
+
+```
 Cafe-Sys/
-│
-├── Backend/
-│   ├── api/
-│   ├── config/
-│   ├── requirements.txt
-│   └── README.md
-│
-├── BD/
-│   ├── cafeteriadb.sql
-│   ├── DER-dbdiagram.io.png
-│   └── README.md
-│
-├── Frontend/
-│
-├── Informes/
-│
-├── .gitignore
+├── backend/        # Django + DRF — API REST y panel admin
+├── frontend/       # Angular v21 — interfaz de usuario
+├── bd/             # Script SQL y diagrama DER
+├── informes/       # Documentación académica (LaTeX / PDF)
+├── docker-compose.yml
+├── render.yaml
 └── README.md
 ```
 
 ---
 
-# 🧩 Módulos principales
+## Módulos del sistema
 
-## Backend
-
-Contiene la lógica del sistema desarrollada con Django y Django REST Framework.
-
-Incluye:
-
-- API REST
-- Modelos ORM
-- Serializers
-- Views
-- URLs
-- Django Admin
+| Módulo | Descripción |
+| :--- | :--- |
+| Usuarios y roles | Registro, autenticación y control de acceso |
+| Productos y categorías | Catálogo del establecimiento |
+| Inventario | Control de stock por producto |
+| Pedidos | Registro y seguimiento de órdenes |
+| Promociones | Descuentos y ofertas por producto |
+| Entregas | Asignación a conductores y vehículos |
+| Reseñas y mensajes | Feedback de clientes y contacto |
 
 ---
 
-## Base de Datos
+## Equipo
 
-Contiene el diseño lógico y físico de la base de datos del sistema.
+| Nombre | Rol |
+| :--- | :--- |
+| Fredy José Aragón Carpio | Desarrollador Backend |
+| Diego Marcelo Arce Coaquira | Desarrollador Frontend |
+| Gustavo Alonso Carrillo Villalta | Desarrollador Base de Datos |
+| José Manuel Bravo Rojas | Desarrollador Full-Stack |
 
-Incluye:
-
-- Script SQL completo
-- DER del sistema
-- Restricciones y relaciones
-
----
-
-## Frontend
-
-Contiene la interfaz gráfica del sistema para clientes y administradores.
-
----
-
-# 📦 Funcionalidades del sistema
-
-- Gestión de usuarios y roles
-- Administración de productos
-- Gestión de inventario
-- Registro de pedidos
-- Control de promociones
-- Gestión de entregas
-- Administración de vehículos y conductores
-- Sistema de reseñas
-- Mensajería y contacto
-
----
-
-# 🗄️ Entidades principales
-
-El sistema trabaja con las siguientes tablas principales:
-
-1. Roles  
-2. Users  
-3. Categories  
-4. Products  
-5. Inventories  
-6. Promotions  
-7. ProductsPromotions  
-8. Orders  
-9. OrderDetails  
-10. Locations  
-11. Deliveries  
-12. Drivers  
-13. Vehicles  
-14. Reviews  
-15. Messages  
-
----
-
-# 👨‍💻 Integrantes
-
-- Fredy Aragón
-- Diego Arce
-- Gustavo Carrillo
-- José Rojas
-
----
-
-# 🏫 Universidad
-
-Universidad Nacional de San Agustín de Arequipa
-
-Curso: **Desarrollo de Aplicaciones Web — Proyecto Grupal**
+**Universidad Nacional de San Agustín de Arequipa**  
+Escuela Profesional de Ingeniería de Sistemas — DAW 2026-A
