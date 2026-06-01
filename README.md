@@ -8,8 +8,8 @@ Sistema web de gestión para cafeterías — backend con Django en Render, front
 
 | Recurso | URL |
 | :--- | :--- |
-| Backend (Render) | `https://cafesys-backend.onrender.com` |
-| Base de datos (Supabase) | `https://supabase.com/dashboard/project/uybtqkpxkcivbzpgcsrm` |
+| Backend (Render) | https://cafesys-backend.onrender.com |
+| Base de datos (Supabase) | https://supabase.com/dashboard/project/uybtqkpxkcivbzpgcsrm |
 | Repositorio | https://github.com/FredyAragon/Cafe-Sys |
 
 ---
