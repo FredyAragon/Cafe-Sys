@@ -77,15 +77,16 @@ class ProductsSerializer(serializers.ModelSerializer):
 # INVENTORIES
 # ──────────────────────────────────────────────
 class InventoriesSerializer(serializers.ModelSerializer):
-    product_name = serializers.CharField(source='product.name', read_only=True)
+    # Anidamos el objeto completo del producto con su lógica interna
+    product_detail = ProductsSerializer(source='product', read_only=True)
 
     class Meta:
-        model  = Inventories
+        model = Inventories
         fields = (
-            'id', 'product', 'product_name',
+            'id', 'product', 'product_detail',
             'stock', 'minStock', 'status', 'created', 'modified'
         )
-        read_only_fields = ('id', 'product_name', 'created', 'modified')
+        read_only_fields = ('id', 'product_detail', 'created', 'modified')
 
 
 # ──────────────────────────────────────────────
@@ -139,29 +140,45 @@ class OrderDetailsSerializer(serializers.ModelSerializer):
     product_name = serializers.CharField(source='product.name', read_only=True)
 
     class Meta:
-        model  = OrderDetails
+        model = OrderDetails
         fields = (
             'id', 'order', 'product', 'product_name',
             'quantity', 'unitPrice', 'subtotal',
             'status', 'created', 'modified'
         )
-        # subtotal se calcula automáticamente en el modelo
         read_only_fields = ('id', 'subtotal', 'product_name', 'created', 'modified')
 
+# Úsalo exclusivamente de forma interna dentro del JSON anidado de órdenes
+class ProductDetailNestedSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Products
+        fields = ('id', 'name', 'price', 'imageUrl', 'status')
 
-class OrdersSerializer(serializers.ModelSerializer):
-    # Incluir detalles anidados en lectura
-    details = OrderDetailsSerializer(many=True, read_only=True)
+class OrderDetailsNestedSerializer(serializers.ModelSerializer):
+    # En lugar de solo el nombre plano, inyectamos el objeto producto completo
+    product_detail = ProductDetailNestedSerializer(source='product', read_only=True)
 
     class Meta:
-        model  = Orders
+        model = OrderDetails
         fields = (
-            'id', 'user', 'location', 'orderStatus',
-            'total', 'notes', 'details',
-            'status', 'created', 'modified'
+            'id', 'product', 'product_detail', 
+            'quantity', 'unitPrice', 'subtotal', 'status'
         )
-        # total se recalcula en el negocio, no debe editarse directamente
-        read_only_fields = ('id', 'total', 'details', 'created', 'modified')
+        read_only_fields = ('id', 'subtotal', 'product_detail')
+
+class OrdersSerializer(serializers.ModelSerializer):
+    # Cambiamos al serializer anidado avanzado que creamos arriba
+    details = OrderDetailsNestedSerializer(many=True, read_only=True)
+    # También anidamos los datos básicos del cliente que ordenó
+    user_detail = UsersSerializer(source='user', read_only=True)
+
+    class Meta:
+        model = Orders
+        fields = (
+            'id', 'user', 'user_detail', 'location', 'orderStatus',
+            'total', 'notes', 'details', 'status', 'created', 'modified'
+        )
+        read_only_fields = ('id', 'total', 'details', 'user_detail', 'created', 'modified')
 
 
 # ──────────────────────────────────────────────
@@ -203,15 +220,23 @@ class VehiclesSerializer(serializers.ModelSerializer):
 # DELIVERIES
 # ──────────────────────────────────────────────
 class DeliveriesSerializer(serializers.ModelSerializer):
+    # Anidamos la orden básica para saber a dónde va el pedido
+    order_detail = OrdersSerializer(source='order', read_only=True)
+    # Anidamos al repartidor asignado
+    driver_detail = DriversSerializer(source='driver', read_only=True)
+    # Anidamos el vehículo asignado
+    vehicle_detail = VehiclesSerializer(source='vehicle', read_only=True)
+
     class Meta:
-        model  = Deliveries
+        model = Deliveries
         fields = (
-            'id', 'order', 'driver', 'vehicle',
+            'id', 'order', 'order_detail', 
+            'driver', 'driver_detail', 
+            'vehicle', 'vehicle_detail',
             'deliveryStatus', 'departureAt', 'deliveredAt',
             'status', 'created', 'modified'
         )
-        # deliveredAt se asigna automáticamente en el modelo al marcar 'delivered'
-        read_only_fields = ('id', 'deliveredAt', 'created', 'modified')
+        read_only_fields = ('id', 'order_detail', 'driver_detail', 'vehicle_detail', 'deliveredAt', 'created', 'modified')
 
 
 # ──────────────────────────────────────────────

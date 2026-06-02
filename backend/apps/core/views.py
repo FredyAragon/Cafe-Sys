@@ -1,4 +1,6 @@
 from rest_framework import viewsets, filters
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from .models import (
     Roles, Users, Categories, Products, Inventories,
     Promotions, ProductsPromotions, Orders, OrderDetails,
@@ -56,6 +58,7 @@ class CategoriesViewSet(viewsets.ModelViewSet):
 
 class ProductsViewSet(viewsets.ModelViewSet):
     # select_related evita N+1 al acceder a product.category en el serializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
     queryset         = Products.objects.select_related('category').all()
     serializer_class = ProductsSerializer
     filter_backends  = [filters.SearchFilter, filters.OrderingFilter]
@@ -65,6 +68,7 @@ class ProductsViewSet(viewsets.ModelViewSet):
 
 
 class InventoriesViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
     queryset         = Inventories.objects.select_related('product').all()
     serializer_class = InventoriesSerializer
     filter_backends  = [filters.SearchFilter, filters.OrderingFilter]
@@ -102,6 +106,7 @@ class LocationsViewSet(viewsets.ModelViewSet):
 
 
 class OrdersViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
     queryset = Orders.objects.select_related(
         'user', 'location'
     ).prefetch_related(
