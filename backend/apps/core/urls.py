@@ -22,5 +22,6 @@ router.register(r'messages', MessagesViewSet)
 
 # Exporta directamente las URLs generadas por el Router
 urlpatterns = [
+    path('token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('', include(router.urls)),
 ]

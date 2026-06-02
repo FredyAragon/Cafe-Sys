@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders',
     'rest_framework',
+    'rest_framework_simplejwt',
     'apps.core',
 ]
 
@@ -88,13 +89,15 @@ DATABASES = {
         "HOST": config("DB_HOST"),
         "PORT": config("DB_PORT"),
         "OPTIONS": {
-            "sslmode": "require",
+            "sslmode": config("DB_SSLMODE", default="disable"),
         },
     }
 }
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
+
+AUTH_USER_MODEL = 'core.Users'
 
 AUTH_PASSWORD_VALIDATORS = [
     {

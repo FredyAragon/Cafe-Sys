@@ -1,10 +1,15 @@
 from rest_framework import serializers
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework import exceptions
+from django.contrib.auth import get_user_model
+
 from .models import (
     Roles, Users, Categories, Products, Inventories,
     Promotions, ProductsPromotions, Orders, OrderDetails,
     Locations, Deliveries, Drivers, Vehicles, Reviews, Messages
 )
 
+User = get_user_model()
 
 # ──────────────────────────────────────────────
 # ROLES
@@ -17,8 +22,53 @@ class RolesSerializer(serializers.ModelSerializer):
 
 
 # ──────────────────────────────────────────────
-# USERS
+# USERS & AUTHENTICATION
 # ──────────────────────────────────────────────
+class CustomTokenObtainPairSerializer(serializers.Serializer):
+    """
+    Serializer explícito para el entorno de desarrollo local.
+    Acepta tanto 'username' como 'email' sin herencias restrictivas
+    y autentica de forma nativa.
+    """
+    # Declaramos los campos explícitos para la validación inicial de DRF
+    username = serializers.CharField(required=False, allow_blank=True)
+    email = serializers.EmailField(required=False, allow_blank=True)
+    password = serializers.CharField(write_only=True)
+
+    def validate(self, attrs):
+        # 1. Recuperar la credencial de identidad de forma flexible
+        username_input = attrs.get("username") or attrs.get("email")
+        password_input = attrs.get("password")
+
+        if not username_input or not password_input:
+            raise exceptions.ValidationError({
+                "detail": "Se requieren tanto el usuario/email como la contraseña."
+            })
+
+        # 2. Localizar al usuario usando el email en minúsculas y limpio
+        try:
+            user = User.objects.get(email=username_input.lower().strip())
+        except User.DoesNotExist:
+            raise exceptions.AuthenticationFailed("No active account found with the given credentials")
+
+        # 3. Validación de contraseña 100% Nativa (Usa el password hasheado por create_superuser)
+        if not user.check_password(password_input):
+            raise exceptions.AuthenticationFailed("No active account found with the given credentials")
+
+        # 4. Verificar el estado de la cuenta
+        if not user.is_active:
+            raise exceptions.AuthenticationFailed("Esta cuenta está inactiva.")
+
+        # 5. Emitir los tokens manualmente usando el método de clase nativo
+        from rest_framework_simplejwt.tokens import RefreshToken
+        refresh = RefreshToken.for_user(user)
+        
+        return {
+            "refresh": str(refresh),
+            "access": str(refresh.access_token)
+        }
+
+
 class UsersSerializer(serializers.ModelSerializer):
     """Serializer general: nunca expone passwordHash."""
     class Meta:
@@ -39,9 +89,9 @@ class UsersWriteSerializer(serializers.ModelSerializer):
             'id', 'firstName', 'lastName', 'email',
             'passwordHash', 'role', 'status'
         )
+        # Ajustado para que coincida con tu campo físico de base de datos
         read_only_fields = ('id',)
         extra_kwargs = {
-            # Nunca devolver el hash en la respuesta
             'passwordHash': {'write_only': True}
         }
 
@@ -148,14 +198,14 @@ class OrderDetailsSerializer(serializers.ModelSerializer):
         )
         read_only_fields = ('id', 'subtotal', 'product_name', 'created', 'modified')
 
-# Úsalo exclusivamente de forma interna dentro del JSON anidado de órdenes
+
 class ProductDetailNestedSerializer(serializers.ModelSerializer):
     class Meta:
         model = Products
         fields = ('id', 'name', 'price', 'imageUrl', 'status')
 
+
 class OrderDetailsNestedSerializer(serializers.ModelSerializer):
-    # En lugar de solo el nombre plano, inyectamos el objeto producto completo
     product_detail = ProductDetailNestedSerializer(source='product', read_only=True)
 
     class Meta:
@@ -166,10 +216,9 @@ class OrderDetailsNestedSerializer(serializers.ModelSerializer):
         )
         read_only_fields = ('id', 'subtotal', 'product_detail')
 
+
 class OrdersSerializer(serializers.ModelSerializer):
-    # Cambiamos al serializer anidado avanzado que creamos arriba
     details = OrderDetailsNestedSerializer(many=True, read_only=True)
-    # También anidamos los datos básicos del cliente que ordenó
     user_detail = UsersSerializer(source='user', read_only=True)
 
     class Meta:
@@ -220,11 +269,8 @@ class VehiclesSerializer(serializers.ModelSerializer):
 # DELIVERIES
 # ──────────────────────────────────────────────
 class DeliveriesSerializer(serializers.ModelSerializer):
-    # Anidamos la orden básica para saber a dónde va el pedido
     order_detail = OrdersSerializer(source='order', read_only=True)
-    # Anidamos al repartidor asignado
     driver_detail = DriversSerializer(source='driver', read_only=True)
-    # Anidamos el vehículo asignado
     vehicle_detail = VehiclesSerializer(source='vehicle', read_only=True)
 
     class Meta:

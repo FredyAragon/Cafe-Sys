@@ -1,6 +1,8 @@
 from rest_framework import viewsets, filters
-from rest_framework.permissions import IsAuthenticated, AllowAny
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticated, AllowAny, IsAuthenticatedOrReadOnly
+from rest_framework_simplejwt.views import TokenObtainPairView
+from .serializers import CustomTokenObtainPairSerializer
+
 from .models import (
     Roles, Users, Categories, Products, Inventories,
     Promotions, ProductsPromotions, Orders, OrderDetails,
@@ -24,6 +26,21 @@ from .serializers import (
 )
 
 
+# ──────────────────────────────────────────────
+# AUTHENTICATION VIEW
+# ──────────────────────────────────────────────
+class CustomTokenObtainPairView(TokenObtainPairView):
+    """
+    Controlador encargado de interceptar el login, omitir las restricciones de email
+    y devolver las llaves Access y Refresh validadas bajo la lógica híbrida.
+    """
+    serializer_class = CustomTokenObtainPairSerializer
+    permission_classes = [AllowAny]
+
+
+# ──────────────────────────────────────────────
+# ROLES
+# ──────────────────────────────────────────────
 class RolesViewSet(viewsets.ModelViewSet):
     queryset         = Roles.objects.all()
     serializer_class = RolesSerializer
@@ -33,6 +50,9 @@ class RolesViewSet(viewsets.ModelViewSet):
     ordering         = ['name']
 
 
+# ──────────────────────────────────────────────
+# USERS
+# ──────────────────────────────────────────────
 class UsersViewSet(viewsets.ModelViewSet):
     queryset        = Users.objects.select_related('role').all()
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
@@ -47,6 +67,9 @@ class UsersViewSet(viewsets.ModelViewSet):
         return UsersSerializer
 
 
+# ──────────────────────────────────────────────
+# CATEGORIES
+# ──────────────────────────────────────────────
 class CategoriesViewSet(viewsets.ModelViewSet):
     queryset         = Categories.objects.all()
     serializer_class = CategoriesSerializer
@@ -56,8 +79,10 @@ class CategoriesViewSet(viewsets.ModelViewSet):
     ordering         = ['name']
 
 
+# ──────────────────────────────────────────────
+# PRODUCTS
+# ──────────────────────────────────────────────
 class ProductsViewSet(viewsets.ModelViewSet):
-    # select_related evita N+1 al acceder a product.category en el serializer
     permission_classes = [IsAuthenticatedOrReadOnly]
     queryset         = Products.objects.select_related('category').all()
     serializer_class = ProductsSerializer
@@ -67,6 +92,9 @@ class ProductsViewSet(viewsets.ModelViewSet):
     ordering         = ['category__name', 'name']
 
 
+# ──────────────────────────────────────────────
+# INVENTORIES
+# ──────────────────────────────────────────────
 class InventoriesViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     queryset         = Inventories.objects.select_related('product').all()
@@ -77,8 +105,10 @@ class InventoriesViewSet(viewsets.ModelViewSet):
     ordering         = ['product__name']
 
 
+# ──────────────────────────────────────────────
+# PROMOTIONS
+# ──────────────────────────────────────────────
 class PromotionsViewSet(viewsets.ModelViewSet):
-    # Solo mostrar promociones activas por defecto
     queryset         = Promotions.objects.filter(status='active')
     serializer_class = PromotionsSerializer
     filter_backends  = [filters.SearchFilter, filters.OrderingFilter]
@@ -87,6 +117,9 @@ class PromotionsViewSet(viewsets.ModelViewSet):
     ordering         = ['-startDate']
 
 
+# ──────────────────────────────────────────────
+# PRODUCTS PROMOTIONS
+# ──────────────────────────────────────────────
 class ProductsPromotionsViewSet(viewsets.ModelViewSet):
     queryset         = ProductsPromotions.objects.select_related('product', 'promotion').all()
     serializer_class = ProductsPromotionsSerializer
@@ -96,6 +129,9 @@ class ProductsPromotionsViewSet(viewsets.ModelViewSet):
     ordering         = ['product__name']
 
 
+# ──────────────────────────────────────────────
+# LOCATIONS
+# ──────────────────────────────────────────────
 class LocationsViewSet(viewsets.ModelViewSet):
     queryset         = Locations.objects.select_related('user').all()
     serializer_class = LocationsSerializer
@@ -105,12 +141,14 @@ class LocationsViewSet(viewsets.ModelViewSet):
     ordering         = ['alias']
 
 
+# ──────────────────────────────────────────────
+# ORDERS
+# ──────────────────────────────────────────────
 class OrdersViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     queryset = Orders.objects.select_related(
         'user', 'location'
     ).prefetch_related(
-        # prefetch_related para la relación inversa details (OneToMany)
         'details', 'details__product'
     ).all()
     serializer_class = OrdersSerializer
@@ -120,6 +158,9 @@ class OrdersViewSet(viewsets.ModelViewSet):
     ordering         = ['-created']
 
 
+# ──────────────────────────────────────────────
+# ORDER DETAILS
+# ──────────────────────────────────────────────
 class OrderDetailsViewSet(viewsets.ModelViewSet):
     queryset         = OrderDetails.objects.select_related('order', 'product').all()
     serializer_class = OrderDetailsSerializer
@@ -129,6 +170,9 @@ class OrderDetailsViewSet(viewsets.ModelViewSet):
     ordering         = ['order']
 
 
+# ──────────────────────────────────────────────
+# DRIVERS
+# ──────────────────────────────────────────────
 class DriversViewSet(viewsets.ModelViewSet):
     queryset         = Drivers.objects.select_related('user').all()
     serializer_class = DriversSerializer
@@ -138,6 +182,9 @@ class DriversViewSet(viewsets.ModelViewSet):
     ordering         = ['license']
 
 
+# ──────────────────────────────────────────────
+# VEHICLES
+# ──────────────────────────────────────────────
 class VehiclesViewSet(viewsets.ModelViewSet):
     queryset         = Vehicles.objects.select_related('driver').all()
     serializer_class = VehiclesSerializer
@@ -147,6 +194,9 @@ class VehiclesViewSet(viewsets.ModelViewSet):
     ordering         = ['plate']
 
 
+# ──────────────────────────────────────────────
+# DELIVERIES
+# ──────────────────────────────────────────────
 class DeliveriesViewSet(viewsets.ModelViewSet):
     queryset         = Deliveries.objects.select_related('order', 'driver', 'vehicle').all()
     serializer_class = DeliveriesSerializer
@@ -156,6 +206,9 @@ class DeliveriesViewSet(viewsets.ModelViewSet):
     ordering         = ['-created']
 
 
+# ──────────────────────────────────────────────
+# REVIEWS
+# ──────────────────────────────────────────────
 class ReviewsViewSet(viewsets.ModelViewSet):
     queryset         = Reviews.objects.select_related('user', 'product').all()
     serializer_class = ReviewsSerializer
@@ -165,6 +218,9 @@ class ReviewsViewSet(viewsets.ModelViewSet):
     ordering         = ['-created']
 
 
+# ──────────────────────────────────────────────
+# MESSAGES
+# ──────────────────────────────────────────────
 class MessagesViewSet(viewsets.ModelViewSet):
     queryset         = Messages.objects.select_related('user').all()
     serializer_class = MessagesSerializer
