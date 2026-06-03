@@ -1,10 +1,17 @@
 from rest_framework import serializers
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework import exceptions
+from django.contrib.auth import get_user_model
+
+from apps.core.models.validators import validate_not_blank
+
 from .models import (
     Roles, Users, Categories, Products, Inventories,
     Promotions, ProductsPromotions, Orders, OrderDetails,
     Locations, Deliveries, Drivers, Vehicles, Reviews, Messages
 )
 
+User = get_user_model()
 
 # ──────────────────────────────────────────────
 # ROLES
@@ -17,8 +24,53 @@ class RolesSerializer(serializers.ModelSerializer):
 
 
 # ──────────────────────────────────────────────
-# USERS
+# USERS & AUTHENTICATION
 # ──────────────────────────────────────────────
+class CustomTokenObtainPairSerializer(serializers.Serializer):
+    """
+    Serializer explícito para el entorno de desarrollo local.
+    Acepta tanto 'username' como 'email' sin herencias restrictivas
+    y autentica de forma nativa.
+    """
+    # Declaramos los campos explícitos para la validación inicial de DRF
+    username = serializers.CharField(required=False, allow_blank=True)
+    email = serializers.EmailField(required=False, allow_blank=True)
+    password = serializers.CharField(write_only=True)
+
+    def validate(self, attrs):
+        # 1. Recuperar la credencial de identidad de forma flexible
+        username_input = attrs.get("username") or attrs.get("email")
+        password_input = attrs.get("password")
+
+        if not username_input or not password_input:
+            raise exceptions.ValidationError({
+                "detail": "Se requieren tanto el usuario/email como la contraseña."
+            })
+
+        # 2. Localizar al usuario usando el email en minúsculas y limpio
+        try:
+            user = User.objects.get(email=username_input.lower().strip())
+        except User.DoesNotExist:
+            raise exceptions.AuthenticationFailed("No active account found with the given credentials")
+
+        # 3. Validación de contraseña 100% Nativa (Usa el password hasheado por create_superuser)
+        if not user.check_password(password_input):
+            raise exceptions.AuthenticationFailed("No active account found with the given credentials")
+
+        # 4. Verificar el estado de la cuenta
+        if not user.is_active:
+            raise exceptions.AuthenticationFailed("Esta cuenta está inactiva.")
+
+        # 5. Emitir los tokens manualmente usando el método de clase nativo
+        from rest_framework_simplejwt.tokens import RefreshToken
+        refresh = RefreshToken.for_user(user)
+        
+        return {
+            "refresh": str(refresh),
+            "access": str(refresh.access_token)
+        }
+
+
 class UsersSerializer(serializers.ModelSerializer):
     """Serializer general: nunca expone passwordHash."""
     class Meta:
@@ -32,18 +84,32 @@ class UsersSerializer(serializers.ModelSerializer):
 
 
 class UsersWriteSerializer(serializers.ModelSerializer):
-    """Solo para crear/actualizar usuario (incluye passwordHash para escritura)."""
+    """Para crear/actualizar usuarios encriptando la contraseña nativamente."""
+    password = serializers.CharField(write_only=True, required=True, validators=[validate_not_blank])
+
     class Meta:
         model  = Users
         fields = (
             'id', 'firstName', 'lastName', 'email',
-            'passwordHash', 'role', 'status'
+            'password', 'role', 'status'
         )
         read_only_fields = ('id',)
-        extra_kwargs = {
-            # Nunca devolver el hash en la respuesta
-            'passwordHash': {'write_only': True}
-        }
+
+    def create(self, validated_data):
+        # Extraemos la contraseña para que no se guarde en texto plano
+        password = validated_data.pop('password')
+        # Creamos el usuario sin la contraseña primero
+        user = Users(**validated_data)
+        # El método set_password se encarga de aplicar el Hash de Django
+        user.set_password(password)
+        user.save()
+        return user
+
+    def update(self, instance, validated_data):
+        password = validated_data.pop('password', None)
+        if password:
+            instance.set_password(password)
+        return super().update(instance, validated_data)
 
 
 # ──────────────────────────────────────────────
@@ -77,15 +143,16 @@ class ProductsSerializer(serializers.ModelSerializer):
 # INVENTORIES
 # ──────────────────────────────────────────────
 class InventoriesSerializer(serializers.ModelSerializer):
-    product_name = serializers.CharField(source='product.name', read_only=True)
+    # Anidamos el objeto completo del producto con su lógica interna
+    product_detail = ProductsSerializer(source='product', read_only=True)
 
     class Meta:
-        model  = Inventories
+        model = Inventories
         fields = (
-            'id', 'product', 'product_name',
+            'id', 'product', 'product_detail',
             'stock', 'minStock', 'status', 'created', 'modified'
         )
-        read_only_fields = ('id', 'product_name', 'created', 'modified')
+        read_only_fields = ('id', 'product_detail', 'created', 'modified')
 
 
 # ──────────────────────────────────────────────
@@ -139,29 +206,44 @@ class OrderDetailsSerializer(serializers.ModelSerializer):
     product_name = serializers.CharField(source='product.name', read_only=True)
 
     class Meta:
-        model  = OrderDetails
+        model = OrderDetails
         fields = (
             'id', 'order', 'product', 'product_name',
             'quantity', 'unitPrice', 'subtotal',
             'status', 'created', 'modified'
         )
-        # subtotal se calcula automáticamente en el modelo
         read_only_fields = ('id', 'subtotal', 'product_name', 'created', 'modified')
 
 
-class OrdersSerializer(serializers.ModelSerializer):
-    # Incluir detalles anidados en lectura
-    details = OrderDetailsSerializer(many=True, read_only=True)
+class ProductDetailNestedSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Products
+        fields = ('id', 'name', 'price', 'imageUrl', 'status')
+
+
+class OrderDetailsNestedSerializer(serializers.ModelSerializer):
+    product_detail = ProductDetailNestedSerializer(source='product', read_only=True)
 
     class Meta:
-        model  = Orders
+        model = OrderDetails
         fields = (
-            'id', 'user', 'location', 'orderStatus',
-            'total', 'notes', 'details',
-            'status', 'created', 'modified'
+            'id', 'product', 'product_detail', 
+            'quantity', 'unitPrice', 'subtotal', 'status'
         )
-        # total se recalcula en el negocio, no debe editarse directamente
-        read_only_fields = ('id', 'total', 'details', 'created', 'modified')
+        read_only_fields = ('id', 'subtotal', 'product_detail')
+
+
+class OrdersSerializer(serializers.ModelSerializer):
+    details = OrderDetailsNestedSerializer(many=True, read_only=True)
+    user_detail = UsersSerializer(source='user', read_only=True)
+
+    class Meta:
+        model = Orders
+        fields = (
+            'id', 'user', 'user_detail', 'location', 'orderStatus',
+            'total', 'notes', 'details', 'status', 'created', 'modified'
+        )
+        read_only_fields = ('id', 'total', 'details', 'user_detail', 'created', 'modified')
 
 
 # ──────────────────────────────────────────────
@@ -203,15 +285,20 @@ class VehiclesSerializer(serializers.ModelSerializer):
 # DELIVERIES
 # ──────────────────────────────────────────────
 class DeliveriesSerializer(serializers.ModelSerializer):
+    order_detail = OrdersSerializer(source='order', read_only=True)
+    driver_detail = DriversSerializer(source='driver', read_only=True)
+    vehicle_detail = VehiclesSerializer(source='vehicle', read_only=True)
+
     class Meta:
-        model  = Deliveries
+        model = Deliveries
         fields = (
-            'id', 'order', 'driver', 'vehicle',
+            'id', 'order', 'order_detail', 
+            'driver', 'driver_detail', 
+            'vehicle', 'vehicle_detail',
             'deliveryStatus', 'departureAt', 'deliveredAt',
             'status', 'created', 'modified'
         )
-        # deliveredAt se asigna automáticamente en el modelo al marcar 'delivered'
-        read_only_fields = ('id', 'deliveredAt', 'created', 'modified')
+        read_only_fields = ('id', 'order_detail', 'driver_detail', 'vehicle_detail', 'deliveredAt', 'created', 'modified')
 
 
 # ──────────────────────────────────────────────
