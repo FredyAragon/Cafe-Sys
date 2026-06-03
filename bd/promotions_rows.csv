@@ -1,0 +1,4 @@
+id,name,description,discount,discountType,startDate,endDate,status,created,modified,created_id,modified_id
+1,Combo Desayuno,Promoción en la compra de café y postre.,15.00,percentage,2026-05-30,2026-06-30,active,2026-05-31 00:10:17.189308+00,2026-05-31 00:10:17.189316+00,,
+2,Promo Frappés,Oferta especial en todos los frappés.,10.00,fixed,2026-06-01,2026-06-01,active,2026-05-31 00:11:42.506852+00,2026-05-31 00:11:42.506861+00,,
+3,Café del Día,Descuento especial en cafés calientes seleccionados.,10.00,percentage,2026-05-30,2026-06-30,active,2026-05-31 00:12:30.821552+00,2026-05-31 00:12:30.821561+00,,

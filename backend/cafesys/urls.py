@@ -1,11 +1,6 @@
 from django.contrib import admin
 from django.urls import path, include
 from django.http import HttpResponse
-# 1. IMPORTAMOS LAS VISTAS NATIVAS DE SIMPLE JWT
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
-)
 
 # Pantalla de bienvenida limpia
 def api_welcome_index(request):
@@ -34,21 +29,14 @@ def api_welcome_index(request):
     """
     return HttpResponse(html_content)
 
-# ENRUTADO DEFINITIVO
+# ENRUTADO MAESTRO SIMPLIFICADO
 urlpatterns = [
-    # 1. Raíz del sitio (Evita interferir con el router)
+    # 1. Raíz del sitio 
     path('', api_welcome_index, name='api-gateway-index'), 
     
     # 2. Panel de administración
     path('admin/', admin.site.urls),
     
-    # 3. Módulo de la API 
+    # 3. Módulo de la API (Todo lo que entre aquí se va a apps/core/urls.py)
     path('apps/core/', include('apps.core.urls')), 
-    
-    # 4. ENDPOINTS ESTRATÉGICOS PARA JWT (Nuevos)
-    # Endpoint para hacer LOGIN y obtener los tokens (Access y Refresh)
-    path('apps/core/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    
-    # Endpoint para RENOVAR el access token usando el refresh token sin loguearse de nuevo
-    path('apps/core/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]

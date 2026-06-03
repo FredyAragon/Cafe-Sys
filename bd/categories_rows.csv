@@ -1,0 +1,6 @@
+id,name,description,imageUrl,status,created,modified,created_id,modified_id
+17,Cafés Calientes,Bebidas calientes preparadas a base de café premium.,https://images.unsplash.com/photo-1509042239860-f550ce710b93,active,2026-05-30 16:00:22.193113+00,2026-05-30 16:00:22.193131+00,,
+18,Cafés Fríos,Bebidas frías y refrescantes elaboradas con café.,https://images.unsplash.com/photo-1517701604599-bb29b565090c,active,2026-05-30 16:00:50.570512+00,2026-05-30 16:00:50.570525+00,,
+19,Frappés,"Bebidas heladas mezcladas con café, leche y sabores especiales.",https://images.unsplash.com/photo-1572490122747-3968b75cc699,active,2026-05-30 16:01:49.528544+00,2026-05-30 16:01:49.528557+00,,
+20,Tés E Infusiones,Selección de tés e infusiones naturales para todos los gustos.,https://amazonical.com/wp-content/uploads/2022/05/Tipos-de-tes-e-infusiones_79510054_S.jpg,active,2026-05-30 16:02:44.447617+00,2026-05-30 16:24:13.575218+00,,
+21,Postres,Postres artesanales ideales para acompañar las bebidas.,https://imag.bonviveur.com/postres-de-la-abuela.jpg,active,2026-05-30 16:03:48.757102+00,2026-05-30 16:03:48.757118+00,,
