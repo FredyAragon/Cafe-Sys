@@ -1,10 +1,12 @@
 import { Component, signal, inject, OnInit } from '@angular/core';
 import { ApiService } from './services/api';
-import { FormsModule } from '@angular/forms'; // Necesario si quieres usar inputs en el HTML más adelante
+import { FormsModule } from '@angular/forms'; 
+import { LoginComponent } from './components/login/login.component';
 
 @Component({
   selector: 'app-root',
-  imports: [FormsModule], 
+  standalone: true, // Aseguramos que sea standalone
+  imports: [FormsModule, LoginComponent],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
@@ -12,16 +14,16 @@ export class App implements OnInit {
   private apiService = inject(ApiService);
 
   protected readonly title = signal('frontend');
-  
-  // Cambiamos el signal para que guarde una lista de objetos o elementos
   protected readonly listaElementos = signal<any[]>([]);
-  protected readonly mensajeEstado = signal('Cargando datos...');
+  protected readonly mensajeEstado = signal('Esperando prueba de JWT...');
 
   ngOnInit(): void {
-    this.cargarElementos();
+    // 🛑 COMENTAMOS ESTO TEMPORALMENTE
+    // Para que no tumbe la aplicación intentando buscar datos sin estar logueado.
+    // this.cargarElementos();
   }
 
-  // Ejecuta el GET
+  // Ejecuta el GET antiguo
   cargarElementos(): void {
     this.apiService.getDatos().subscribe({
       next: (data) => {
@@ -29,36 +31,34 @@ export class App implements OnInit {
         this.mensajeEstado.set('Datos cargados con éxito.');
       },
       error: (err) => {
-        this.mensajeEstado.set('Error al traer datos de Django. ¿El endpoint /api/ existe?');
+        this.mensajeEstado.set('Error al traer datos de Django.');
         console.error(err);
       }
     });
   }
 
-  // Ejecuta el POST al presionar un botón
+  // Ejecuta el POST antiguo
   enviarDataDePrueba(): void {
-  // NOTA: Ajusta estas llaves exactamente como se llamen en tu models.py de Django
-  // Te dejo un ejemplo asumiendo campos típicos en inglés y su relación con categorías/inventario
-  const objetoDePrueba = {
-    name: 'Café Americano Especial',
-    price: '4.50',
-    description: 'Generado desde pruebas de integración en Angular',
-    stock: 50,
-    category: 17 // Si tu producto exige un ID de categoría existente, asegúrate de poner un ID válido aquí
-  };
+    const objetoDePrueba = {
+      name: 'Café Americano Especial',
+      price: '4.50',
+      description: 'Generado desde pruebas de integración en Angular',
+      stock: 50,
+      category: 17 
+    };
 
-  this.mensajeEstado.set('Enviando datos...');
+    this.mensajeEstado.set('Enviando datos...');
 
-  this.apiService.postDatos(objetoDePrueba).subscribe({
-    next: (respuesta) => {
-      this.mensajeEstado.set('¡Elemento guardado con éxito en Django!');
-      console.log('Respuesta del servidor:', respuesta);
-      this.cargarElementos(); 
-    },
-    error: (err) => {
-      this.mensajeEstado.set('Error al enviar el POST a Django.');
-      console.error('Detalle del error de validación:', err.error); // <--- Esto te dirá exactamente qué campo falta o está mal
-    }
-  });
-}
+    this.apiService.postDatos(objetoDePrueba).subscribe({
+      next: (respuesta) => {
+        this.mensajeEstado.set('¡Elemento guardado con éxito en Django!');
+        console.log('Respuesta del servidor:', respuesta);
+        this.cargarElementos(); 
+      },
+      error: (err) => {
+        this.mensajeEstado.set('Error al enviar el POST a Django.');
+        console.error('Detalle del error:', err.error);
+      }
+    });
+  }
 }

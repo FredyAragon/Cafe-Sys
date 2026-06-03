@@ -3,6 +3,8 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import exceptions
 from django.contrib.auth import get_user_model
 
+from apps.core.models.validators import validate_not_blank
+
 from .models import (
     Roles, Users, Categories, Products, Inventories,
     Promotions, ProductsPromotions, Orders, OrderDetails,
@@ -82,18 +84,32 @@ class UsersSerializer(serializers.ModelSerializer):
 
 
 class UsersWriteSerializer(serializers.ModelSerializer):
-    """Solo para crear/actualizar usuario (incluye passwordHash para escritura)."""
+    """Para crear/actualizar usuarios encriptando la contraseña nativamente."""
+    password = serializers.CharField(write_only=True, required=True, validators=[validate_not_blank])
+
     class Meta:
         model  = Users
         fields = (
             'id', 'firstName', 'lastName', 'email',
-            'passwordHash', 'role', 'status'
+            'password', 'role', 'status'
         )
-        # Ajustado para que coincida con tu campo físico de base de datos
         read_only_fields = ('id',)
-        extra_kwargs = {
-            'passwordHash': {'write_only': True}
-        }
+
+    def create(self, validated_data):
+        # Extraemos la contraseña para que no se guarde en texto plano
+        password = validated_data.pop('password')
+        # Creamos el usuario sin la contraseña primero
+        user = Users(**validated_data)
+        # El método set_password se encarga de aplicar el Hash de Django
+        user.set_password(password)
+        user.save()
+        return user
+
+    def update(self, instance, validated_data):
+        password = validated_data.pop('password', None)
+        if password:
+            instance.set_password(password)
+        return super().update(instance, validated_data)
 
 
 # ──────────────────────────────────────────────

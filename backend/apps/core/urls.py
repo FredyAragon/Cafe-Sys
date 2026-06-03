@@ -1,5 +1,6 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
+from rest_framework_simplejwt.views import TokenRefreshView  
 from .views import *
 
 router = DefaultRouter()
@@ -20,8 +21,14 @@ router.register(r'deliveries', DeliveriesViewSet)
 router.register(r'reviews', ReviewsViewSet)
 router.register(r'messages', MessagesViewSet)
 
-# Exporta directamente las URLs generadas por el Router
+# URLs de la aplicación Core
 urlpatterns = [
+    # Login adaptado para desarrollo local (Usa tu Custom Serializer)
     path('token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
+    
+    # NUEVO: Refresco de token para mantener la sesión en Angular
+    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    
+    # Endpoints del Router
     path('', include(router.urls)),
 ]

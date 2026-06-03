@@ -42,6 +42,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 # ROLES
 # ──────────────────────────────────────────────
 class RolesViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
     queryset         = Roles.objects.all()
     serializer_class = RolesSerializer
     filter_backends  = [filters.SearchFilter, filters.OrderingFilter]
@@ -54,6 +55,7 @@ class RolesViewSet(viewsets.ModelViewSet):
 # USERS
 # ──────────────────────────────────────────────
 class UsersViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
     queryset        = Users.objects.select_related('role').all()
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields   = ['firstName', 'lastName', 'email']
@@ -71,6 +73,7 @@ class UsersViewSet(viewsets.ModelViewSet):
 # CATEGORIES
 # ──────────────────────────────────────────────
 class CategoriesViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticatedOrReadOnly]
     queryset         = Categories.objects.all()
     serializer_class = CategoriesSerializer
     filter_backends  = [filters.SearchFilter, filters.OrderingFilter]
@@ -109,6 +112,7 @@ class InventoriesViewSet(viewsets.ModelViewSet):
 # PROMOTIONS
 # ──────────────────────────────────────────────
 class PromotionsViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticatedOrReadOnly]
     queryset         = Promotions.objects.filter(status='active')
     serializer_class = PromotionsSerializer
     filter_backends  = [filters.SearchFilter, filters.OrderingFilter]
@@ -133,6 +137,7 @@ class ProductsPromotionsViewSet(viewsets.ModelViewSet):
 # LOCATIONS
 # ──────────────────────────────────────────────
 class LocationsViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
     queryset         = Locations.objects.select_related('user').all()
     serializer_class = LocationsSerializer
     filter_backends  = [filters.SearchFilter, filters.OrderingFilter]
@@ -174,6 +179,7 @@ class OrderDetailsViewSet(viewsets.ModelViewSet):
 # DRIVERS
 # ──────────────────────────────────────────────
 class DriversViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
     queryset         = Drivers.objects.select_related('user').all()
     serializer_class = DriversSerializer
     filter_backends  = [filters.SearchFilter, filters.OrderingFilter]
@@ -186,6 +192,7 @@ class DriversViewSet(viewsets.ModelViewSet):
 # VEHICLES
 # ──────────────────────────────────────────────
 class VehiclesViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
     queryset         = Vehicles.objects.select_related('driver').all()
     serializer_class = VehiclesSerializer
     filter_backends  = [filters.SearchFilter, filters.OrderingFilter]
@@ -198,6 +205,7 @@ class VehiclesViewSet(viewsets.ModelViewSet):
 # DELIVERIES
 # ──────────────────────────────────────────────
 class DeliveriesViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
     queryset         = Deliveries.objects.select_related('order', 'driver', 'vehicle').all()
     serializer_class = DeliveriesSerializer
     filter_backends  = [filters.SearchFilter, filters.OrderingFilter]
@@ -210,6 +218,7 @@ class DeliveriesViewSet(viewsets.ModelViewSet):
 # REVIEWS
 # ──────────────────────────────────────────────
 class ReviewsViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticatedOrReadOnly]
     queryset         = Reviews.objects.select_related('user', 'product').all()
     serializer_class = ReviewsSerializer
     filter_backends  = [filters.SearchFilter, filters.OrderingFilter]
@@ -222,6 +231,7 @@ class ReviewsViewSet(viewsets.ModelViewSet):
 # MESSAGES
 # ──────────────────────────────────────────────
 class MessagesViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
     queryset         = Messages.objects.select_related('user').all()
     serializer_class = MessagesSerializer
     filter_backends  = [filters.SearchFilter, filters.OrderingFilter]

@@ -118,7 +118,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:4200", # Para cuando programes en local
     "http://localhost:8082",
 ]
-
+CORS_ALLOW_CREDENTIALS = True
 
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
@@ -162,4 +162,6 @@ SIMPLE_JWT = {
     'SIGNING_KEY': SECRET_KEY,                          # Usa la misma clave secreta de tu Django
     'AUTH_HEADER_TYPES': ('Bearer',),                   # En Postman usaremos: Bearer <token>
     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+    'USER_ID_FIELD': 'id',
+    'USER_ID_CLAIM': 'user_id',
 }
