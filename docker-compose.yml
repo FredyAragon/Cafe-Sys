@@ -1,42 +1,28 @@
 services:
-
-  db:
-    image: postgres:17
-    container_name: cafesys_db
-    environment:
-      POSTGRES_DB: cafeteriadb
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 1234
-    ports:
-      - "8085:5432"
-    volumes:
-        - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-        test: ["CMD-SHELL", "pg_isready -U postgres"]
-        interval: 5s
-        timeout: 5s
-        retries: 5
-        start_period: 10s
-
   backend:
     build:
       context: ./backend
     container_name: cafesys_backend
-
     command: >
-          sh -c "python manage.py migrate &&
-                python create_superuser.py &&
-                python manage.py runserver 0.0.0.0:8081"
-
+      sh -c "python manage.py migrate --fake-initial &&          
+             python -m apps.core.create_superuser &&
+             python manage.py runserver 0.0.0.0:8081"
     volumes:
       - ./backend:/app
     ports:
       - "8081:8081"
-    depends_on:
-      db:
-        condition: service_healthy
     env_file:
       - ./backend/.env
 
-volumes:
-  postgres_data:
+  frontend:
+    build:
+      context: ./frontend
+    container_name: cafesys_frontend
+    command: >
+      sh -c "npm install && 
+             npx ng serve --host 0.0.0.0 --port 8082"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "8082:8082"
