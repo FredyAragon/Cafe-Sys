@@ -2,7 +2,6 @@ from django.contrib import admin
 from django.urls import path, include
 from django.http import HttpResponse
 
-# Pantalla de bienvenida limpia
 def api_welcome_index(request):
     html_content = """
     <html>
@@ -29,14 +28,10 @@ def api_welcome_index(request):
     """
     return HttpResponse(html_content)
 
-# ENRUTADO MAESTRO SIMPLIFICADO
 urlpatterns = [
-    # 1. Raíz del sitio 
     path('', api_welcome_index, name='api-gateway-index'), 
     
-    # 2. Panel de administración
     path('admin/', admin.site.urls),
     
-    # 3. Módulo de la API (Todo lo que entre aquí se va a apps/core/urls.py)
     path('apps/core/', include('apps.core.urls')), 
 ]
