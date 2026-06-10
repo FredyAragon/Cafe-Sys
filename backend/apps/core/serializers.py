@@ -6,22 +6,12 @@ from django.contrib.auth import get_user_model
 from apps.core.models.validators import validate_not_blank
 
 from .models import (
-    Roles, Users, Categories, Products, Inventories,
+    Users, Categories, Products,
     Promotions, ProductsPromotions, Orders, OrderDetails,
     Locations, Deliveries, Drivers, Vehicles, Reviews, Messages
 )
 
 User = get_user_model()
-
-# ──────────────────────────────────────────────
-# ROLES
-# ──────────────────────────────────────────────
-class RolesSerializer(serializers.ModelSerializer):
-    class Meta:
-        model  = Roles
-        fields = ('id', 'name', 'description', 'status', 'created', 'modified')
-        read_only_fields = ('id', 'created', 'modified')
-
 
 # ──────────────────────────────────────────────
 # USERS & AUTHENTICATION
@@ -137,22 +127,6 @@ class ProductsSerializer(serializers.ModelSerializer):
             'status', 'created', 'modified'
         )
         read_only_fields = ('id', 'category_name', 'created', 'modified')
-
-
-# ──────────────────────────────────────────────
-# INVENTORIES
-# ──────────────────────────────────────────────
-class InventoriesSerializer(serializers.ModelSerializer):
-    # Anidamos el objeto completo del producto con su lógica interna
-    product_detail = ProductsSerializer(source='product', read_only=True)
-
-    class Meta:
-        model = Inventories
-        fields = (
-            'id', 'product', 'product_detail',
-            'stock', 'minStock', 'status', 'created', 'modified'
-        )
-        read_only_fields = ('id', 'product_detail', 'created', 'modified')
 
 
 # ──────────────────────────────────────────────
