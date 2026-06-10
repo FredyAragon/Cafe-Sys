@@ -19,7 +19,7 @@ export class ApiService {
   createProduct(productData: any): Observable<any> {
     // 💡 PASO CLAVE: Simulamos que ya tenemos el token guardado.
     // Para esta prueba rápida, puedes pegar directamente el Access Token de Admin que obtuvimos en Postman:
-    const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzgwNTIzOTAwLCJpYXQiOjE3ODA1MjAzMDAsImp0aSI6Ijc4Zjg5MDUzMGQzYTQyMDVhNjllN2M1ZmZmNzYyZDg1IiwidXNlcl9pZCI6MX0.D-QBV0SO2ezHwQi8-PYtVqbpoPfnuienZlTz9oIThSw'; 
+    const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzgxMDM2Njc3LCJpYXQiOjE3ODEwMzMwNzcsImp0aSI6IjM0Njk1MmJiNWZmYzQ4MWQ5NmFlZmQxZmYxZDhjOTNhIiwidXNlcl9pZCI6MX0.RfeWDEV8euis4xDMqHKrl_cYzNAtEytSv8tP-cHA2rI'; 
 
     // Creamos las cabeceras e inyectamos el pasaporte Bearer
     const headers = new HttpHeaders({
