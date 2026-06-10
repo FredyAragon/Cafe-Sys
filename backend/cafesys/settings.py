@@ -81,19 +81,19 @@ WSGI_APPLICATION = 'cafesys.wsgi.application'
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": config("DB_NAME"),
-        "USER": config("DB_USER"),
-        "PASSWORD": config("DB_PASSWORD"),
-        "HOST": config("DB_HOST"),
-        "PORT": config("DB_PORT"),
-        "OPTIONS": {
-            "sslmode": config("DB_SSLMODE", default="disable"),
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get('DB_NAME'),
+        'USER': os.environ.get('DB_USER'),
+        'PASSWORD': os.environ.get('DB_PASSWORD'),
+        'HOST': os.environ.get('DB_HOST'),
+        'PORT': os.environ.get('DB_PORT'),
+        'OPTIONS': {
+            'sslmode': 'require',
+            'options': '-c search_path=public' # Esto ayuda al pooler a ubicarse
         },
     }
 }
-
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
 
@@ -115,7 +115,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:4200", # Para cuando programes en local
+    "http://localhost:4200", 
     "http://localhost:8082",
 ]
 CORS_ALLOW_CREDENTIALS = True
@@ -152,15 +152,15 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),     # El token de acceso dura 1 hora
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),        # El token de refresco dura 1 día
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),    
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),       
     'ROTATE_REFRESH_TOKENS': False,
     'BLACKLIST_AFTER_ROTATION': False,
     'UPDATE_LAST_LOGIN': False,
 
     'ALGORITHM': 'HS256',
-    'SIGNING_KEY': SECRET_KEY,                          # Usa la misma clave secreta de tu Django
-    'AUTH_HEADER_TYPES': ('Bearer',),                   # En Postman usaremos: Bearer <token>
+    'SIGNING_KEY': SECRET_KEY,                          
+    'AUTH_HEADER_TYPES': ('Bearer',),                  
     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
     'USER_ID_FIELD': 'id',
     'USER_ID_CLAIM': 'user_id',

@@ -4,16 +4,15 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from .serializers import CustomTokenObtainPairSerializer
 
 from .models import (
-    Roles, Users, Categories, Products, Inventories,
+    Users, Categories, Products,
     Promotions, ProductsPromotions, Orders, OrderDetails,
     Locations, Deliveries, Drivers, Vehicles, Reviews, Messages
 )
 from .serializers import (
-    RolesSerializer,
-    UsersSerializer, UsersWriteSerializer,
+    UsersSerializer, 
+    UsersWriteSerializer,
     CategoriesSerializer,
     ProductsSerializer,
-    InventoriesSerializer,
     PromotionsSerializer,
     ProductsPromotionsSerializer,
     LocationsSerializer,
@@ -39,19 +38,6 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 
 
 # ──────────────────────────────────────────────
-# ROLES
-# ──────────────────────────────────────────────
-class RolesViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated]
-    queryset         = Roles.objects.all()
-    serializer_class = RolesSerializer
-    filter_backends  = [filters.SearchFilter, filters.OrderingFilter]
-    search_fields    = ['name']
-    ordering_fields  = ['name', 'created']
-    ordering         = ['name']
-
-
-# ──────────────────────────────────────────────
 # USERS
 # ──────────────────────────────────────────────
 class UsersViewSet(viewsets.ModelViewSet):
@@ -63,7 +49,6 @@ class UsersViewSet(viewsets.ModelViewSet):
     ordering        = ['lastName']
 
     def get_serializer_class(self):
-        # En creación y actualización usar el serializer que acepta passwordHash
         if self.action in ('create', 'update', 'partial_update'):
             return UsersWriteSerializer
         return UsersSerializer
@@ -93,19 +78,6 @@ class ProductsViewSet(viewsets.ModelViewSet):
     search_fields    = ['name', 'description', 'category__name']
     ordering_fields  = ['name', 'price', 'created']
     ordering         = ['category__name', 'name']
-
-
-# ──────────────────────────────────────────────
-# INVENTORIES
-# ──────────────────────────────────────────────
-class InventoriesViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated]
-    queryset         = Inventories.objects.select_related('product').all()
-    serializer_class = InventoriesSerializer
-    filter_backends  = [filters.SearchFilter, filters.OrderingFilter]
-    search_fields    = ['product__name']
-    ordering_fields  = ['stock', 'product__name']
-    ordering         = ['product__name']
 
 
 # ──────────────────────────────────────────────
