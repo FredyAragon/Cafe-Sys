@@ -42,7 +42,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 # ──────────────────────────────────────────────
 class UsersViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
-    queryset        = Users.objects.select_related('role').all()
+    queryset        = Users.objects.all()  
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields   = ['firstName', 'lastName', 'email']
     ordering_fields = ['lastName', 'email', 'created']
