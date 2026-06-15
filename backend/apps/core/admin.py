@@ -1,27 +1,49 @@
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin  
 from .models import (
-    Roles, Users, Categories, Products, Inventories,
+    Users, Categories, Products,
     Promotions, ProductsPromotions, Orders, OrderDetails,
     Locations, Deliveries, Drivers, Vehicles, Reviews, Messages
 )
 
-
-@admin.register(Roles)
-class RolesAdmin(admin.ModelAdmin):
-    list_display  = ('id', 'name', 'status', 'created')
-    list_filter   = ('status',)
-    search_fields = ('name',)
-    ordering      = ('name',)
-
-
+# =====================================================================
+# CONTROLES DE USUARIOS Y AUTENTICACIÓN (JWT COMPATIBLE)
+# =====================================================================
 @admin.register(Users)
 class UsersAdmin(admin.ModelAdmin):
     list_display  = ('id', 'firstName', 'lastName', 'email', 'role', 'status', 'created')
     list_filter   = ('status', 'role')
     search_fields = ('firstName', 'lastName', 'email')
     ordering      = ('lastName', 'firstName')
+    
+    fields = ('email', 'firstName', 'lastName', 'password', 'role', 'status')
+
+    def save_model(self, request, obj, form, change):
+        if obj.status == 'active':
+            obj.is_active = True
+        else:
+            obj.is_active = False
+
+        if obj.role == 'Admin':
+            obj.is_staff = True
+            obj.is_superuser = True
+        elif obj.role in ['Employee', 'Driver']:
+            obj.is_staff = True       
+            obj.is_superuser = False
+        else: # Si es 'Customer'
+            obj.is_staff = False
+            obj.is_superuser = False
+
+        if not change or form.initial.get('password') != obj.password:
+            if not obj.password.startswith('pbkdf2_'):
+                obj.set_password(obj.password)
+        
+        super().save_model(request, obj, form, change)
 
 
+# =====================================================================
+# MAESTROS DEL CATÁLOGO Y PROMOCIONES
+# =====================================================================
 @admin.register(Categories)
 class CategoriesAdmin(admin.ModelAdmin):
     list_display  = ('id', 'name', 'status', 'created')
@@ -36,14 +58,6 @@ class ProductsAdmin(admin.ModelAdmin):
     list_filter   = ('status', 'category')
     search_fields = ('name', 'description')
     ordering      = ('category', 'name')
-
-
-@admin.register(Inventories)
-class InventoriesAdmin(admin.ModelAdmin):
-    list_display  = ('id', 'product', 'stock', 'minStock', 'status', 'modified')
-    list_filter   = ('status',)
-    search_fields = ('product__name',)
-    ordering      = ('product__name',)
 
 
 @admin.register(Promotions)
@@ -62,6 +76,9 @@ class ProductsPromotionsAdmin(admin.ModelAdmin):
     ordering      = ('product__name',)
 
 
+# =====================================================================
+# FLUJO DE PEDIDOS Y VENTAS
+# =====================================================================
 @admin.register(Orders)
 class OrdersAdmin(admin.ModelAdmin):
     list_display  = ('id', 'user', 'location', 'orderStatus', 'total', 'status', 'created')
@@ -86,6 +103,9 @@ class LocationsAdmin(admin.ModelAdmin):
     ordering      = ('user__lastName',)
 
 
+# =====================================================================
+# MÓDULO LOGÍSTICA Y ENTREGAS (DRIVERS & VEHICLES)
+# =====================================================================
 @admin.register(Drivers)
 class DriversAdmin(admin.ModelAdmin):
     list_display  = ('id', 'user', 'license', 'phone', 'status', 'created')
@@ -110,6 +130,9 @@ class DeliveriesAdmin(admin.ModelAdmin):
     ordering      = ('-created',)
 
 
+# =====================================================================
+# RESEÑAS Y CANAL DE SOPORTE / ATENCIÓN
+# =====================================================================
 @admin.register(Reviews)
 class ReviewsAdmin(admin.ModelAdmin):
     list_display  = ('id', 'user', 'product', 'rating', 'status', 'created')

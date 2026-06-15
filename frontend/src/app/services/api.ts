@@ -1,33 +1,85 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+
+// ── Tipos básicos que devuelve Django ──────────────────────────────────────
+export interface Categoria {
+  id: number;
+  name: string;
+  description: string | null;
+  imageUrl: string | null;
+  status: string;
+}
+
+export interface NuevaCategoria {
+  name: string;
+  description?: string;
+  imageUrl?: string;
+  status?: string;
+}
+
+export interface Producto {
+  id: number;
+  name: string;
+  description: string | null;
+  price: string;          // DRF serializa DecimalField como string
+  imageUrl: string | null;
+  category: number;
+  category_name: string;
+  status: string;
+}
+
+export interface NuevoProducto {
+  name: string;
+  description?: string;
+  price: number;
+  imageUrl?: string;
+  category: number;
+  status?: string;
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
-  private apiUrl = 'http://localhost:8081/apps/core/products/';
+
+  private readonly API_URL = 'http://127.0.0.1:8000/apps/core';
 
   constructor(private http: HttpClient) {}
 
-  // 1. Tu función GET actual (que ya funciona)
-  getProducts(): Observable<any> {
-    return this.http.get(this.apiUrl);
+  // ── PRODUCTOS ─────────────────────────────────────────────────────────────
+  getProducts(): Observable<Producto[]> {
+    return this.http.get<Producto[]>(`${this.API_URL}/products/`);
   }
 
-  // 2. Tu función POST (Aquí es donde agregamos el Token obligatorio)
-  createProduct(productData: any): Observable<any> {
-    // 💡 PASO CLAVE: Simulamos que ya tenemos el token guardado.
-    // Para esta prueba rápida, puedes pegar directamente el Access Token de Admin que obtuvimos en Postman:
-    const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzgwNTIzOTAwLCJpYXQiOjE3ODA1MjAzMDAsImp0aSI6Ijc4Zjg5MDUzMGQzYTQyMDVhNjllN2M1ZmZmNzYyZDg1IiwidXNlcl9pZCI6MX0.D-QBV0SO2ezHwQi8-PYtVqbpoPfnuienZlTz9oIThSw'; 
-
-    // Creamos las cabeceras e inyectamos el pasaporte Bearer
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
-    });
-
-    // Enviamos el POST incluyendo las cabeceras seguras
-    return this.http.post(this.apiUrl, productData, { headers });
+  createProduct(productData: NuevoProducto): Observable<Producto> {
+    return this.http.post<Producto>(`${this.API_URL}/products/`, productData);
   }
+
+  updateProduct(id: number, productData: Partial<NuevoProducto>): Observable<Producto> {
+    return this.http.patch<Producto>(`${this.API_URL}/products/${id}/`, productData);
+  }
+
+  deleteProduct(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.API_URL}/products/${id}/`);
+  }
+
+  // ── CATEGORÍAS ────────────────────────────────────────────────────────────
+  getCategories(): Observable<Categoria[]> {
+    return this.http.get<Categoria[]>(`${this.API_URL}/categories/`);
+  }
+
+  createCategory(categoryData: NuevaCategoria): Observable<Categoria> {
+    return this.http.post<Categoria>(`${this.API_URL}/categories/`, categoryData);
+  }
+
+  updateCategory(id: number, categoryData: Partial<NuevaCategoria>): Observable<Categoria> {
+    return this.http.patch<Categoria>(`${this.API_URL}/categories/${id}/`, categoryData);
+  }
+
+  deleteCategory(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.API_URL}/categories/${id}/`);
+  }
+
+  // Aquí irán los demás endpoints (órdenes, usuarios, etc.)
 }

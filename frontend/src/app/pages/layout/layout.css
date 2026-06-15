@@ -1,0 +1,80 @@
+.app-shell {
+  min-height: 100vh;
+  background-color: #f0f2f5;
+  font-family: sans-serif;
+}
+
+/* ── Barra superior ─────────────────────────────────────────── */
+.topbar {
+  background: #2c3e50;
+  color: #ffffff;
+  padding: 14px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.topbar-title {
+  font-size: 20px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* ── Navegación ─────────────────────────────────────────────── */
+.topbar-nav {
+  display: flex;
+  gap: 8px;
+  flex: 1;
+}
+
+.topbar-nav a {
+  color: rgba(255, 255, 255, 0.75);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 6px 12px;
+  border-radius: 6px;
+  transition: background 0.2s, color 0.2s;
+}
+
+.topbar-nav a:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+.topbar-nav a.active-link {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+}
+
+/* ── Usuario / Logout ───────────────────────────────────────── */
+.topbar-user {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.user-role {
+  opacity: 0.7;
+  font-size: 12px;
+  margin-left: 4px;
+}
+
+.btn-logout {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-logout:hover {
+  background: rgba(255, 255, 255, 0.22);
+}

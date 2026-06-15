@@ -1,0 +1,253 @@
+.products-wrapper {
+  max-width: 800px;
+  margin: 32px auto;
+  padding: 0 20px;
+  font-family: sans-serif;
+}
+
+.products-wrapper h2 {
+  margin-bottom: 4px;
+  color: #2c3e50;
+}
+
+.subtitle {
+  color: #7f8c8d;
+  font-size: 14px;
+  margin-bottom: 24px;
+}
+
+/* ── Formulario ─────────────────────────────────────────────── */
+.product-form {
+  background: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 24px;
+  margin-bottom: 32px;
+}
+
+.form-row {
+  display: flex;
+  gap: 16px;
+}
+
+.form-group {
+  flex: 1;
+  margin-bottom: 16px;
+}
+
+.form-group-small {
+  flex: 0 0 160px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #4a4a4a;
+  margin-bottom: 6px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #dde1e7;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #2c3e50;
+  background: #fafbfc;
+  box-sizing: border-box;
+  font-family: inherit;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  outline: none;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: #2c3e50;
+  box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.1);
+  background: #fff;
+}
+
+.form-group input:disabled,
+.form-group select:disabled,
+.form-group textarea:disabled {
+  background: #f5f5f5;
+  cursor: not-allowed;
+}
+
+.hint {
+  display: block;
+  margin-top: 4px;
+  color: #e67e22;
+  font-size: 12px;
+}
+
+/* ── Alertas ────────────────────────────────────────────────── */
+.alert {
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
+  margin-bottom: 16px;
+}
+
+.alert-error {
+  background: #fff3cd;
+  border: 1px solid #ffc107;
+  color: #856404;
+}
+
+.alert-success {
+  background: #d4edda;
+  border: 1px solid #28a745;
+  color: #155724;
+}
+
+/* ── Botón ──────────────────────────────────────────────────── */
+.btn-submit {
+  background-color: #2c3e50;
+  color: white;
+  border: none;
+  padding: 11px 22px;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-submit:hover:not(:disabled) {
+  background-color: #3d5166;
+}
+
+.btn-submit:disabled {
+  background-color: #95a5a6;
+  cursor: not-allowed;
+}
+
+/* ── Tabla de productos ─────────────────────────────────────── */
+hr {
+  border: 0;
+  border-top: 1px solid #ddd;
+  margin: 24px 0;
+}
+
+.empty-msg {
+  color: #999;
+}
+
+.products-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.products-table th,
+.products-table td {
+  text-align: left;
+  padding: 10px 14px;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 14px;
+}
+
+.products-table th {
+  background: #f8f9fa;
+  font-weight: 600;
+  color: #4a4a4a;
+}
+
+.products-table tr:last-child td {
+  border-bottom: none;
+}
+
+.badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  background: #d4edda;
+  color: #155724;
+}
+
+.badge-inactive {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+/* ── Acciones (editar / eliminar / guardar / cancelar) ────────── */
+.actions-cell {
+  white-space: nowrap;
+}
+
+.btn-icon {
+  border: none;
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-size: 12px;
+  cursor: pointer;
+  margin-right: 6px;
+  transition: opacity 0.2s;
+}
+
+.btn-icon:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-edit {
+  background: #e8f0fe;
+  color: #1a56db;
+}
+
+.btn-edit:hover:not(:disabled) {
+  background: #d3e3fd;
+}
+
+.btn-delete {
+  background: #fdeceb;
+  color: #c0392b;
+}
+
+.btn-delete:hover:not(:disabled) {
+  background: #fadbd8;
+}
+
+.btn-save {
+  background: #d4edda;
+  color: #155724;
+}
+
+.btn-save:hover:not(:disabled) {
+  background: #c3e6cb;
+}
+
+.btn-cancel {
+  background: #f0f0f0;
+  color: #555;
+}
+
+.btn-cancel:hover:not(:disabled) {
+  background: #e0e0e0;
+}
+
+/* ── Fila en modo edición ───────────────────────────────────── */
+.row-editing td {
+  background: #fafbfc;
+  padding: 8px 14px;
+}
+
+.row-editing input,
+.row-editing select {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid #dde1e7;
+  border-radius: 6px;
+  font-size: 13px;
+  box-sizing: border-box;
+  font-family: inherit;
+}

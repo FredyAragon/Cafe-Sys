@@ -1,0 +1,116 @@
+/* ── Fondo de pantalla completa ─────────────────────────────── */
+.login-wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f0f2f5;
+}
+
+/* ── Tarjeta central ────────────────────────────────────────── */
+.login-card {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  padding: 48px 40px;
+  width: 100%;
+  max-width: 400px;
+}
+
+/* ── Encabezado ─────────────────────────────────────────────── */
+.login-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.login-icon {
+  font-size: 48px;
+}
+
+.login-header h1 {
+  margin: 8px 0 4px;
+  font-size: 26px;
+  font-weight: 700;
+  color: #2c3e50;
+}
+
+.login-header p {
+  color: #7f8c8d;
+  font-size: 14px;
+  margin: 0;
+}
+
+/* ── Grupos de campo ────────────────────────────────────────── */
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #4a4a4a;
+  margin-bottom: 6px;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1px solid #dde1e7;
+  border-radius: 8px;
+  font-size: 15px;
+  color: #2c3e50;
+  background: #fafbfc;
+  box-sizing: border-box;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  outline: none;
+}
+
+.form-group input:focus {
+  border-color: #2c3e50;
+  box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.1);
+  background: #fff;
+}
+
+.form-group input:disabled {
+  background: #f5f5f5;
+  cursor: not-allowed;
+}
+
+/* ── Error ──────────────────────────────────────────────────── */
+.error-msg {
+  background: #fff3cd;
+  border: 1px solid #ffc107;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
+  color: #856404;
+  margin-bottom: 16px;
+}
+
+/* ── Botón ──────────────────────────────────────────────────── */
+.btn-login {
+  width: 100%;
+  padding: 13px;
+  background-color: #2c3e50;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.btn-login:hover:not(:disabled) {
+  background-color: #3d5166;
+}
+
+.btn-login:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.btn-login:disabled {
+  background-color: #95a5a6;
+  cursor: not-allowed;
+}

@@ -1,0 +1,27 @@
+<div class="app-shell">
+
+  <header class="topbar">
+    <div class="topbar-title">☕ CafeSys</div>
+
+    <!-- ✅ Navegación principal: presente en todas las páginas internas -->
+    <nav class="topbar-nav">
+      <a routerLink="/dashboard" routerLinkActive="active-link">Inicio</a>
+      <a routerLink="/products" routerLinkActive="active-link">Productos</a>
+      <a routerLink="/categories" routerLinkActive="active-link">Categorías</a>
+    </nav>
+
+    <div class="topbar-user">
+      @if (usuario()) {
+        <span class="user-greeting">
+          Hola, <strong>{{ usuario()!.firstName }}</strong>
+          <span class="user-role">({{ usuario()!.role }})</span>
+        </span>
+      }
+      <button class="btn-logout" (click)="cerrarSesion()">Cerrar sesión</button>
+    </div>
+  </header>
+
+  <!-- Aquí se renderiza la página activa (dashboard, products, categories...) -->
+  <router-outlet />
+
+</div>

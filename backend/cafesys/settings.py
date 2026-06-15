@@ -47,7 +47,6 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware', 
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
@@ -116,7 +115,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:4200", # Para cuando programes en local
+    "http://localhost:4200", 
     "http://localhost:8082",
 ]
 CORS_ALLOW_CREDENTIALS = True
@@ -137,7 +136,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
-CORS_ALLOW_ALL_ORIGINS = True
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 REST_FRAMEWORK = {
@@ -154,15 +152,15 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),     # El token de acceso dura 1 hora
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),        # El token de refresco dura 1 día
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),    
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),       
     'ROTATE_REFRESH_TOKENS': False,
     'BLACKLIST_AFTER_ROTATION': False,
     'UPDATE_LAST_LOGIN': False,
 
     'ALGORITHM': 'HS256',
-    'SIGNING_KEY': SECRET_KEY,                          # Usa la misma clave secreta de tu Django
-    'AUTH_HEADER_TYPES': ('Bearer',),                   # En Postman usaremos: Bearer <token>
+    'SIGNING_KEY': SECRET_KEY,                         
+    'AUTH_HEADER_TYPES': ('Bearer',),                   
     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
     'USER_ID_FIELD': 'id',
     'USER_ID_CLAIM': 'user_id',

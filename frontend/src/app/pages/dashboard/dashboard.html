@@ -1,0 +1,31 @@
+<div class="dashboard-wrapper">
+
+  <!-- Contenido principal -->
+  <main class="dashboard-content">
+
+    <p class="estado">
+      <strong>Estado actual:</strong> {{ mensajeEstado() }}
+    </p>
+
+    <button class="btn-test" (click)="enviarDataDePrueba()">
+      🚀 Enviar Objeto de Prueba (POST)
+    </button>
+
+    <hr>
+
+    <h3>Lista de elementos en el Backend (GET)</h3>
+
+    @if (listaElementos().length === 0) {
+      <p class="empty-msg">No hay elementos disponibles o la lista está vacía.</p>
+    } @else {
+      <ul class="items-list">
+        @for (item of listaElementos(); track item.id) {
+          <li>
+            <strong>{{ item.name || 'Sin nombre' }}</strong>
+          </li>
+        }
+      </ul>
+    }
+
+  </main>
+</div>

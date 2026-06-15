@@ -23,17 +23,7 @@ class UserManager(BaseUserManager):
         extra_fields.setdefault("is_superuser", True)
         extra_fields.setdefault("is_active", True)
 
-        # Importamos dinámicamente el modelo Roles para evitar importaciones circulares
-        from apps.core.models.roles import Roles
-
-        # Buscamos o creamos el rol 'Administrador' en la base de datos local
-        rol_admin, _ = Roles.objects.get_or_create(
-            name="Administrador",
-            defaults={"description": "Superusuario del sistema con todos los permisos"}
-        )
-
-        # Asignamos la llave foránea al diccionario de campos extra
-        extra_fields.setdefault("role", rol_admin)
+        extra_fields.setdefault("role", "Admin")
 
         return self.create_user(
             email=email,

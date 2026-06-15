@@ -1,19 +1,18 @@
-from rest_framework import viewsets, filters, permissions
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework import viewsets, filters
+from rest_framework.permissions import IsAuthenticated, AllowAny, IsAuthenticatedOrReadOnly
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .serializers import CustomTokenObtainPairSerializer
 
 from .models import (
-    Roles, Users, Categories, Products, Inventories,
+    Users, Categories, Products,
     Promotions, ProductsPromotions, Orders, OrderDetails,
     Locations, Deliveries, Drivers, Vehicles, Reviews, Messages
 )
 from .serializers import (
-    RolesSerializer,
-    UsersSerializer, UsersWriteSerializer,
+    UsersSerializer, 
+    UsersWriteSerializer,
     CategoriesSerializer,
     ProductsSerializer,
-    InventoriesSerializer,
     PromotionsSerializer,
     ProductsPromotionsSerializer,
     LocationsSerializer,
@@ -27,42 +26,15 @@ from .serializers import (
 
 
 # ──────────────────────────────────────────────
-# CUSTOM PERMISSION: Admin writes, anyone reads
-# ──────────────────────────────────────────────
-class IsAdminOrReadOnly(permissions.BasePermission):
-    """
-    GET / HEAD / OPTIONS → open to everyone (including anonymous).
-    POST / PUT / PATCH / DELETE → only users with is_staff = True.
-    """
-    def has_permission(self, request, view):
-        if request.method in permissions.SAFE_METHODS:
-            return True
-        return (
-            request.user
-            and request.user.is_authenticated
-            and request.user.is_staff
-        )
-
-
-# ──────────────────────────────────────────────
 # AUTHENTICATION VIEW
 # ──────────────────────────────────────────────
 class CustomTokenObtainPairView(TokenObtainPairView):
+    """
+    Controlador encargado de interceptar el login, omitir las restricciones de email
+    y devolver las llaves Access y Refresh validadas bajo la lógica híbrida.
+    """
     serializer_class = CustomTokenObtainPairSerializer
     permission_classes = [AllowAny]
-
-
-# ──────────────────────────────────────────────
-# ROLES
-# ──────────────────────────────────────────────
-class RolesViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated]
-    queryset         = Roles.objects.all()
-    serializer_class = RolesSerializer
-    filter_backends  = [filters.SearchFilter, filters.OrderingFilter]
-    search_fields    = ['name']
-    ordering_fields  = ['name', 'created']
-    ordering         = ['name']
 
 
 # ──────────────────────────────────────────────
@@ -70,7 +42,7 @@ class RolesViewSet(viewsets.ModelViewSet):
 # ──────────────────────────────────────────────
 class UsersViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
-    queryset        = Users.objects.select_related('role').all()
+    queryset        = Users.objects.all()  
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields   = ['firstName', 'lastName', 'email']
     ordering_fields = ['lastName', 'email', 'created']
@@ -83,10 +55,10 @@ class UsersViewSet(viewsets.ModelViewSet):
 
 
 # ──────────────────────────────────────────────
-# CATEGORIES  →  solo admin puede crear/editar
+# CATEGORIES
 # ──────────────────────────────────────────────
 class CategoriesViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAdminOrReadOnly]          # ← cambiado
+    permission_classes = [IsAuthenticatedOrReadOnly]
     queryset         = Categories.objects.all()
     serializer_class = CategoriesSerializer
     filter_backends  = [filters.SearchFilter, filters.OrderingFilter]
@@ -96,10 +68,10 @@ class CategoriesViewSet(viewsets.ModelViewSet):
 
 
 # ──────────────────────────────────────────────
-# PRODUCTS  →  solo admin puede crear/editar
+# PRODUCTS
 # ──────────────────────────────────────────────
 class ProductsViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAdminOrReadOnly]          # ← cambiado
+    permission_classes = [IsAuthenticatedOrReadOnly]
     queryset         = Products.objects.select_related('category').all()
     serializer_class = ProductsSerializer
     filter_backends  = [filters.SearchFilter, filters.OrderingFilter]
@@ -109,23 +81,10 @@ class ProductsViewSet(viewsets.ModelViewSet):
 
 
 # ──────────────────────────────────────────────
-# INVENTORIES
-# ──────────────────────────────────────────────
-class InventoriesViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated]
-    queryset         = Inventories.objects.select_related('product').all()
-    serializer_class = InventoriesSerializer
-    filter_backends  = [filters.SearchFilter, filters.OrderingFilter]
-    search_fields    = ['product__name']
-    ordering_fields  = ['stock', 'product__name']
-    ordering         = ['product__name']
-
-
-# ──────────────────────────────────────────────
-# PROMOTIONS  →  solo admin puede crear/editar
+# PROMOTIONS
 # ──────────────────────────────────────────────
 class PromotionsViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAdminOrReadOnly]          # ← cambiado
+    permission_classes = [IsAuthenticatedOrReadOnly]
     queryset         = Promotions.objects.filter(status='active')
     serializer_class = PromotionsSerializer
     filter_backends  = [filters.SearchFilter, filters.OrderingFilter]
@@ -135,10 +94,9 @@ class PromotionsViewSet(viewsets.ModelViewSet):
 
 
 # ──────────────────────────────────────────────
-# PRODUCTS PROMOTIONS  →  solo admin
+# PRODUCTS PROMOTIONS
 # ──────────────────────────────────────────────
 class ProductsPromotionsViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAdminOrReadOnly]          # ← antes sin permiso
     queryset         = ProductsPromotions.objects.select_related('product', 'promotion').all()
     serializer_class = ProductsPromotionsSerializer
     filter_backends  = [filters.SearchFilter, filters.OrderingFilter]
@@ -178,10 +136,9 @@ class OrdersViewSet(viewsets.ModelViewSet):
 
 
 # ──────────────────────────────────────────────
-# ORDER DETAILS  →  requiere login
+# ORDER DETAILS
 # ──────────────────────────────────────────────
 class OrderDetailsViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated]            # ← antes sin permiso
     queryset         = OrderDetails.objects.select_related('order', 'product').all()
     serializer_class = OrderDetailsSerializer
     filter_backends  = [filters.SearchFilter, filters.OrderingFilter]
@@ -230,10 +187,10 @@ class DeliveriesViewSet(viewsets.ModelViewSet):
 
 
 # ──────────────────────────────────────────────
-# REVIEWS  →  cualquier usuario logueado escribe
+# REVIEWS
 # ──────────────────────────────────────────────
 class ReviewsViewSet(viewsets.ModelViewSet):
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]  # intencional
+    permission_classes = [IsAuthenticatedOrReadOnly]
     queryset         = Reviews.objects.select_related('user', 'product').all()
     serializer_class = ReviewsSerializer
     filter_backends  = [filters.SearchFilter, filters.OrderingFilter]
