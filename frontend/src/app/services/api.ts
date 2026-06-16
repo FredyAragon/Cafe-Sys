@@ -43,7 +43,7 @@ export interface NuevoProducto {
 })
 export class ApiService {
 
-  private readonly API_URL = 'http://127.0.0.1:8000/apps/core';
+  private readonly API_URL = 'http://127.0.0.1:8081/apps/core';
 
   constructor(private http: HttpClient) {}
 
