@@ -76,6 +76,8 @@ class UsersSerializer(serializers.ModelSerializer):
 class UsersWriteSerializer(serializers.ModelSerializer):
     """Para crear/actualizar usuarios encriptando la contraseña nativamente."""
     password = serializers.CharField(write_only=True, required=True, validators=[validate_not_blank])
+    role = serializers.CharField(required=False, default='Customer')
+    status = serializers.CharField(required=False, default='active')
 
     class Meta:
         model  = Users
