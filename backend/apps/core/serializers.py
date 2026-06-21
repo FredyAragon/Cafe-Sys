@@ -250,11 +250,16 @@ class OrdersSerializer(serializers.ModelSerializer):
         details_data = validated_data.pop('details_data', [])
         order = Orders.objects.create(**validated_data)
         for detail in details_data:
+            qty = detail['quantity']
+            unit_price = detail['unitPrice']
+            # Calcular subtotal antes de crear porque el modelo valida el campo
+            subtotal = round(qty * float(unit_price), 2)
             OrderDetails.objects.create(
                 order=order,
                 product_id=detail['product'],
-                quantity=detail['quantity'],
-                unitPrice=detail['unitPrice']
+                quantity=qty,
+                unitPrice=unit_price,
+                subtotal=subtotal
             )
         return order
 
