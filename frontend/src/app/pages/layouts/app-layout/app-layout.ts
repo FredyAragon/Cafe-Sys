@@ -3,11 +3,11 @@ import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 
 @Component({
-  selector: 'app-client-layout',
+  selector: 'app-layout',
   standalone: true,
   imports: [RouterOutlet, RouterLink, RouterLinkActive],
-  templateUrl: './client-layout.html',
-  styleUrls: ['./client-layout.css']
+  templateUrl: './app-layout.html',
+  styleUrls: ['./app-layout.css']
 })
 export class ClientLayoutComponent {
   private authService = inject(AuthService);

@@ -11,7 +11,7 @@ export const routes: Routes = [
   // ==========================================
   {
     path: 'tienda',
-    loadComponent: () => import('./pages/layouts/client-layout/client-layout.ts').then(m => m.ClientLayoutComponent),
+    loadComponent: () => import('./pages/layouts/app-layout/app-layout').then(m => m.ClientLayoutComponent),
     children: [
       // Aquí irán las vistas del cliente puro
       // { path: '', loadComponent: () => import('./pages/home/home.ts').then(m => m.HomeComponent) },
@@ -23,13 +23,13 @@ export const routes: Routes = [
   // ==========================================
   {
     path: 'admin',
-    loadComponent: () => import('./pages/layouts/admin-layout/admin-layout.ts').then(m => m.AdminLayoutComponent),
+    loadComponent: () => import('./pages/layouts/admin-layout/admin-layout').then(m => m.AdminLayoutComponent),
     canActivate: [authGuard, roleGuard], // Protegido por sesión y por rol
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-      { path: 'dashboard', loadComponent: () => import('./pages/dashboard/dashboard.ts').then(m => m.DashboardComponent) },
-      { path: 'products', loadComponent: () => import('./pages/products/products.ts').then(m => m.ProductsComponent) },
-      { path: 'categories', loadComponent: () => import('./pages/categories/categories.ts').then(m => m.CategoriesComponent) },
+      { path: 'dashboard', loadComponent: () => import('./pages/dashboard/dashboard').then(m => m.DashboardComponent) },
+      { path: 'products', loadComponent: () => import('./pages/products/products').then(m => m.ProductsComponent) },
+      { path: 'categories', loadComponent: () => import('./pages/categories/categories').then(m => m.CategoriesComponent) },
     ]
   },
 
@@ -38,7 +38,7 @@ export const routes: Routes = [
   // ==========================================
   {
     path: 'login',
-    loadComponent: () => import('./pages/login/login.ts').then(m => m.LoginComponent)
+    loadComponent: () => import('./pages/login/login').then(m => m.LoginComponent)
   },
 
   // Ruta fallback para URLs no encontradas
