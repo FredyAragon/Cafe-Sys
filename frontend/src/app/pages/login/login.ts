@@ -1,54 +1,39 @@
-import { Component, signal } from '@angular/core';
-import { Router } from '@angular/router';
-import { FormsModule } from '@angular/forms';
-import { AuthService } from '../../services/auth.service';
+import { Component, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
-  standalone: true,
   selector: 'app-login',
-  imports: [FormsModule],        // ✅ FormsModule para usar [(ngModel)] en el HTML
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './login.html',
   styleUrls: ['./login.css']
 })
 export class LoginComponent {
+  private fb = inject(FormBuilder);
+  private router = inject(Router);
 
-  // Modelo del formulario
-  email    = signal('');
-  password = signal('');
+  // Definimos el formulario con sus validaciones
+  loginForm: FormGroup = this.fb.group({
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', [Validators.required, Validators.minLength(6)]]
+  });
 
-  // Estado de la UI
-  cargando = signal(false);
-  error    = signal('');
-
-  constructor(
-    private authService: AuthService,
-    private router: Router
-  ) {}
+  errorMessage: string | null = null;
 
   onSubmit() {
-    // Validación básica antes de llamar a la API
-    if (!this.email() || !this.password()) {
-      this.error.set('Por favor ingresa tu email y contraseña.');
-      return;
+    if (this.loginForm.valid) {
+      const { email, password } = this.loginForm.value;
+      console.log('Datos listos para enviar al backend:', email);
+      
+      // TODO: Aquí conectaremos con nuestro AuthService para obtener el JWT.
+      // Por ahora, para probar la ruta, simularemos una redirección al panel de admin:
+      this.router.navigate(['/admin/dashboard']);
+      
+    } else {
+      // Si el formulario es inválido, marcamos todos los campos para mostrar los errores visuales
+      this.loginForm.markAllAsTouched();
     }
-
-    this.cargando.set(true);
-    this.error.set('');
-
-    this.authService.login({
-      email: this.email(),
-      password: this.password()
-    }).subscribe({
-      next: () => {
-        // Login exitoso → vamos al dashboard
-        this.router.navigate(['/dashboard']);
-      },
-      error: (err) => {
-        this.cargando.set(false);
-        // Mostramos el mensaje de error que manda Django
-        const msg = err?.error?.detail || 'Credenciales incorrectas. Intenta de nuevo.';
-        this.error.set(msg);
-      }
-    });
   }
 }
