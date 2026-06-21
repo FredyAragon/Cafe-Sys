@@ -1,0 +1,137 @@
+.register-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #F9F6F0; /* Fondo Beige Feng Shui */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding: 20px;
+}
+
+.register-card {
+  background-color: #FFFFFF;
+  width: 100%;
+  max-width: 450px;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(62, 39, 35, 0.08);
+}
+
+.register-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.register-header h2 {
+  color: #3E2723; /* Café Oscuro */
+  font-size: 2rem;
+  margin: 0 0 8px;
+}
+
+.register-header p {
+  color: #8D6E63;
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.register-form .form-group {
+  margin-bottom: 18px;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-row {
+  display: flex;
+  gap: 15px;
+}
+
+.form-row .half {
+  flex: 1;
+}
+
+.register-form label {
+  font-size: 0.9rem;
+  color: #5D4037;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.register-form input {
+  padding: 12px 15px;
+  border: 1px solid #D7CCC8;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  outline: none;
+  background-color: #FAFAFA;
+  color: #3E2723;
+}
+
+.register-form input:focus {
+  border-color: #D4A373; /* Acento Caramelo */
+  background-color: #FFFFFF;
+  box-shadow: 0 0 0 3px rgba(212, 163, 115, 0.2);
+}
+
+.register-form input.is-invalid {
+  border-color: #E57373;
+}
+
+.error-text {
+  color: #E57373;
+  font-size: 0.8rem;
+  margin-top: 5px;
+}
+
+.btn-submit {
+  width: 100%;
+  padding: 14px;
+  background-color: #3E2723;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1.05rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 10px;
+}
+
+.btn-submit:hover:not(:disabled) {
+  background-color: #5D4037;
+}
+
+.btn-submit:disabled {
+  background-color: #A1887F;
+  cursor: not-allowed;
+}
+
+.register-footer {
+  margin-top: 25px;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #5D4037;
+}
+
+.login-link {
+  color: #D4A373;
+  font-weight: bold;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.login-link:hover {
+  color: #C08552;
+}
+
+.back-link {
+  display: inline-block;
+  margin-top: 15px;
+  color: #8D6E63;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.back-link:hover {
+  color: #3E2723;
+}
