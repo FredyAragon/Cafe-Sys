@@ -1,0 +1,37 @@
+<div class="admin-container">
+  <!-- Sidebar de Navegación -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <h2>CafeSys Panel</h2>
+    </div>
+    
+    <nav class="sidebar-nav">
+      <a routerLink="/admin/dashboard" routerLinkActive="active">📊 Dashboard</a>
+      <a routerLink="/admin/products" routerLinkActive="active">☕ Productos</a>
+      <a routerLink="/admin/categories" routerLinkActive="active">🏷️ Categorías</a>
+    </nav>
+  </aside>
+
+  <!-- Área Principal -->
+  <main class="main-content">
+    <!-- Barra Superior del Admin -->
+    <header class="admin-topbar">
+      <div class="breadcrumb">Administración</div>
+      
+      <div class="user-profile">
+        @if (usuario()) {
+          <span class="user-greeting">
+            Hola, <strong>{{ usuario()!.firstName }}</strong>
+            <span class="badge">Admin</span>
+          </span>
+        }
+        <button class="btn-logout" (click)="cerrarSesion()">Salir</button>
+      </div>
+    </header>
+
+    <!-- Aquí renderizan los componentes hijos (Dashboard, Products, etc.) -->
+    <div class="content-area">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+</div>

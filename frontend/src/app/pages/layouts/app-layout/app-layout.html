@@ -1,0 +1,40 @@
+<div class="client-container">
+  <!-- Navegación Superior -->
+  <header class="store-navbar">
+    <div class="store-logo">
+      <a routerLink="/tienda">☕ CafeSys</a>
+    </div>
+
+    <nav class="store-links">
+      <a routerLink="/tienda/menu" routerLinkActive="active">Menú</a>
+      <a routerLink="/tienda/promociones" routerLinkActive="active">Promociones</a>
+    </nav>
+
+    <div class="store-actions">
+      <!-- Ícono de Carrito (Maqueta) -->
+      <button class="cart-btn">🛒 <span class="cart-count">0</span></button>
+
+      @if (usuario()) {
+        <div class="user-menu">
+          <span>Hola, {{ usuario()!.firstName }}</span>
+          <!-- Si es admin, le mostramos un atajo para volver al panel -->
+          @if (usuario()!.is_staff) {
+            <a routerLink="/admin/dashboard" class="admin-shortcut">Ir al Panel</a>
+          }
+          <button (click)="cerrarSesion()" class="btn-text">Salir</button>
+        </div>
+      } @else {
+        <a routerLink="/login" class="btn-login">Ingresar</a>
+      }
+    </div>
+  </header>
+
+  <!-- Contenido de la Tienda -->
+  <main class="store-content">
+    <router-outlet></router-outlet>
+  </main>
+  
+  <footer class="store-footer">
+    <p>&copy; 2026 CafeSys - Todos los derechos reservados.</p>
+  </footer>
+</div>

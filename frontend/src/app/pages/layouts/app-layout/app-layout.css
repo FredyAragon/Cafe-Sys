@@ -1,0 +1,122 @@
+.client-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+.store-navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 40px;
+  height: 70px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.store-logo a {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #2c3e50;
+  text-decoration: none;
+}
+
+.store-links a {
+  margin: 0 15px;
+  text-decoration: none;
+  color: #7f8c8d;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.store-links a:hover, .store-links a.active {
+  color: #e67e22; /* Un tono naranja/café para la tienda */
+}
+
+.store-actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.cart-btn {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  position: relative;
+}
+
+.cart-count {
+  position: absolute;
+  top: -8px;
+  right: -10px;
+  background-color: #e74c3c;
+  color: white;
+  font-size: 0.7rem;
+  padding: 2px 6px;
+  border-radius: 10px;
+  font-weight: bold;
+}
+
+.user-menu {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font-size: 0.9rem;
+  color: #333;
+}
+
+.admin-shortcut {
+  background-color: #2c3e50;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 4px;
+  text-decoration: none;
+  font-size: 0.8rem;
+  transition: background 0.3s ease;
+}
+
+.admin-shortcut:hover {
+  background-color: #1a252f;
+}
+
+.btn-text {
+  background: none;
+  border: none;
+  color: #e74c3c;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.btn-login {
+  background-color: #e67e22;
+  color: white;
+  padding: 8px 20px;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background 0.3s ease;
+}
+
+.btn-login:hover {
+  background-color: #d35400;
+}
+
+.store-content {
+  flex: 1;
+  padding: 40px;
+  background-color: #fafafa;
+}
+
+.store-footer {
+  text-align: center;
+  padding: 20px;
+  background-color: #2c3e50;
+  color: #bdc3c7;
+  font-size: 0.9rem;
+}
