@@ -9,6 +9,13 @@ export interface LoginCredentials {
   password: string;
 }
 
+export interface RegisterCredentials {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+}
+
 export interface AuthTokens {
   access: string;
   refresh: string;
@@ -73,6 +80,11 @@ export class AuthService {
         }
       })
     );
+  }
+
+  // ── REGISTER ─────────────────────────────────────────────────────────────
+  register(credenciales: RegisterCredentials): Observable<UsuarioSesion> {
+    return this.http.post<UsuarioSesion>(`${this.API_URL}/users/`, credenciales);
   }
 
   // ── LOGOUT ────────────────────────────────────────────────────────────────

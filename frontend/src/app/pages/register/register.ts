@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { HttpClient } from '@angular/common/http'; // Inyectamos cliente HTTP directamente
+import { AuthService, RegisterCredentials } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -12,9 +12,8 @@ import { CommonModule } from '@angular/common';
 })
 export class RegisterComponent {
   private fb = inject(FormBuilder);
-  private http = inject(HttpClient);
+  private authService = inject(AuthService);
   private router = inject(Router);
-  private readonly API_URL = 'http://127.0.0.1:8000/apps/core';
 
   registerForm = this.fb.group({
     firstName: ['', Validators.required],
@@ -25,13 +24,18 @@ export class RegisterComponent {
 
   onSubmit() {
     if (this.registerForm.valid) {
-      this.http.post(`${this.API_URL}/register/`, this.registerForm.value).subscribe({
+      this.authService.register(this.registerForm.value as RegisterCredentials).subscribe({
         next: () => {
           alert('Registro exitoso');
           this.router.navigate(['/login']);
         },
-        error: (err) => console.error('Error al registrar', err)
+        error: (err) => {
+          console.error('Error al registrar', err);
+          alert('No se pudo completar el registro. Revisa los datos e intenta de nuevo.');
+        }
       });
+    } else {
+      this.registerForm.markAllAsTouched();
     }
   }
 }

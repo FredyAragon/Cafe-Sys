@@ -48,6 +48,11 @@ class UsersViewSet(viewsets.ModelViewSet):
     ordering_fields = ['lastName', 'email', 'created']
     ordering        = ['lastName']
 
+    def get_permissions(self):
+        if self.action == 'create':
+            return [AllowAny()]
+        return [IsAuthenticated()]
+
     def get_serializer_class(self):
         if self.action in ('create', 'update', 'partial_update'):
             return UsersWriteSerializer
