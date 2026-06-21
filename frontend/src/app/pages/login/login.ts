@@ -27,9 +27,11 @@ export class LoginComponent {
   onSubmit() {
     if (this.loginForm.valid) {
       this.authService.login(this.loginForm.value as any).subscribe({
-        next: () => this.router.navigate(['/admin/dashboard']),
+        next: (usuario) => {
+          const destino = usuario.is_staff ? ['/admin/dashboard'] : ['/tienda'];
+          this.router.navigate(destino);
+        },
         error: () => {
-          // Actualizamos el valor de la variable cuando hay error
           this.errorMessage = 'Credenciales incorrectas o error de conexión';
         }
       });

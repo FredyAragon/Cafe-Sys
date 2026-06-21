@@ -104,6 +104,22 @@ class UsersWriteSerializer(serializers.ModelSerializer):
         return super().update(instance, validated_data)
 
 
+class SuperuserCreateSerializer(serializers.Serializer):
+    firstName = serializers.CharField(required=True, validators=[validate_not_blank])
+    lastName = serializers.CharField(required=True, validators=[validate_not_blank])
+    email = serializers.EmailField(required=True)
+    password = serializers.CharField(write_only=True, required=True, validators=[validate_not_blank])
+
+    def validate_email(self, value):
+        value = value.lower().strip()
+        if Users.objects.filter(email=value).exists():
+            raise serializers.ValidationError('Ya existe un usuario con este correo.')
+        return value
+
+    def create(self, validated_data):
+        return Users.objects.create_superuser(**validated_data)
+
+
 # ──────────────────────────────────────────────
 # CATEGORIES
 # ──────────────────────────────────────────────

@@ -1,7 +1,7 @@
 import { Injectable, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable, tap } from 'rxjs';
+import { Observable, tap, switchMap, map } from 'rxjs';
 
 // ── Tipos que refleja exactamente lo que Django devuelve ──────────────────────
 export interface LoginCredentials {
@@ -59,25 +59,22 @@ export class AuthService {
   }
 
   // ── LOGIN ─────────────────────────────────────────────────────────────────
-  login(credenciales: LoginCredentials): Observable<AuthTokens> {
+  login(credenciales: LoginCredentials): Observable<UsuarioSesion> {
     return this.http.post<AuthTokens>(`${this.API_URL}/token/`, credenciales).pipe(
       tap(tokens => {
-        // 1. Guardamos los tokens en memoria y sessionStorage
+        // Guardamos los tokens en memoria y sessionStorage
         this._guardarTokens(tokens);
-
-        // 2. Decodificamos el access token para obtener el user_id del payload
-        const payload = this._decodificarToken(tokens.access);
-
-        // 3. Con el user_id, pedimos los datos completos del usuario a Django
-        if (payload?.user_id) {
-          this.http.get<UsuarioSesion>(`${this.API_URL}/users/${payload.user_id}/`).subscribe({
-            next: (usuario) => {
-              this._usuario.set(usuario);
-              sessionStorage.setItem('cafesys_usuario', JSON.stringify(usuario));
-            },
-            error: () => console.error('No se pudo cargar el perfil del usuario.')
-          });
+      }),
+      map(tokens => this._decodificarToken(tokens.access)),
+      switchMap(payload => {
+        if (!payload?.user_id) {
+          throw new Error('Token inválido: falta user_id');
         }
+        return this.http.get<UsuarioSesion>(`${this.API_URL}/users/${payload.user_id}/`);
+      }),
+      tap(usuario => {
+        this._usuario.set(usuario);
+        sessionStorage.setItem('cafesys_usuario', JSON.stringify(usuario));
       })
     );
   }
