@@ -13,8 +13,7 @@ export const routes: Routes = [
     path: 'tienda',
     loadComponent: () => import('./pages/layouts/app-layout/app-layout').then(m => m.ClientLayoutComponent),
     children: [
-      // Aquí irán las vistas del cliente puro
-      // { path: '', loadComponent: () => import('./pages/home/home.ts').then(m => m.HomeComponent) },
+      { path: '', loadComponent: () => import('./pages/home/home').then(m => m.HomeComponent) },
     ]
   },
 

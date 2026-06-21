@@ -1,122 +1,149 @@
-.client-container {
+/* Paleta Feng Shui: 
+   Fondo: #F9F6F0 (Beige muy suave)
+   Texto principal: #3E2723 (Café oscuro)
+   Acentos: #D4A373 (Caramelo cálido) 
+*/
+.app-container {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  font-family: 'Segoe UI', Arial, sans-serif;
+  background-color: #F9F6F0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #3E2723;
 }
 
-.store-navbar {
+/* --- HEADER --- */
+.main-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 40px;
-  height: 70px;
-  background-color: #ffffff;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  padding: 0 5%;
+  height: 80px;
+  background-color: #FFFFFF;
+  box-shadow: 0 2px 15px rgba(62, 39, 35, 0.05);
   position: sticky;
   top: 0;
   z-index: 1000;
 }
 
-.store-logo a {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #2c3e50;
+.logo {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #3E2723;
   text-decoration: none;
+  letter-spacing: 1px;
 }
 
-.store-links a {
-  margin: 0 15px;
+.center-nav {
+  display: flex;
+  gap: 30px;
+}
+
+.center-nav a {
   text-decoration: none;
-  color: #7f8c8d;
+  color: #6D4C41;
   font-weight: 500;
   transition: color 0.3s ease;
 }
 
-.store-links a:hover, .store-links a.active {
-  color: #e67e22; /* Un tono naranja/café para la tienda */
+.center-nav a:hover, .center-nav a.active {
+  color: #D4A373;
 }
 
-.store-actions {
+.right-actions {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 15px;
+}
+
+.btn-outline, .btn-solid {
+  padding: 8px 20px;
+  border-radius: 25px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-outline {
+  color: #D4A373;
+  border: 2px solid #D4A373;
+}
+
+.btn-outline:hover {
+  background-color: #D4A373;
+  color: #FFFFFF;
+}
+
+.btn-solid {
+  background-color: #3E2723;
+  color: #FFFFFF;
+}
+
+.btn-solid:hover {
+  background-color: #5D4037;
 }
 
 .cart-btn {
   background: none;
   border: none;
-  font-size: 1.2rem;
-  cursor: pointer;
-  position: relative;
-}
-
-.cart-count {
-  position: absolute;
-  top: -8px;
-  right: -10px;
-  background-color: #e74c3c;
-  color: white;
-  font-size: 0.7rem;
-  padding: 2px 6px;
-  border-radius: 10px;
+  font-size: 1rem;
   font-weight: bold;
+  color: #3E2723;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 
-.user-menu {
+.badge {
+  background-color: #D4A373;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+}
+
+.user-dropdown {
   display: flex;
   align-items: center;
   gap: 15px;
-  font-size: 0.9rem;
-  color: #333;
+  border-left: 1px solid #EFEBE9;
+  padding-left: 15px;
 }
 
-.admin-shortcut {
-  background-color: #2c3e50;
-  color: white;
-  padding: 5px 10px;
-  border-radius: 4px;
-  text-decoration: none;
-  font-size: 0.8rem;
-  transition: background 0.3s ease;
+.user-name {
+  font-weight: 600;
 }
 
-.admin-shortcut:hover {
-  background-color: #1a252f;
-}
-
-.btn-text {
+.logout-text {
   background: none;
   border: none;
-  color: #e74c3c;
+  color: #8D6E63;
   cursor: pointer;
-  font-weight: 500;
+  font-size: 0.9rem;
 }
 
-.btn-login {
-  background-color: #e67e22;
-  color: white;
-  padding: 8px 20px;
-  border-radius: 5px;
-  text-decoration: none;
-  font-weight: bold;
-  transition: background 0.3s ease;
-}
-
-.btn-login:hover {
-  background-color: #d35400;
-}
-
-.store-content {
+/* --- MAIN & FOOTER --- */
+.main-content {
   flex: 1;
-  padding: 40px;
-  background-color: #fafafa;
 }
 
-.store-footer {
+.main-footer {
+  background-color: #3E2723;
+  color: #D7CCC8;
+  padding: 40px 5%;
   text-align: center;
-  padding: 20px;
-  background-color: #2c3e50;
-  color: #bdc3c7;
+}
+
+.footer-info {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin-bottom: 20px;
+}
+
+.footer-copy {
+  border-top: 1px solid #5D4037;
+  padding-top: 20px;
   font-size: 0.9rem;
 }

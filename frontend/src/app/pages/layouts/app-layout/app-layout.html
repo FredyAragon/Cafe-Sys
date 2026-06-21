@@ -1,40 +1,44 @@
-<div class="client-container">
-  <!-- Navegación Superior -->
-  <header class="store-navbar">
-    <div class="store-logo">
-      <a routerLink="/tienda">☕ CafeSys</a>
+<div class="app-container">
+  <header class="main-header">
+    <div class="logo-container">
+      <a routerLink="/tienda" class="logo">☕ CafeSys</a>
     </div>
 
-    <nav class="store-links">
+    <nav class="center-nav">
       <a routerLink="/tienda/menu" routerLinkActive="active">Menú</a>
       <a routerLink="/tienda/promociones" routerLinkActive="active">Promociones</a>
+      <a routerLink="/tienda/nosotros" routerLinkActive="active">Nosotros</a>
+      <a routerLink="/tienda/contacto" routerLinkActive="active">Contacto</a>
     </nav>
 
-    <div class="store-actions">
-      <!-- Ícono de Carrito (Maqueta) -->
-      <button class="cart-btn">🛒 <span class="cart-count">0</span></button>
-
+    <div class="right-actions">
       @if (usuario()) {
-        <div class="user-menu">
-          <span>Hola, {{ usuario()!.firstName }}</span>
-          <!-- Si es admin, le mostramos un atajo para volver al panel -->
-          @if (usuario()!.is_staff) {
-            <a routerLink="/admin/dashboard" class="admin-shortcut">Ir al Panel</a>
-          }
-          <button (click)="cerrarSesion()" class="btn-text">Salir</button>
+        <button class="cart-btn">
+          🛒 Cesta <span class="badge">0</span>
+        </button>
+        <div class="user-dropdown">
+          <span class="user-name">Hola, {{ usuario()!.firstName }}</span>
+          <button (click)="cerrarSesion()" class="logout-text">Salir</button>
         </div>
       } @else {
-        <a routerLink="/login" class="btn-login">Ingresar</a>
+        <a routerLink="/login" class="btn-outline">Ingresar</a>
+        <a routerLink="/register" class="btn-solid">Registrarse</a>
       }
     </div>
   </header>
 
-  <!-- Contenido de la Tienda -->
-  <main class="store-content">
+  <main class="main-content">
     <router-outlet></router-outlet>
   </main>
   
-  <footer class="store-footer">
-    <p>&copy; 2026 CafeSys - Todos los derechos reservados.</p>
+  <footer class="main-footer">
+    <div class="footer-info">
+      <p>Arequipa, Perú</p>
+      <p>+51 987 654 321</p>
+      <p>hola&#64;cafesys.com</p>
+    </div>
+    <div class="footer-copy">
+      <p>&copy; 2026 CafeSys - Armonía en cada taza.</p>
+    </div>
   </footer>
 </div>

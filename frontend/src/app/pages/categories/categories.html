@@ -1,150 +1,34 @@
-<div class="categories-wrapper">
-
+<div class="page-header">
   <h2>Gestión de Categorías</h2>
-  <p class="subtitle">Crea y administra las categorías que luego usarás al registrar productos.</p>
+  <button class="btn-primary">➕ Nueva Categoría</button>
+</div>
 
-  <!-- ── Formulario de creación ─────────────────────────────────────────── -->
-  <form (ngSubmit)="onSubmit()" class="category-form">
-
-    <div class="form-row">
-      <div class="form-group">
-        <label for="nombre">Nombre de la categoría *</label>
-        <input
-          id="nombre"
-          type="text"
-          placeholder="Ej: Bebidas Calientes"
-          [ngModel]="nombre()"
-          (ngModelChange)="nombre.set($event)"
-          name="nombre"
-          [disabled]="guardando()"
-        />
-      </div>
-
-      <div class="form-group">
-        <label for="imagenUrl">URL de imagen</label>
-        <input
-          id="imagenUrl"
-          type="text"
-          placeholder="https://..."
-          [ngModel]="imagenUrl()"
-          (ngModelChange)="imagenUrl.set($event)"
-          name="imagenUrl"
-          [disabled]="guardando()"
-        />
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label for="descripcion">Descripción</label>
-      <textarea
-        id="descripcion"
-        placeholder="Descripción opcional de la categoría"
-        [ngModel]="descripcion()"
-        (ngModelChange)="descripcion.set($event)"
-        name="descripcion"
-        rows="2"
-        [disabled]="guardando()"
-      ></textarea>
-    </div>
-
-    <!-- Mensajes -->
-    @if (error()) {
-      <div class="alert alert-error">⚠️ {{ error() }}</div>
-    }
-    @if (mensaje()) {
-      <div class="alert alert-success">{{ mensaje() }}</div>
-    }
-
-    <button type="submit" class="btn-submit" [disabled]="guardando()">
-      @if (guardando()) {
-        <span>Guardando...</span>
-      } @else {
-        <span>➕ Crear categoría</span>
-      }
-    </button>
-  </form>
-
-  <hr>
-
-  <!-- ── Lista de categorías ─────────────────────────────────────────────── -->
-  <h3>Categorías registradas</h3>
-
-  @if (cargando()) {
-    <p class="empty-msg">Cargando categorías...</p>
-  } @else if (categorias().length === 0) {
-    <p class="empty-msg">Todavía no hay categorías registradas.</p>
-  } @else {
-    <table class="categories-table">
-      <thead>
-        <tr>
-          <th>Nombre</th>
-          <th>Descripción</th>
-          <th>Estado</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (c of categorias(); track c.id) {
-          @if (editandoId() === c.id) {
-            <!-- ── Fila en modo edición ───────────────────────────────── -->
-            <tr class="row-editing">
-              <td>
-                <input
-                  type="text"
-                  [ngModel]="editNombre()"
-                  (ngModelChange)="editNombre.set($event)"
-                  name="editNombre-{{ c.id }}"
-                  [disabled]="guardandoEdicion()"
-                />
-              </td>
-              <td>
-                <input
-                  type="text"
-                  [ngModel]="editDescripcion()"
-                  (ngModelChange)="editDescripcion.set($event)"
-                  name="editDescripcion-{{ c.id }}"
-                  [disabled]="guardandoEdicion()"
-                />
-              </td>
-              <td>
-                <select
-                  [ngModel]="editStatus()"
-                  (ngModelChange)="editStatus.set($event)"
-                  name="editStatus-{{ c.id }}"
-                  [disabled]="guardandoEdicion()"
-                >
-                  <option value="active">active</option>
-                  <option value="inactive">inactive</option>
-                </select>
-              </td>
-              <td class="actions-cell">
-                <button class="btn-icon btn-save" (click)="guardarEdicion(c)" [disabled]="guardandoEdicion()">
-                  @if (guardandoEdicion()) { Guardando... } @else { 💾 Guardar }
-                </button>
-                <button class="btn-icon btn-cancel" (click)="cancelarEdicion()" [disabled]="guardandoEdicion()">
-                  ✖ Cancelar
-                </button>
-              </td>
-            </tr>
-          } @else {
-            <!-- ── Fila normal ────────────────────────────────────────── -->
-            <tr>
-              <td>{{ c.name }}</td>
-              <td>{{ c.description || '—' }}</td>
-              <td>
-                <span class="badge" [class.badge-inactive]="c.status !== 'active'">
-                  {{ c.status }}
-                </span>
-              </td>
-              <td class="actions-cell">
-                <button class="btn-icon btn-edit" (click)="iniciarEdicion(c)">✏️ Editar</button>
-                <button class="btn-icon btn-delete" (click)="eliminarCategoria(c)">🗑️ Eliminar</button>
-              </td>
-            </tr>
-          }
-        }
-      </tbody>
-    </table>
-  }
-
+<div class="table-container">
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Descripción</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let cat of categorias">
+        <td>{{ cat.id }}</td>
+        <td><strong>{{ cat.name }}</strong></td>
+        <td>{{ cat.description }}</td>
+        <td>
+          <span class="badge" [ngClass]="cat.status === 'active' ? 'badge-active' : 'badge-inactive'">
+            {{ cat.status === 'active' ? 'Activo' : 'Inactivo' }}
+          </span>
+        </td>
+        <td class="actions-cell">
+          <button class="btn-icon edit" title="Editar">✏️</button>
+          <button class="btn-icon delete" title="Eliminar">🗑️</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </div>
