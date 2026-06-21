@@ -39,34 +39,31 @@ export interface NuevoProducto {
 }
 
 // ── Órdenes ─────────────────────────────────────────────────────────────────
+export interface OrderDetailData {
+  product: number;
+  quantity: number;
+  unitPrice: number;
+}
+
 export interface NewOrder {
   user: number;
   location: number;
   orderStatus: string;
   total: number;
   notes?: string;
+  details_data?: OrderDetailData[];
 }
 
-export interface Order {
+export interface ProductDetail {
   id: number;
-  user: number;
-  location: number;
-  orderStatus: string;
-  total: string;
-  notes: string | null;
+  name: string;
+  price: string;
+  imageUrl: string | null;
   status: string;
-  created: string;
-  modified: string;
 }
 
-export interface NewOrderDetail {
-  order: number;
-  product: number;
-  quantity: number;
-  unitPrice: number;
-}
-
-export interface OrderDetail {
+/** Formato plano devuelto por GET /order-details/ */
+export interface OrderDetailFlat {
   id: number;
   order: number;
   product: number;
@@ -74,6 +71,40 @@ export interface OrderDetail {
   quantity: number;
   unitPrice: string;
   subtotal: string;
+  status: string;
+  created: string;
+  modified: string;
+}
+
+/** Formato anidado dentro de una orden (GET /orders/) */
+export interface OrderDetailNested {
+  id: number;
+  product: number;
+  product_detail: ProductDetail;
+  quantity: number;
+  unitPrice: string;
+  subtotal: string;
+  status: string;
+}
+
+export interface UserDetail {
+  id: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+  role: string;
+  status: string;
+}
+
+export interface Order {
+  id: number;
+  user: number;
+  user_detail: UserDetail;
+  location: number;
+  orderStatus: string;
+  total: string;
+  notes: string | null;
+  details: OrderDetailNested[];
   status: string;
   created: string;
   modified: string;
@@ -165,11 +196,11 @@ export class ApiService {
   }
 
   // ── DETALLES DE ÓRDENES ───────────────────────────────────────────────────
-  getOrderDetails(): Observable<OrderDetail[]> {
-    return this.http.get<OrderDetail[]>(`${this.API_URL}/order-details/`).pipe(timeout(this.TIMEOUT));
+  getOrderDetails(): Observable<OrderDetailFlat[]> {
+    return this.http.get<OrderDetailFlat[]>(`${this.API_URL}/order-details/`).pipe(timeout(this.TIMEOUT));
   }
 
-  createOrderDetail(detailData: NewOrderDetail): Observable<OrderDetail> {
-    return this.http.post<OrderDetail>(`${this.API_URL}/order-details/`, detailData).pipe(timeout(this.TIMEOUT));
+  createOrderDetail(detailData: { order: number; product: number; quantity: number; unitPrice: number }): Observable<OrderDetailFlat> {
+    return this.http.post<OrderDetailFlat>(`${this.API_URL}/order-details/`, detailData).pipe(timeout(this.TIMEOUT));
   }
 }

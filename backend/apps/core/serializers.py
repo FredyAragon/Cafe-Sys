@@ -225,17 +225,43 @@ class OrderDetailsNestedSerializer(serializers.ModelSerializer):
         read_only_fields = ('id', 'subtotal', 'product_detail')
 
 
+class OrderDetailWriteSerializer(serializers.Serializer):
+    product = serializers.IntegerField()
+    quantity = serializers.IntegerField(min_value=1)
+    unitPrice = serializers.DecimalField(max_digits=10, decimal_places=2, min_value=0.01)
+
+
 class OrdersSerializer(serializers.ModelSerializer):
     details = OrderDetailsNestedSerializer(many=True, read_only=True)
     user_detail = UsersSerializer(source='user', read_only=True)
+    # Campos de entrada para crear detalles inline
+    details_data = OrderDetailWriteSerializer(many=True, write_only=True, required=False)
 
     class Meta:
         model = Orders
         fields = (
             'id', 'user', 'user_detail', 'location', 'orderStatus',
-            'total', 'notes', 'details', 'status', 'created', 'modified'
+            'total', 'notes', 'details', 'details_data',
+            'status', 'created', 'modified'
         )
         read_only_fields = ('id', 'details', 'user_detail', 'created', 'modified')
+
+    def create(self, validated_data):
+        details_data = validated_data.pop('details_data', [])
+        order = Orders.objects.create(**validated_data)
+        for detail in details_data:
+            OrderDetails.objects.create(
+                order=order,
+                product_id=detail['product'],
+                quantity=detail['quantity'],
+                unitPrice=detail['unitPrice']
+            )
+        return order
+
+    def update(self, instance, validated_data):
+        # En update ignoramos details_data, solo actualizamos campos planos
+        validated_data.pop('details_data', None)
+        return super().update(instance, validated_data)
 
 
 # ──────────────────────────────────────────────
