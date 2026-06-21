@@ -1,14 +1,16 @@
 <div class="app-container">
   <header class="main-header">
     <div class="logo-container">
-      <a routerLink="/tienda" class="logo">☕ CafeSys</a>
+      <a routerLink="/tienda" class="logo">CafeSys</a>
     </div>
 
     <nav class="center-nav">
-      <a routerLink="/tienda/menu" routerLinkActive="active">Menú</a>
-      <a routerLink="/tienda/promociones" routerLinkActive="active">Promociones</a>
-      <a routerLink="/tienda/nosotros" routerLinkActive="active">Nosotros</a>
-      <a routerLink="/tienda/contacto" routerLinkActive="active">Contacto</a>
+      @if (usuario()) {
+        <a routerLink="/tienda/menu" routerLinkActive="active">Menú</a>
+        <a routerLink="/tienda/promociones" routerLinkActive="active">Promociones</a>
+        <a routerLink="/tienda/nosotros" routerLinkActive="active">Nosotros</a>
+        <a routerLink="/tienda/contacto" routerLinkActive="active">Contacto</a>
+      }
     </nav>
 
     <div class="right-actions">
@@ -34,7 +36,7 @@
   <footer class="main-footer">
     <div class="footer-info">
       <p>Arequipa, Perú</p>
-      <p>+51 987 654 321</p>
+      <p>+51 991 293 300</p>
       <p>hola&#64;cafesys.com</p>
     </div>
     <div class="footer-copy">
