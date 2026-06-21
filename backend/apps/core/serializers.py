@@ -83,7 +83,7 @@ class UsersWriteSerializer(serializers.ModelSerializer):
         model  = Users
         fields = (
             'id', 'firstName', 'lastName', 'email',
-            'password', 'role', 'status'
+            'password', 'role', 'status', 'is_staff'
         )
         read_only_fields = ('id',)
 

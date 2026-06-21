@@ -1,0 +1,88 @@
+<div class="users-container">
+  <div class="panel form-panel">
+    <h3>Editar Usuario</h3>
+    <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="admin-form">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Nombre</label>
+          <input type="text" formControlName="first_name" placeholder="Nombre del usuario">
+        </div>
+        <div class="form-group">
+          <label>Apellido</label>
+          <input type="text" formControlName="last_name" placeholder="Apellido del usuario">
+        </div>
+      </div>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label>Correo Electrónico</label>
+          <input type="email" formControlName="email" placeholder="correo@dominio.com">
+        </div>
+        <div class="form-group">
+          <label>Contraseña</label>
+          <input type="password" formControlName="password" placeholder="Dejar en blanco para mantener actual">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Rol</label>
+          <select formControlName="role">
+            <option value="Customer">Cliente</option>
+            <option value="Admin">Admin</option>
+            <option value="Driver">Conductor</option>
+            <option value="Employee">Empleado</option>
+          </select>
+        </div>
+        <div class="form-group checkbox-group">
+          <input type="checkbox" id="is_staff" formControlName="is_staff">
+          <label for="is_staff">Acceso staff</label>
+        </div>
+      </div>
+
+      <div class="form-row align-center">
+        <div class="info-message" *ngIf="!isEditing">Selecciona un usuario en la lista para editar sus datos.</div>
+        <div class="form-actions">
+          <button type="button" class="btn-secondary" *ngIf="isEditing" (click)="resetForm()">Cancelar</button>
+          <button type="submit" class="btn-primary" [disabled]="userForm.invalid || !isEditing">
+            Actualizar
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div class="panel table-panel">
+    <h3>Registro de Usuarios</h3>
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre Completo</th>
+          <th>Correo</th>
+          <th>Rol</th>
+          <th>Staff</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of users">
+          <td>{{ user.id }}</td>
+          <td>{{ user.firstName }} {{ user.lastName }}</td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.role }}</td>
+          <td>
+            <span class="badge" [class.badge-admin]="user.is_staff">{{ user.is_staff ? 'Sí' : 'No' }}</span>
+          </td>
+          <td class="actions">
+            <button class="btn-action edit" (click)="editUser(user)">Editar</button>
+            <button class="btn-action delete" (click)="deleteUser(user.id)">Eliminar</button>
+          </td>
+        </tr>
+        <tr *ngIf="users.length === 0">
+          <td colspan="6" class="empty-state">No hay usuarios registrados o cargando datos...</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

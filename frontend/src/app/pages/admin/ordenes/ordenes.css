@@ -1,0 +1,74 @@
+.orders-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.panel {
+  background-color: #FFFFFF;
+  border: 1px solid #E4D9CC;
+  border-radius: 18px;
+  padding: 25px;
+  box-shadow: 0 8px 20px rgba(62, 39, 35, 0.06);
+}
+
+.panel h3 {
+  color: #3E2723;
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 1.2rem;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.subtitle {
+  color: #6D4C41;
+  margin-bottom: 20px;
+  font-size: 0.95rem;
+}
+
+.status-bar {
+  color: #3E2723;
+  font-size: 0.95rem;
+  padding: 14px 18px;
+  margin-bottom: 18px;
+  border-radius: 12px;
+  background-color: #FAF5ED;
+  border: 1px solid #E4D9CC;
+}
+
+.status-bar.error {
+  color: #991B1B;
+  background-color: #FEE2E2;
+  border-color: #FECACA;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.admin-table th,
+.admin-table td {
+  padding: 14px 16px;
+  text-align: left;
+  border-bottom: 1px solid #E4D9CC;
+}
+
+.admin-table th {
+  color: #6D4C41;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+}
+
+.admin-table td {
+  color: #3E2723;
+  font-size: 0.95rem;
+}
+
+.empty-state {
+  margin: 0;
+  color: #6D4C41;
+  padding: 20px 0;
+  text-align: center;
+}

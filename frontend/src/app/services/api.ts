@@ -29,6 +29,19 @@ export interface Producto {
   status: string;
 }
 
+export interface OrderDetail {
+  id: number;
+  order: number;
+  product: number;
+  product_name: string;
+  quantity: number;
+  unitPrice: string;
+  subtotal: string;
+  status: string;
+  created: string;
+  modified: string;
+}
+
 export interface NuevoProducto {
   name: string;
   description?: string;
@@ -45,7 +58,7 @@ export class ApiService {
 
   private readonly API_URL = 'http://127.0.0.1:8081/apps/core';
 
-  constructor(private http: HttpClient) {}
+  constructor(private readonly http: HttpClient) {}
 
   // ── PRODUCTOS ─────────────────────────────────────────────────────────────
   getProducts(): Observable<Producto[]> {
@@ -81,5 +94,7 @@ export class ApiService {
     return this.http.delete<void>(`${this.API_URL}/categories/${id}/`);
   }
 
-  // Aquí irán los demás endpoints (órdenes, usuarios, etc.)
+  getOrderDetails(): Observable<OrderDetail[]> {
+    return this.http.get<OrderDetail[]>(`${this.API_URL}/order-details/`);
+  }
 }

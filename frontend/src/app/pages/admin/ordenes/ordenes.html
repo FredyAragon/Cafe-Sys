@@ -1,0 +1,40 @@
+<div class="orders-container">
+  <div class="panel">
+    <h3>Detalles de Órdenes</h3>
+    <p class="subtitle">Área de solo lectura para conductores y empleados.</p>
+
+    <div class="status-bar" *ngIf="cargando()">Cargando detalles de pedido...</div>
+    <div class="status-bar error" *ngIf="!cargando() && error()">{{ error() }}</div>
+
+    <table class="admin-table" *ngIf="!cargando() && !error() && orderDetails().length > 0">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Orden</th>
+          <th>Producto</th>
+          <th>Cantidad</th>
+          <th>Precio unitario</th>
+          <th>Subtotal</th>
+          <th>Estado</th>
+          <th>Creado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of orderDetails()">
+          <td>{{ item.id }}</td>
+          <td>{{ item.order }}</td>
+          <td>{{ item.product_name }}</td>
+          <td>{{ item.quantity }}</td>
+          <td>{{ item.unitPrice | currency:'EUR':'symbol':'1.2-2' }}</td>
+          <td>{{ item.subtotal | currency:'EUR':'symbol':'1.2-2' }}</td>
+          <td>{{ item.status }}</td>
+          <td>{{ item.created | date:'short' }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p class="empty-state" *ngIf="!cargando() && !error() && orderDetails().length === 0">
+      No hay detalles de pedidos disponibles.
+    </p>
+  </div>
+</div>

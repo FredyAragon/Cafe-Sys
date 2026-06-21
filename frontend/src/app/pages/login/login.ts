@@ -28,7 +28,8 @@ export class LoginComponent {
     if (this.loginForm.valid) {
       this.authService.login(this.loginForm.value as any).subscribe({
         next: (usuario) => {
-          const destino = usuario.is_staff ? ['/admin/dashboard'] : ['/tienda'];
+          const adminRoles = ['Admin', 'Driver', 'Employee'];
+          const destino = adminRoles.includes(usuario.role) ? ['/admin/dashboard'] : ['/tienda'];
           this.router.navigate(destino);
         },
         error: () => {

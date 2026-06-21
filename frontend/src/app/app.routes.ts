@@ -27,8 +27,10 @@ export const routes: Routes = [
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', loadComponent: () => import('./pages/dashboard/dashboard').then(m => m.DashboardComponent) },
-      { path: 'products', loadComponent: () => import('./pages/products/products').then(m => m.ProductsComponent) },
-      { path: 'categories', loadComponent: () => import('./pages/categories/categories').then(m => m.CategoriesComponent) },
+      { path: 'productos', loadComponent: () => import('./pages/products/products').then(m => m.ProductsComponent), data: { adminOnly: true } },
+      { path: 'categorias', loadComponent: () => import('./pages/categories/categories').then(m => m.CategoriesComponent), data: { adminOnly: true } },
+      { path: 'ordenes', loadComponent: () => import('./pages/admin/ordenes/ordenes').then(m => m.OrdenesComponent), data: { driverEmployeeOnly: true } },
+      { path: 'usuarios', loadComponent: () => import('./pages/admin/users/users').then(m => m.UsersComponent), data: { adminOnly: true } },
     ]
   },
 
