@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { AuthService } from '../../services/auth.service'; // Tu archivo intacto
+import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -12,8 +12,11 @@ import { CommonModule } from '@angular/common';
 })
 export class LoginComponent {
   private fb = inject(FormBuilder);
-  private authService = inject(AuthService); // Tu instancia
+  private authService = inject(AuthService);
   private router = inject(Router);
+
+  // ✅ AQUÍ ESTABA EL ERROR: Faltaba declarar esta propiedad
+  errorMessage: string | null = null; 
 
   loginForm = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
@@ -22,10 +25,12 @@ export class LoginComponent {
 
   onSubmit() {
     if (this.loginForm.valid) {
-      // Usamos tu método login(credenciales)
       this.authService.login(this.loginForm.value as any).subscribe({
         next: () => this.router.navigate(['/admin/dashboard']),
-        error: () => alert('Credenciales incorrectas o error de conexión')
+        error: () => {
+          // Actualizamos el valor de la variable cuando hay error
+          this.errorMessage = 'Credenciales incorrectas o error de conexión';
+        }
       });
     } else {
       this.loginForm.markAllAsTouched();
