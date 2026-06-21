@@ -1,4 +1,4 @@
-from rest_framework import viewsets, filters, generics
+from rest_framework import viewsets, filters
 from rest_framework.permissions import IsAuthenticated, AllowAny, IsAuthenticatedOrReadOnly
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .serializers import CustomTokenObtainPairSerializer
@@ -11,7 +11,6 @@ from .models import (
 from .serializers import (
     UsersSerializer, 
     UsersWriteSerializer,
-    SuperuserCreateSerializer,
     CategoriesSerializer,
     ProductsSerializer,
     PromotionsSerializer,
@@ -35,11 +34,6 @@ class CustomTokenObtainPairView(TokenObtainPairView):
     y devolver las llaves Access y Refresh validadas bajo la lógica híbrida.
     """
     serializer_class = CustomTokenObtainPairSerializer
-    permission_classes = [AllowAny]
-
-
-class CreateSuperuserAPIView(generics.CreateAPIView):
-    serializer_class = SuperuserCreateSerializer
     permission_classes = [AllowAny]
 
 

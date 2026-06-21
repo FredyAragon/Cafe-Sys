@@ -15,8 +15,9 @@ export class AuthInterceptor implements HttpInterceptor {
   constructor(private authService: AuthService) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    // Agregamos el token a la request saliente
-    const reqConToken = this._agregarToken(req);
+    // No agregamos token a las solicitudes de login/refresh
+    const isAuthRequest = req.url.includes('/token/') || req.url.includes('/token/refresh/');
+    const reqConToken = isAuthRequest ? req : this._agregarToken(req);
 
     return next.handle(reqConToken).pipe(
       catchError((error: HttpErrorResponse) => {

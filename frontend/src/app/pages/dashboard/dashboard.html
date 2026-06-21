@@ -1,25 +1,17 @@
 <div class="dashboard-container">
-  <div class="welcome-banner">
-    <h1>¡Bienvenido al Panel de Control!</h1>
-    <p>Hola de nuevo, <strong *ngIf="usuario()">{{ usuario()!.firstName }}</strong>. Aquí tienes un resumen de CafeSys.</p>
+  <div class="panel welcome-panel">
+    <h1>Panel de Control</h1>
+    <p class="subtitle" *ngIf="usuario()">
+      Bienvenido de nuevo, <strong>{{ usuario()!.firstName }}</strong>. Este es el resumen de CafeSys.
+    </p>
   </div>
 
   <div class="stats-grid">
     <div class="stat-card" *ngFor="let stat of estadisticas">
-      <div class="stat-icon">{{ stat.icono }}</div>
       <div class="stat-details">
         <h3>{{ stat.titulo }}</h3>
         <p class="stat-value">{{ stat.valor }}</p>
       </div>
-    </div>
-  </div>
-
-  <div class="quick-actions">
-    <h2>Acciones Rápidas</h2>
-    <div class="actions-grid">
-      <button class="action-btn">➕ Nuevo Producto</button>
-      <button class="action-btn">🏷️ Nueva Categoría</button>
-      <button class="action-btn">🛵 Ver Entregas</button>
     </div>
   </div>
 </div>

@@ -1,34 +1,84 @@
-<div class="page-header">
-  <h2>Gestión de Categorías</h2>
-  <button class="btn-primary">➕ Nueva Categoría</button>
-</div>
+<div class="categories-container">
+  <!-- Formulario de crear/editar -->
+  <div class="panel form-panel" *ngIf="showForm()">
+    <h3>{{ isEditing() ? 'Editar Categoria' : 'Nueva Categoria' }}</h3>
+    <form [formGroup]="categoriaForm" (ngSubmit)="onSubmit()" class="admin-form">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Nombre</label>
+          <input type="text" formControlName="name" placeholder="Nombre de la categoria">
+        </div>
+        <div class="form-group">
+          <label>Estado</label>
+          <select formControlName="status">
+            <option value="active">Activo</option>
+            <option value="inactive">Inactivo</option>
+          </select>
+        </div>
+      </div>
 
-<div class="table-container">
-  <table class="data-table">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Nombre</th>
-        <th>Descripción</th>
-        <th>Estado</th>
-        <th>Acciones</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let cat of categorias">
-        <td>{{ cat.id }}</td>
-        <td><strong>{{ cat.name }}</strong></td>
-        <td>{{ cat.description }}</td>
-        <td>
-          <span class="badge" [ngClass]="cat.status === 'active' ? 'badge-active' : 'badge-inactive'">
-            {{ cat.status === 'active' ? 'Activo' : 'Inactivo' }}
-          </span>
-        </td>
-        <td class="actions-cell">
-          <button class="btn-icon edit" title="Editar">✏️</button>
-          <button class="btn-icon delete" title="Eliminar">🗑️</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Descripcion</label>
+          <input type="text" formControlName="description" placeholder="Descripcion opcional">
+        </div>
+      </div>
+
+      <div class="form-row align-center">
+        <div class="form-actions">
+          <button type="button" class="btn-secondary" (click)="cerrarFormulario()">Cancelar</button>
+          <button type="submit" class="btn-primary" [disabled]="categoriaForm.invalid">
+            {{ isEditing() ? 'Actualizar' : 'Crear' }}
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Listado de categorias -->
+  <div class="panel table-panel">
+    <div class="panel-header">
+      <h3>Gestion de Categorias</h3>
+      <button class="btn-primary" (click)="abrirFormulario()">Nueva Categoria</button>
+    </div>
+
+    <div class="status-bar" *ngIf="cargando()">
+      Cargando categorias desde la base de datos...
+    </div>
+    <div class="status-bar error" *ngIf="!cargando() && error()">
+      {{ error() }}
+    </div>
+
+    <table class="admin-table" *ngIf="!cargando() && !error() && categorias().length > 0">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Descripcion</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let cat of categorias()">
+          <td>{{ cat.id }}</td>
+          <td><strong>{{ cat.name }}</strong></td>
+          <td>{{ cat.description || '\u2014' }}</td>
+          <td>
+            <span class="badge" [ngClass]="cat.status === 'active' ? 'badge-active' : 'badge-inactive'">
+              {{ cat.status === 'active' ? 'Activo' : 'Inactivo' }}
+            </span>
+          </td>
+          <td class="actions-cell">
+            <button class="btn-action edit" (click)="editarCategoria(cat)">Editar</button>
+            <button class="btn-action delete" (click)="eliminarCategoria(cat.id)">Eliminar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p class="empty-state" *ngIf="!cargando() && !error() && categorias().length === 0">
+      No hay categorias disponibles. Crea una nueva.
+    </p>
+  </div>
 </div>

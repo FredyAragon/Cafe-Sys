@@ -1,98 +1,66 @@
 .dashboard-container {
   display: flex;
   flex-direction: column;
-  gap: 30px;
+  gap: 24px;
 }
 
-.welcome-banner {
-  background: linear-gradient(135deg, #2c3e50, #34495e);
-  color: white;
+.welcome-panel {
+  background-color: #FFFFFF;
+  border: 1px solid #E4D9CC;
+  border-radius: 18px;
   padding: 30px;
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 8px 20px rgba(62, 39, 35, 0.06);
 }
 
-.welcome-banner h1 {
-  margin: 0 0 10px 0;
-  font-size: 1.8rem;
+.welcome-panel h1 {
+  color: #3E2723;
+  margin: 0 0 8px 0;
+  font-size: 1.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
 }
 
-.welcome-banner p {
+.welcome-panel .subtitle {
+  color: #6D4C41;
   margin: 0;
-  font-size: 1.1rem;
-  color: #bdc3c7;
+  font-size: 0.95rem;
+}
+
+.welcome-panel .subtitle strong {
+  color: #3E2723;
 }
 
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 20px;
 }
 
 .stat-card {
-  background-color: white;
-  padding: 20px;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-  transition: transform 0.2s ease;
+  background-color: #FFFFFF;
+  border: 1px solid #E4D9CC;
+  border-radius: 18px;
+  padding: 24px 20px;
+  box-shadow: 0 8px 20px rgba(62, 39, 35, 0.06);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
 .stat-card:hover {
-  transform: translateY(-5px);
-}
-
-.stat-icon {
-  font-size: 2.5rem;
-  background-color: #f4f6f8;
-  padding: 15px;
-  border-radius: 50%;
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(62, 39, 35, 0.1);
 }
 
 .stat-details h3 {
-  margin: 0;
-  font-size: 0.9rem;
-  color: #7f8c8d;
+  margin: 0 0 6px 0;
+  font-size: 0.8rem;
+  color: #6D4C41;
   text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .stat-value {
-  margin: 5px 0 0 0;
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-.quick-actions h2 {
-  font-size: 1.3rem;
-  color: #2c3e50;
-  margin-bottom: 15px;
-  border-bottom: 2px solid #ecf0f1;
-  padding-bottom: 10px;
-}
-
-.actions-grid {
-  display: flex;
-  gap: 15px;
-  flex-wrap: wrap;
-}
-
-.action-btn {
-  background-color: white;
-  border: 1px solid #bdc3c7;
-  padding: 12px 20px;
-  border-radius: 6px;
-  font-size: 1rem;
-  color: #2c3e50;
-  cursor: pointer;
-  font-weight: 500;
-  transition: all 0.3s ease;
-}
-
-.action-btn:hover {
-  background-color: #3498db;
-  color: white;
-  border-color: #3498db;
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #3E2723;
 }

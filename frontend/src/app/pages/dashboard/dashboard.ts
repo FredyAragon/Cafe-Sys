@@ -11,15 +11,13 @@ import { AuthService } from '../../services/auth.service';
 })
 export class DashboardComponent {
   private authService = inject(AuthService);
-  
-  // Leemos el usuario actual para darle una bienvenida personalizada
+
   usuario = this.authService.usuario;
 
-  // Datos simulados para la maqueta
   estadisticas = [
-    { titulo: 'Ventas de hoy', valor: 'S/ 0.00', icono: '💰' },
-    { titulo: 'Órdenes pendientes', valor: '0', icono: '📦' },
-    { titulo: 'Productos activos', valor: '0', icono: '☕' },
-    { titulo: 'Nuevos clientes', valor: '0', icono: '👥' }
+    { titulo: 'Ventas de hoy', valor: 'S/ 0.00' },
+    { titulo: 'Ordenes pendientes', valor: '0' },
+    { titulo: 'Productos activos', valor: '0' },
+    { titulo: 'Clientes registrados', valor: '0' }
   ];
 }
