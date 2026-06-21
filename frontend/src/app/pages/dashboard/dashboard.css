@@ -1,61 +1,98 @@
-/* ── Layout general ─────────────────────────────────────────── */
-/* Nota: el contenedor de página completa y la barra superior
-   ahora viven en layout.css (LayoutComponent). Aquí solo queda
-   el contenido propio del Dashboard. */
-
-/* ── Contenido ──────────────────────────────────────────────── */
-.dashboard-content {
-  max-width: 700px;
-  margin: 32px auto;
-  padding: 0 20px;
-  text-align: center;
+.dashboard-container {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
 }
 
-.estado {
-  color: #555;
-  margin-bottom: 16px;
-}
-
-.btn-test {
-  background-color: #2c3e50;
+.welcome-banner {
+  background: linear-gradient(135deg, #2c3e50, #34495e);
   color: white;
-  border: none;
-  padding: 10px 20px;
-  font-size: 15px;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.welcome-banner h1 {
+  margin: 0 0 10px 0;
+  font-size: 1.8rem;
+}
+
+.welcome-banner p {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #bdc3c7;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.stat-card {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  transition: transform 0.2s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+}
+
+.stat-icon {
+  font-size: 2.5rem;
+  background-color: #f4f6f8;
+  padding: 15px;
+  border-radius: 50%;
+}
+
+.stat-details h3 {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #7f8c8d;
+  text-transform: uppercase;
+}
+
+.stat-value {
+  margin: 5px 0 0 0;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+.quick-actions h2 {
+  font-size: 1.3rem;
+  color: #2c3e50;
+  margin-bottom: 15px;
+  border-bottom: 2px solid #ecf0f1;
+  padding-bottom: 10px;
+}
+
+.actions-grid {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.action-btn {
+  background-color: white;
+  border: 1px solid #bdc3c7;
+  padding: 12px 20px;
   border-radius: 6px;
+  font-size: 1rem;
+  color: #2c3e50;
   cursor: pointer;
-  margin-bottom: 20px;
-  transition: background-color 0.2s;
+  font-weight: 500;
+  transition: all 0.3s ease;
 }
 
-.btn-test:hover {
-  background-color: #3d5166;
-}
-
-hr {
-  border: 0;
-  border-top: 1px solid #ddd;
-  margin: 24px 0;
-}
-
-.empty-msg {
-  color: #999;
-}
-
-.items-list {
-  text-align: left;
-  background: #ffffff;
-  padding: 18px 24px;
-  border-radius: 8px;
-  border: 1px solid #ddd;
-  list-style: none;
-}
-
-.items-list li {
-  padding: 6px 0;
-  border-bottom: 1px solid #f0f0f0;
-}
-
-.items-list li:last-child {
-  border-bottom: none;
+.action-btn:hover {
+  background-color: #3498db;
+  color: white;
+  border-color: #3498db;
 }

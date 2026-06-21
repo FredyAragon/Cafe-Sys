@@ -1,51 +1,25 @@
-import { Component, OnInit, signal, inject } from '@angular/core';
-import { ApiService } from '../../services/api';
+import { Component, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { AuthService } from '../../services/auth.service';
 
-// ✅ usuario/cerrarSesion ahora viven en LayoutComponent (barra superior compartida).
-//    Este componente solo se encarga de su propio contenido.
 @Component({
-  standalone: true,
   selector: 'app-dashboard',
-  imports: [],
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './dashboard.html',
   styleUrls: ['./dashboard.css']
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent {
+  private authService = inject(AuthService);
+  
+  // Leemos el usuario actual para darle una bienvenida personalizada
+  usuario = this.authService.usuario;
 
-  private apiService = inject(ApiService);
-
-  mensajeEstado = signal('Cargando...');
-  listaElementos = signal<any[]>([]);
-
-  ngOnInit() {
-    this.apiService.getProducts().subscribe({
-      next: (data) => {
-        this.listaElementos.set(data);
-        this.mensajeEstado.set('Datos cargados con éxito.');
-      },
-      error: () => this.mensajeEstado.set('Error al cargar datos.')
-    });
-  }
-
-  enviarDataDePrueba() {
-    this.mensajeEstado.set('Enviando objeto de prueba...');
-
-    const nuevoProducto = {
-      name: 'Café Intruso Pro 3',
-      price: 15.50,
-      category: 1
-    };
-
-    this.apiService.createProduct(nuevoProducto).subscribe({
-      next: (response) => {
-        console.log('¡Producto creado con éxito desde Angular!', response);
-        this.mensajeEstado.set('¡Objeto creado con éxito en Django!');
-        this.listaElementos.update(actuales => [...actuales, response]);
-      },
-      error: (err) => {
-        console.error('Detalle del error de validación:', err.error);
-        this.mensajeEstado.set('Error al enviar el POST a Django.');
-      }
-    });
-  }
+  // Datos simulados para la maqueta
+  estadisticas = [
+    { titulo: 'Ventas de hoy', valor: 'S/ 0.00', icono: '💰' },
+    { titulo: 'Órdenes pendientes', valor: '0', icono: '📦' },
+    { titulo: 'Productos activos', valor: '0', icono: '☕' },
+    { titulo: 'Nuevos clientes', valor: '0', icono: '👥' }
+  ];
 }

@@ -1,31 +1,25 @@
-<div class="dashboard-wrapper">
+<div class="dashboard-container">
+  <div class="welcome-banner">
+    <h1>¡Bienvenido al Panel de Control!</h1>
+    <p>Hola de nuevo, <strong *ngIf="usuario()">{{ usuario()!.firstName }}</strong>. Aquí tienes un resumen de CafeSys.</p>
+  </div>
 
-  <!-- Contenido principal -->
-  <main class="dashboard-content">
+  <div class="stats-grid">
+    <div class="stat-card" *ngFor="let stat of estadisticas">
+      <div class="stat-icon">{{ stat.icono }}</div>
+      <div class="stat-details">
+        <h3>{{ stat.titulo }}</h3>
+        <p class="stat-value">{{ stat.valor }}</p>
+      </div>
+    </div>
+  </div>
 
-    <p class="estado">
-      <strong>Estado actual:</strong> {{ mensajeEstado() }}
-    </p>
-
-    <button class="btn-test" (click)="enviarDataDePrueba()">
-       Enviar Objeto de Prueba (POST)
-    </button>
-
-    <hr>
-
-    <h3>Lista de elementos en el Backend (GET)</h3>
-
-    @if (listaElementos().length === 0) {
-      <p class="empty-msg">No hay elementos disponibles o la lista está vacía.</p>
-    } @else {
-      <ul class="items-list">
-        @for (item of listaElementos(); track item.id) {
-          <li>
-            <strong>{{ item.name || 'Sin nombre' }}</strong>
-          </li>
-        }
-      </ul>
-    }
-
-  </main>
+  <div class="quick-actions">
+    <h2>Acciones Rápidas</h2>
+    <div class="actions-grid">
+      <button class="action-btn">➕ Nuevo Producto</button>
+      <button class="action-btn">🏷️ Nueva Categoría</button>
+      <button class="action-btn">🛵 Ver Entregas</button>
+    </div>
+  </div>
 </div>
