@@ -1,52 +1,37 @@
 import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
+import { HttpClient } from '@angular/common/http'; // Inyectamos cliente HTTP directamente
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-register',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterModule],
-  templateUrl: './register.html',
-  styleUrls: ['./register.css']
+  templateUrl: './register.html'
 })
 export class RegisterComponent {
   private fb = inject(FormBuilder);
+  private http = inject(HttpClient);
   private router = inject(Router);
+  private readonly API_URL = 'http://127.0.0.1:8000/apps/core';
 
-  // Formulario con validaciones básicas
-  registerForm: FormGroup = this.fb.group({
-    firstName: ['', [Validators.required, Validators.minLength(2)]],
-    lastName: ['', [Validators.required, Validators.minLength(2)]],
+  registerForm = this.fb.group({
+    firstName: ['', Validators.required],
+    lastName: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.minLength(6)]],
-    confirmPassword: ['', [Validators.required]]
-  }, { validators: this.passwordMatchValidator });
-
-  errorMessage: string | null = null;
-
-  // Validador personalizado para comparar contraseñas
-  passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
-    const password = control.get('password')?.value;
-    const confirmPassword = control.get('confirmPassword')?.value;
-    if (password !== confirmPassword) {
-      control.get('confirmPassword')?.setErrors({ mismatch: true });
-      return { mismatch: true };
-    } else {
-      return null;
-    }
-  }
+    password: ['', Validators.required]
+  });
 
   onSubmit() {
     if (this.registerForm.valid) {
-      console.log('Datos de registro listos:', this.registerForm.value);
-      
-      // TODO: Conectar con el backend para crear el usuario.
-      // Por ahora, simulamos éxito y enviamos al usuario al login:
-      this.router.navigate(['/login']);
-      
-    } else {
-      this.registerForm.markAllAsTouched();
+      this.http.post(`${this.API_URL}/register/`, this.registerForm.value).subscribe({
+        next: () => {
+          alert('Registro exitoso');
+          this.router.navigate(['/login']);
+        },
+        error: (err) => console.error('Error al registrar', err)
+      });
     }
   }
 }
