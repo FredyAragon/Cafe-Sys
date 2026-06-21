@@ -67,10 +67,10 @@ class UsersSerializer(serializers.ModelSerializer):
         model  = Users
         fields = (
             'id', 'firstName', 'lastName', 'email',
-            'role', 'status', 'created', 'modified'
+            'role', 'status', 'created', 'modified','is_staff'
         )
         # passwordHash, created_id, modified_id → excluidos totalmente
-        read_only_fields = ('id', 'created', 'modified')
+        read_only_fields = ('id', 'created', 'modified', 'is_staff')
 
 
 class UsersWriteSerializer(serializers.ModelSerializer):
