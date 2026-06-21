@@ -7,17 +7,14 @@
     <nav class="center-nav">
       @if (usuario()) {
         <a routerLink="/tienda/menu" routerLinkActive="active">Menú</a>
-        <a routerLink="/tienda/promociones" routerLinkActive="active">Promociones</a>
-        <a routerLink="/tienda/nosotros" routerLinkActive="active">Nosotros</a>
-        <a routerLink="/tienda/contacto" routerLinkActive="active">Contacto</a>
       }
     </nav>
 
     <div class="right-actions">
       @if (usuario()) {
-        <button class="cart-btn">
-          🛒 Cesta <span class="badge">0</span>
-        </button>
+        <a routerLink="/tienda/carrito" class="cart-btn">
+          🛒 Cesta <span class="badge">{{ cartCount() }}</span>
+        </a>
         <div class="user-dropdown">
           <span class="user-name">Hola, {{ usuario()!.firstName }}</span>
           <button (click)="cerrarSesion()" class="logout-text">Salir</button>

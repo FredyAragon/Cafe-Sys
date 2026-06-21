@@ -9,13 +9,15 @@ export const routes: Routes = [
   // ==========================================
   // ZONA PÚBLICA / CLIENTES (Layout Cliente)
   // ==========================================
-  {
-    path: 'tienda',
-    loadComponent: () => import('./pages/layouts/app-layout/app-layout').then(m => m.ClientLayoutComponent),
-    children: [
-      { path: '', loadComponent: () => import('./pages/home/home').then(m => m.HomeComponent) },
-    ]
-  },
+    {
+      path: 'tienda',
+      loadComponent: () => import('./pages/layouts/app-layout/app-layout').then(m => m.ClientLayoutComponent),
+      children: [
+        { path: '', loadComponent: () => import('./pages/home/home').then(m => m.HomeComponent) },
+        { path: 'menu', loadComponent: () => import('./pages/menu/menu').then(m => m.MenuComponent) },
+        { path: 'carrito', loadComponent: () => import('./pages/cart/cart').then(m => m.CartComponent) },
+      ]
+    },
 
   // ==========================================
   // ZONA ADMINISTRATIVA (Layout Admin)

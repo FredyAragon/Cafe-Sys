@@ -29,6 +29,43 @@ export interface Producto {
   status: string;
 }
 
+export interface NuevoProducto {
+  name: string;
+  description?: string;
+  price: number;
+  imageUrl?: string;
+  category: number;
+  status?: string;
+}
+
+// ── Órdenes ─────────────────────────────────────────────────────────────────
+export interface NewOrder {
+  user: number;
+  location: number;
+  orderStatus: string;
+  total: number;
+  notes?: string;
+}
+
+export interface Order {
+  id: number;
+  user: number;
+  location: number;
+  orderStatus: string;
+  total: string;
+  notes: string | null;
+  status: string;
+  created: string;
+  modified: string;
+}
+
+export interface NewOrderDetail {
+  order: number;
+  product: number;
+  quantity: number;
+  unitPrice: number;
+}
+
 export interface OrderDetail {
   id: number;
   order: number;
@@ -42,13 +79,17 @@ export interface OrderDetail {
   modified: string;
 }
 
-export interface NuevoProducto {
-  name: string;
-  description?: string;
-  price: number;
-  imageUrl?: string;
-  category: number;
-  status?: string;
+// ── Ubicaciones ─────────────────────────────────────────────────────────────
+export interface Ubicacion {
+  id: number;
+  user: number;
+  alias: string;
+  address: string;
+  reference: string | null;
+  isDefault: boolean;
+  status: string;
+  created: string;
+  modified: string;
 }
 
 @Injectable({
@@ -105,7 +146,30 @@ export class ApiService {
     return this.http.delete<void>(`${this.API_URL}/categories/${id}/`).pipe(timeout(this.TIMEOUT));
   }
 
+  // ── UBICACIONES ───────────────────────────────────────────────────────────
+  getLocations(): Observable<Ubicacion[]> {
+    return this.http.get<Ubicacion[]>(`${this.API_URL}/locations/`).pipe(timeout(this.TIMEOUT));
+  }
+
+  createLocation(locationData: { user: number; alias: string; address: string; reference?: string; isDefault?: boolean }): Observable<Ubicacion> {
+    return this.http.post<Ubicacion>(`${this.API_URL}/locations/`, locationData).pipe(timeout(this.TIMEOUT));
+  }
+
+  // ── ÓRDENES ───────────────────────────────────────────────────────────────
+  getOrders(): Observable<Order[]> {
+    return this.http.get<Order[]>(`${this.API_URL}/orders/`).pipe(timeout(this.TIMEOUT));
+  }
+
+  createOrder(orderData: NewOrder): Observable<Order> {
+    return this.http.post<Order>(`${this.API_URL}/orders/`, orderData).pipe(timeout(this.TIMEOUT));
+  }
+
+  // ── DETALLES DE ÓRDENES ───────────────────────────────────────────────────
   getOrderDetails(): Observable<OrderDetail[]> {
     return this.http.get<OrderDetail[]>(`${this.API_URL}/order-details/`).pipe(timeout(this.TIMEOUT));
+  }
+
+  createOrderDetail(detailData: NewOrderDetail): Observable<OrderDetail> {
+    return this.http.post<OrderDetail>(`${this.API_URL}/order-details/`, detailData).pipe(timeout(this.TIMEOUT));
   }
 }

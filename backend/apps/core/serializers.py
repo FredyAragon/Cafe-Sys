@@ -235,7 +235,7 @@ class OrdersSerializer(serializers.ModelSerializer):
             'id', 'user', 'user_detail', 'location', 'orderStatus',
             'total', 'notes', 'details', 'status', 'created', 'modified'
         )
-        read_only_fields = ('id', 'total', 'details', 'user_detail', 'created', 'modified')
+        read_only_fields = ('id', 'details', 'user_detail', 'created', 'modified')
 
 
 # ──────────────────────────────────────────────

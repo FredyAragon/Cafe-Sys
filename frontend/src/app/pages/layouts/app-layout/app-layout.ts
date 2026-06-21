@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
+import { CartService } from '../../../services/cart.service';
 
 @Component({
   selector: 'app-layout',
@@ -11,7 +12,9 @@ import { AuthService } from '../../../services/auth.service';
 })
 export class ClientLayoutComponent {
   private authService = inject(AuthService);
+  private cartService = inject(CartService);
   usuario = this.authService.usuario;
+  cartCount = this.cartService.count;
 
   cerrarSesion() {
     this.authService.logout();
