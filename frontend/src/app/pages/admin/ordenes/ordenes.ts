@@ -1,19 +1,6 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ApiService } from '../../../services/api';
-
-export interface OrderDetail {
-  id: number;
-  order: number;
-  product: number;
-  product_name: string;
-  quantity: number;
-  unitPrice: string;
-  subtotal: string;
-  status: string;
-  created: string;
-  modified: string;
-}
+import { ApiService, Order } from '../../../services/api';
 
 @Component({
   selector: 'app-ordenes',
@@ -25,26 +12,26 @@ export interface OrderDetail {
 export class OrdenesComponent implements OnInit {
   private apiService = inject(ApiService);
 
-  orderDetails = signal<OrderDetail[]>([]);
+  orders = signal<Order[]>([]);
   cargando = signal(false);
   error = signal('');
 
   ngOnInit() {
-    this.loadOrderDetails();
+    this.loadOrders();
   }
 
-  loadOrderDetails() {
+  loadOrders() {
     this.cargando.set(true);
     this.error.set('');
 
-    this.apiService.getOrderDetails().subscribe({
-      next: (data) => {
-        this.orderDetails.set(data);
+    this.apiService.getOrders().subscribe({
+      next: (data: Order[]) => {
+        this.orders.set(data);
         this.cargando.set(false);
       },
-      error: (err) => {
-        console.error('Error al cargar detalles de pedido:', err);
-        this.error.set('No se pudieron cargar los detalles de pedido.');
+      error: (err: any) => {
+        console.error('Error al cargar pedidos:', err);
+        this.error.set('No se pudieron cargar los pedidos.');
         this.cargando.set(false);
       }
     });

@@ -31,9 +31,17 @@ export const routes: Routes = [
       { path: 'dashboard', loadComponent: () => import('./pages/dashboard/dashboard').then(m => m.DashboardComponent) },
       { path: 'productos', loadComponent: () => import('./pages/products/products').then(m => m.ProductsComponent), data: { adminOnly: true } },
       { path: 'categorias', loadComponent: () => import('./pages/categories/categories').then(m => m.CategoriesComponent), data: { adminOnly: true } },
-      { path: 'ordenes', loadComponent: () => import('./pages/admin/ordenes/ordenes').then(m => m.OrdenesComponent), data: { driverEmployeeOnly: true } },
+      { path: 'ordenes', loadComponent: () => import('./pages/admin/ordenes/ordenes').then(m => m.OrdenesComponent) },
       { path: 'usuarios', loadComponent: () => import('./pages/admin/users/users').then(m => m.UsersComponent), data: { adminOnly: true } },
     ]
+  },
+
+  // ==========================================
+  // ÓRDENES PÚBLICAS (Sin autenticación, solo lectura)
+  // ==========================================
+  {
+    path: 'ordenes',
+    loadComponent: () => import('./pages/admin/ordenes/ordenes').then(m => m.OrdenesComponent)
   },
 
   // ==========================================

@@ -139,6 +139,15 @@ class OrdersViewSet(viewsets.ModelViewSet):
     ordering_fields  = ['created', 'total', 'orderStatus']
     ordering         = ['-created']
 
+    def get_permissions(self):
+        """
+        - GET (list/retrieve): AllowAny (público, solo lectura)
+        - POST/PUT/PATCH/DELETE: IsAuthenticated
+        """
+        if self.action in ('list', 'retrieve'):
+            return [AllowAny()]
+        return [IsAuthenticated()]
+
 
 # ──────────────────────────────────────────────
 # ORDER DETAILS
@@ -150,6 +159,11 @@ class OrderDetailsViewSet(viewsets.ModelViewSet):
     search_fields    = ['product__name', 'order__id']
     ordering_fields  = ['order', 'product__name', 'created']
     ordering         = ['order']
+
+    def get_permissions(self):
+        if self.action in ('list', 'retrieve'):
+            return [AllowAny()]
+        return [IsAuthenticated()]
 
 
 # ──────────────────────────────────────────────
