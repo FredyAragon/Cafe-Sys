@@ -1,16 +1,13 @@
 {
   "version": 2,
-  "builds": [
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist/frontend/browser",
+  "installCommand": "npm install",
+  "framework": "angular",
+  "rewrites": [
     {
-      "src": "cafesys/wsgi.py",
-      "use": "@vercel/python",
-      "config": { "maxLambdaSize": "15mb", "runtime": "python3.9" }
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "cafesys/wsgi.py"
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ]
 }

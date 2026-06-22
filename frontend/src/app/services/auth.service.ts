@@ -2,6 +2,7 @@ import { Injectable, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, tap, switchMap, map } from 'rxjs';
+import { getApiUrl } from './api-config';
 
 // ── Tipos que refleja exactamente lo que Django devuelve ──────────────────────
 export interface LoginCredentials {
@@ -36,7 +37,7 @@ export interface UsuarioSesion {
 })
 export class AuthService {
 
-  private readonly API_URL = 'http://127.0.0.1:8081/apps/core';
+  private readonly API_URL = getApiUrl();
 
   // Guardamos los tokens en memoria (más seguro que localStorage para tokens de acceso)
   private _accessToken  = signal<string | null>(null);

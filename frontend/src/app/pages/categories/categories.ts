@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { timeout } from 'rxjs';
+import { getApiUrl } from '../../services/api-config';
 
 export interface Categoria {
   id: number;
@@ -23,7 +24,7 @@ export class CategoriesComponent implements OnInit {
   private http = inject(HttpClient);
   private fb = inject(FormBuilder);
 
-  private readonly API_URL = 'http://127.0.0.1:8081/apps/core/categories/';
+  private readonly API_URL = `${getApiUrl()}/categories/`;
 
   categorias = signal<Categoria[]>([]);
   cargando = signal(false);

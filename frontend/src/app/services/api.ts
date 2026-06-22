@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, timeout } from 'rxjs';
+import { getApiUrl } from './api-config';
 
 // ── Tipos básicos que devuelve Django ──────────────────────────────────────
 export interface Categoria {
@@ -128,20 +129,12 @@ export interface Ubicacion {
 })
 export class ApiService {
 
-  private readonly API_URL = `http://${this.getBackendHost()}:8081/apps/core`;
+  private readonly API_URL = getApiUrl();
 
   /** Tiempo máximo de espera para cada petición (ms) */
   private readonly TIMEOUT = 10_000;
 
   constructor(private readonly http: HttpClient) {}
-
-  private getBackendHost(): string {
-    if (typeof window === 'undefined') {
-      return '127.0.0.1';
-    }
-    const hostname = window.location.hostname;
-    return hostname === 'localhost' || hostname === '127.0.0.1' ? '127.0.0.1' : 'host.docker.internal';
-  }
 
   // ── PRODUCTOS ─────────────────────────────────────────────────────────────
   getProducts(): Observable<Producto[]> {

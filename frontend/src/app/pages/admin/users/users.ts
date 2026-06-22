@@ -2,6 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { getApiUrl } from '../../services/api-config';
 
 export interface User {
   id: number;
@@ -23,8 +24,7 @@ export class UsersComponent implements OnInit {
   private http = inject(HttpClient);
   private fb = inject(FormBuilder);
   
-  // URL base para el endpoint de usuarios en Django
-  private readonly API_URL = 'http://127.0.0.1:8081/apps/core/users/';
+  private readonly API_URL = `${getApiUrl()}/users/`;
 
   users: User[] = [];
   userForm: FormGroup;

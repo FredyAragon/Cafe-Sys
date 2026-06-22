@@ -120,6 +120,16 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:8082",
     "https://cafe-sys.vercel.app",
 ]
+
+# Si se define CORS_ALLOWED_ORIGINS como variable de entorno (Render),
+# se añade a la lista (separado por comas)
+_extra_cors = config("CORS_ALLOWED_ORIGINS", default="")
+if _extra_cors:
+    for origin in _extra_cors.split(","):
+        origin = origin.strip()
+        if origin and origin not in CORS_ALLOWED_ORIGINS:
+            CORS_ALLOWED_ORIGINS.append(origin)
+
 CORS_ALLOW_CREDENTIALS = True
 
 # Internationalization
