@@ -2,7 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { getApiUrl } from '../../services/api-config';
+import { getApiUrl } from '../../../services/api-config';
 
 export interface User {
   id: number;
