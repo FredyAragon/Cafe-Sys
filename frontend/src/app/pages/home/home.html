@@ -1,0 +1,25 @@
+<section class="hero-section">
+  <div class="hero-overlay">
+    <div class="hero-content">
+      <h1>Encuentra tu centro en cada sorbo</h1>
+      <p>Bienvenido a CafeSys. Un equilibrio perfecto entre sabor, energía y tranquilidad.</p>
+    </div>
+  </div>
+</section>
+
+<section class="features-section">
+  <h2 class="section-title">¿Qué nos hace especiales?</h2>
+  
+  <div class="cards-grid">
+    <div class="flip-card" *ngFor="let card of tarjetas">
+      <div class="flip-card-inner">
+        <div class="flip-card-front">
+          <h3>{{ card.front }}</h3>
+        </div>
+        <div class="flip-card-back">
+          <p>{{ card.back }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

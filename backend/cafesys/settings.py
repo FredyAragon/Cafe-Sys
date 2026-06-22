@@ -117,6 +117,7 @@ AUTH_PASSWORD_VALIDATORS = [
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:4200", 
     "http://localhost:8082",
+    "http://127.0.0.1:8082",
 ]
 CORS_ALLOW_CREDENTIALS = True
 

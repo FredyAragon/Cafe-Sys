@@ -1,0 +1,202 @@
+<div class="products-wrapper">
+
+  <h2>Gestión de Productos</h2>
+  <p class="subtitle">Crea productos y asígnalos a una categoría existente.</p>
+
+  <!-- ── Formulario de creación ─────────────────────────────────────────── -->
+  <form (ngSubmit)="onSubmit()" class="product-form">
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="nombre">Nombre del producto *</label>
+        <input
+          id="nombre"
+          type="text"
+          placeholder="Ej: Café Americano"
+          [ngModel]="nombre()"
+          (ngModelChange)="nombre.set($event)"
+          name="nombre"
+          [disabled]="guardando()"
+        />
+      </div>
+
+      <div class="form-group form-group-small">
+        <label for="precio">Precio (S/.) *</label>
+        <input
+          id="precio"
+          type="number"
+          step="0.01"
+          min="0.01"
+          placeholder="0.00"
+          [ngModel]="precio()"
+          (ngModelChange)="precio.set($event)"
+          name="precio"
+          [disabled]="guardando()"
+        />
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="descripcion">Descripción</label>
+      <textarea
+        id="descripcion"
+        placeholder="Descripción opcional del producto"
+        [ngModel]="descripcion()"
+        (ngModelChange)="descripcion.set($event)"
+        name="descripcion"
+        rows="2"
+        [disabled]="guardando()"
+      ></textarea>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="categoria">Categoría *</label>
+        <select
+          id="categoria"
+          [ngModel]="categoriaId()"
+          (ngModelChange)="categoriaId.set($event)"
+          name="categoria"
+          [disabled]="guardando() || categorias().length === 0"
+        >
+          <option [ngValue]="null" disabled>Selecciona una categoría</option>
+          @for (cat of categorias(); track cat.id) {
+            <option [ngValue]="cat.id">{{ cat.name }}</option>
+          }
+        </select>
+        @if (categorias().length === 0) {
+          <small class="hint">No hay categorías disponibles. Crea una primero en el admin de Django.</small>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="imagenUrl">URL de imagen</label>
+        <input
+          id="imagenUrl"
+          type="text"
+          placeholder="https://..."
+          [ngModel]="imagenUrl()"
+          (ngModelChange)="imagenUrl.set($event)"
+          name="imagenUrl"
+          [disabled]="guardando()"
+        />
+      </div>
+    </div>
+
+    <!-- Mensajes -->
+    @if (error()) {
+      <div class="alert alert-error">⚠️ {{ error() }}</div>
+    }
+    @if (mensaje()) {
+      <div class="alert alert-success">{{ mensaje() }}</div>
+    }
+
+    <button type="submit" class="btn-submit" [disabled]="guardando()">
+      @if (guardando()) {
+        <span>Guardando...</span>
+      } @else {
+        <span>➕ Crear producto</span>
+      }
+    </button>
+  </form>
+
+  <hr>
+
+  <!-- ── Lista de productos ──────────────────────────────────────────────── -->
+  <h3>Productos registrados</h3>
+
+  @if (cargando()) {
+    <p class="empty-msg">Cargando productos...</p>
+  } @else if (productos().length === 0) {
+    <p class="empty-msg">Todavía no hay productos registrados.</p>
+  } @else {
+    <table class="products-table">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Categoría</th>
+          <th>Precio</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (p of productos(); track p.id) {
+          @if (editandoId() === p.id) {
+            <!-- ── Fila en modo edición ───────────────────────────────── -->
+            <tr class="row-editing">
+              <td>
+                <input
+                  type="text"
+                  [ngModel]="editNombre()"
+                  (ngModelChange)="editNombre.set($event)"
+                  name="editNombre-{{ p.id }}"
+                  [disabled]="guardandoEdicion()"
+                />
+              </td>
+              <td>
+                <select
+                  [ngModel]="editCategoriaId()"
+                  (ngModelChange)="editCategoriaId.set($event)"
+                  name="editCategoria-{{ p.id }}"
+                  [disabled]="guardandoEdicion()"
+                >
+                  @for (cat of categorias(); track cat.id) {
+                    <option [ngValue]="cat.id">{{ cat.name }}</option>
+                  }
+                </select>
+              </td>
+              <td>
+                <input
+                  type="number"
+                  step="0.01"
+                  min="0.01"
+                  [ngModel]="editPrecio()"
+                  (ngModelChange)="editPrecio.set($event)"
+                  name="editPrecio-{{ p.id }}"
+                  [disabled]="guardandoEdicion()"
+                />
+              </td>
+              <td>
+                <select
+                  [ngModel]="editStatus()"
+                  (ngModelChange)="editStatus.set($event)"
+                  name="editStatus-{{ p.id }}"
+                  [disabled]="guardandoEdicion()"
+                >
+                  <option value="active">active</option>
+                  <option value="inactive">inactive</option>
+                </select>
+              </td>
+              <td class="actions-cell">
+                <button class="btn-icon btn-save" (click)="guardarEdicion(p)" [disabled]="guardandoEdicion()">
+                  @if (guardandoEdicion()) { Guardando... } @else { 💾 Guardar }
+                </button>
+                <button class="btn-icon btn-cancel" (click)="cancelarEdicion()" [disabled]="guardandoEdicion()">
+                  ✖ Cancelar
+                </button>
+              </td>
+            </tr>
+          } @else {
+            <!-- ── Fila normal ────────────────────────────────────────── -->
+            <tr>
+              <td>{{ p.name }}</td>
+              <td>{{ p.category_name }}</td>
+              <td>S/. {{ p.price }}</td>
+              <td>
+                <span class="badge" [class.badge-inactive]="p.status !== 'active'">
+                  {{ p.status }}
+                </span>
+              </td>
+              <td class="actions-cell">
+                <button class="btn-icon btn-edit" (click)="iniciarEdicion(p)">✏️ Editar</button>
+                <button class="btn-icon btn-delete" (click)="eliminarProducto(p)">🗑️ Eliminar</button>
+              </td>
+            </tr>
+          }
+        }
+      </tbody>
+    </table>
+  }
+
+</div>

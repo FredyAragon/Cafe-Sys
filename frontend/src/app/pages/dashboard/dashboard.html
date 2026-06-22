@@ -1,0 +1,17 @@
+<div class="dashboard-container">
+  <div class="panel welcome-panel">
+    <h1>Panel de Control</h1>
+    <p class="subtitle" *ngIf="usuario()">
+      Bienvenido de nuevo, <strong>{{ usuario()!.firstName }}</strong>. Este es el resumen de CafeSys.
+    </p>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card" *ngFor="let stat of estadisticas">
+      <div class="stat-details">
+        <h3>{{ stat.titulo }}</h3>
+        <p class="stat-value">{{ stat.valor }}</p>
+      </div>
+    </div>
+  </div>
+</div>
