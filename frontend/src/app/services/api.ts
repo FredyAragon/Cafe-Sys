@@ -143,26 +143,9 @@ export class ApiService {
     return hostname === 'localhost' || hostname === '127.0.0.1' ? '127.0.0.1' : 'host.docker.internal';
   }
 
-<<<<<<< HEAD
-  // 2. Tu función POST (Aquí es donde agregamos el Token obligatorio)
-  createProduct(productData: any): Observable<any> {
-    // 💡 PASO CLAVE: Simulamos que ya tenemos el token guardado.
-    // Para esta prueba rápida, puedes pegar directamente el Access Token de Admin que obtuvimos en Postman:
-    const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzgxMDM2Njc3LCJpYXQiOjE3ODEwMzMwNzcsImp0aSI6IjM0Njk1MmJiNWZmYzQ4MWQ5NmFlZmQxZmYxZDhjOTNhIiwidXNlcl9pZCI6MX0.RfeWDEV8euis4xDMqHKrl_cYzNAtEytSv8tP-cHA2rI'; 
-
-    // Creamos las cabeceras e inyectamos el pasaporte Bearer
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
-    });
-
-    // Enviamos el POST incluyendo las cabeceras seguras
-    return this.http.post(this.apiUrl, productData, { headers });
-=======
   // ── PRODUCTOS ─────────────────────────────────────────────────────────────
   getProducts(): Observable<Producto[]> {
     return this.http.get<Producto[]>(`${this.API_URL}/products/`).pipe(timeout(this.TIMEOUT));
->>>>>>> Diego
   }
 
   createProduct(productData: NuevoProducto): Observable<Producto> {
