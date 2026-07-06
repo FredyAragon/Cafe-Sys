@@ -1,18 +1,22 @@
+/* ──────────────────────────────────────────────────────────────────────────────
+   HOME PAGE - CafeSys
+   Paleta: #F9F6F0 (fondo), #3E2723 (texto oscuro), #D4A373 (acento caramelo)
+   ────────────────────────────────────────────────────────────────────────────── */
+
 /* --- HERO BANNER --- */
 .hero-section {
-  /* Imagen de fondo temporal, luego puedes cambiar la URL por una foto real */
   background-image: url('https://images.unsplash.com/photo-1497935586351-b67a49e012bf?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
   background-size: cover;
   background-position: center;
-  height: 60vh;
-  min-height: 400px;
+  height: 70vh;
+  min-height: 450px;
   position: relative;
 }
 
 .hero-overlay {
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(62, 39, 35, 0.6); /* Capa oscura para que el texto resalte */
+  background: rgba(62, 39, 35, 0.6);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -31,9 +35,11 @@
   color: #F9F6F0;
   font-size: 1.2rem;
   margin-bottom: 30px;
+  max-width: 600px;
 }
 
 .hero-btn {
+  display: inline-block;
   background-color: #D4A373;
   color: white;
   border: none;
@@ -42,6 +48,7 @@
   font-weight: bold;
   border-radius: 30px;
   cursor: pointer;
+  text-decoration: none;
   transition: transform 0.3s ease, background-color 0.3s ease;
 }
 
@@ -50,16 +57,18 @@
   transform: scale(1.05);
 }
 
-/* --- FLIP CARDS --- */
-.features-section {
-  padding: 60px 5%;
-  text-align: center;
-}
-
+/* --- SECTION TITLE (compartido) --- */
 .section-title {
   font-size: 2rem;
   color: #3E2723;
   margin-bottom: 40px;
+  text-align: center;
+}
+
+/* --- FLIP CARDS --- */
+.features-section {
+  padding: 60px 5%;
+  text-align: center;
 }
 
 .cards-grid {
@@ -73,7 +82,7 @@
   background-color: transparent;
   width: 300px;
   height: 200px;
-  perspective: 1000px; /* Crea el efecto 3D */
+  perspective: 1000px;
 }
 
 .flip-card-inner {
@@ -93,7 +102,7 @@
   position: absolute;
   width: 100%;
   height: 100%;
-  -webkit-backface-visibility: hidden; /* Oculta la parte de atrás de Safari */
+  -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
   display: flex;
   align-items: center;
@@ -126,4 +135,312 @@
   font-size: 1.1rem;
   line-height: 1.5;
   margin: 0;
+}
+
+/* ──────────── PROMOCIONES ──────────── */
+.promo-section {
+  padding: 60px 5%;
+  background: linear-gradient(135deg, #3E2723 0%, #5D4037 100%);
+}
+
+.promo-section .section-title {
+  color: #F9F6F0;
+}
+
+.promos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.promo-card {
+  background: #FFFFFF;
+  border-radius: 16px;
+  padding: 28px;
+  position: relative;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+  transition: transform 0.3s ease;
+}
+
+.promo-card:hover {
+  transform: translateY(-6px);
+}
+
+.promo-badge {
+  position: absolute;
+  top: -10px;
+  right: 20px;
+  background: #E65100;
+  color: #fff;
+  padding: 4px 16px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.promo-card h3 {
+  color: #3E2723;
+  font-size: 1.3rem;
+  margin: 0 0 10px;
+}
+
+.promo-card p {
+  color: #6D4C41;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin: 0 0 16px;
+}
+
+.promo-discount {
+  display: inline-block;
+  background: #C62828;
+  color: #fff;
+  padding: 4px 12px;
+  border-radius: 8px;
+  font-weight: 800;
+  font-size: 1.1rem;
+  margin-bottom: 12px;
+}
+
+.promo-cta {
+  display: inline-block;
+  background: #D4A373;
+  color: #fff;
+  padding: 10px 24px;
+  border-radius: 25px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: background 0.3s;
+}
+
+.promo-cta:hover {
+  background: #C08552;
+}
+
+/* ──────────── PRODUCTOS DESTACADOS ──────────── */
+.featured-section {
+  padding: 60px 5%;
+  background: #F9F6F0;
+}
+
+.featured-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.featured-card {
+  background: #FFFFFF;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(62, 39, 35, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.featured-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(62, 39, 35, 0.12);
+}
+
+.feat-img {
+  height: 180px;
+  overflow: hidden;
+  background: #EFEBE9;
+}
+
+.feat-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s;
+}
+
+.featured-card:hover .feat-img img {
+  transform: scale(1.05);
+}
+
+.feat-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3.5rem;
+  color: #BCAAA4;
+}
+
+.feat-body {
+  padding: 18px;
+  text-align: center;
+}
+
+.feat-body h4 {
+  color: #3E2723;
+  margin: 0 0 6px;
+  font-size: 1.1rem;
+}
+
+.feat-price {
+  color: #D4A373;
+  font-weight: 800;
+  font-size: 1.2rem;
+  margin: 0 0 14px;
+}
+
+.feat-btn {
+  display: inline-block;
+  background: #3E2723;
+  color: #fff;
+  padding: 8px 20px;
+  border-radius: 25px;
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: background 0.3s;
+}
+
+.feat-btn:hover {
+  background: #5D4037;
+}
+
+/* ──────────── RESEÑAS / TESTIMONIOS ──────────── */
+.reviews-section {
+  padding: 60px 5%;
+  background: #FFFFFF;
+}
+
+.reviews-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.review-card {
+  background: #F9F6F0;
+  border-radius: 16px;
+  padding: 24px;
+  text-align: center;
+  border: 1px solid #E4D9CC;
+  transition: transform 0.3s ease;
+}
+
+.review-card:hover {
+  transform: translateY(-4px);
+}
+
+.review-stars {
+  margin-bottom: 12px;
+  font-size: 1.4rem;
+  color: #E4D9CC;
+}
+
+.review-stars .filled {
+  color: #F9A825;
+}
+
+.review-text {
+  color: #4E342E;
+  font-style: italic;
+  line-height: 1.5;
+  margin: 0 0 12px;
+  font-size: 0.95rem;
+}
+
+.review-author {
+  color: #8D6E63;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+/* ──────────── CTA FINAL ──────────── */
+.cta-section {
+  padding: 80px 5%;
+  background: linear-gradient(135deg, #3E2723 0%, #5D4037 100%);
+  text-align: center;
+}
+
+.cta-section h2 {
+  color: #F9F6F0;
+  font-size: 2.2rem;
+  margin: 0 0 12px;
+}
+
+.cta-section p {
+  color: #D7CCC8;
+  font-size: 1.1rem;
+  margin: 0 0 32px;
+}
+
+.cta-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.cta-btn {
+  display: inline-block;
+  padding: 14px 28px;
+  border-radius: 30px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.cta-btn.primary {
+  background: #D4A373;
+  color: #fff;
+}
+
+.cta-btn.primary:hover {
+  background: #C08552;
+  transform: scale(1.05);
+}
+
+.cta-btn.secondary {
+  background: transparent;
+  color: #D4A373;
+  border: 2px solid #D4A373;
+}
+
+.cta-btn.secondary:hover {
+  background: #D4A373;
+  color: #fff;
+  transform: scale(1.05);
+}
+
+/* ──────────── RESPONSIVE ──────────── */
+@media (max-width: 768px) {
+  .hero-content h1 {
+    font-size: 2.2rem;
+  }
+
+  .hero-content p {
+    font-size: 1rem;
+  }
+
+  .hero-section {
+    height: 55vh;
+    min-height: 350px;
+  }
+
+  .location-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .section-title {
+    font-size: 1.6rem;
+  }
 }

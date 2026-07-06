@@ -69,6 +69,13 @@
   border: 2px solid #D4A373;
 }
 
+.right-actions .btn-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
 .btn-outline:hover {
   background-color: #D4A373;
   color: #FFFFFF;

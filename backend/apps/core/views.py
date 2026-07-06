@@ -1,5 +1,6 @@
-from rest_framework import viewsets, filters
+from rest_framework import viewsets, filters, status
 from rest_framework.permissions import IsAuthenticated, AllowAny, IsAuthenticatedOrReadOnly
+from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .serializers import CustomTokenObtainPairSerializer
 
@@ -83,6 +84,12 @@ class ProductsViewSet(viewsets.ModelViewSet):
     search_fields    = ['name', 'description', 'category__name']
     ordering_fields  = ['name', 'price', 'created']
     ordering         = ['category__name', 'name']
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        OrderDetails.objects.filter(product=instance).delete()
+        instance.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 # ──────────────────────────────────────────────
@@ -229,3 +236,12 @@ class MessagesViewSet(viewsets.ModelViewSet):
     search_fields    = ['subject', 'body', 'user__email']
     ordering_fields  = ['created', 'isRead']
     ordering         = ['-created']
+
+    def get_permissions(self):
+        """
+        Permitir POST sin autenticación para el formulario de contacto público.
+        El resto de operaciones requieren autenticación.
+        """
+        if self.request.method == 'POST':
+            return [AllowAny()]
+        return [IsAuthenticated()]

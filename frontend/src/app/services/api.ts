@@ -196,4 +196,42 @@ export class ApiService {
   createOrderDetail(detailData: { order: number; product: number; quantity: number; unitPrice: number }): Observable<OrderDetailFlat> {
     return this.http.post<OrderDetailFlat>(`${this.API_URL}/order-details/`, detailData).pipe(timeout(this.TIMEOUT));
   }
+
+  // ── USUARIOS ───────────────────────────────────────────────────────────────
+  getUsers(): Observable<UserDetail[]> {
+    return this.http.get<UserDetail[]>(`${this.API_URL}/users/`).pipe(timeout(this.TIMEOUT));
+  }
+
+  // ── DRIVERS ────────────────────────────────────────────────────────────────
+  getDrivers(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.API_URL}/drivers/`).pipe(timeout(this.TIMEOUT));
+  }
+
+  // ── DELIVERIES ─────────────────────────────────────────────────────────────
+  getDeliveries(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.API_URL}/deliveries/`).pipe(timeout(this.TIMEOUT));
+  }
+
+  // ── PROMOTIONS ─────────────────────────────────────────────────────────────
+  getPromotions(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.API_URL}/promotions/`).pipe(timeout(this.TIMEOUT));
+  }
+
+  // ── REVIEWS ────────────────────────────────────────────────────────────────
+  getReviews(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.API_URL}/reviews/`).pipe(timeout(this.TIMEOUT));
+  }
+
+  // ── MESSAGES ───────────────────────────────────────────────────────────────
+  getMessages(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.API_URL}/messages/`).pipe(timeout(this.TIMEOUT));
+  }
+
+  createMessage(messageData: { subject: string; body: string }): Observable<any> {
+    return this.http.post<any>(`${this.API_URL}/messages/`, messageData).pipe(timeout(this.TIMEOUT));
+  }
+
+  updateMessage(id: number, data: Partial<{ isRead: boolean; status: string }>): Observable<any> {
+    return this.http.patch<any>(`${this.API_URL}/messages/${id}/`, data).pipe(timeout(this.TIMEOUT));
+  }
 }

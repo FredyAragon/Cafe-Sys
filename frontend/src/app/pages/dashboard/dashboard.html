@@ -1,17 +1,250 @@
 <div class="dashboard-container">
-  <div class="panel welcome-panel">
-    <h1>Panel de Control</h1>
-    <p class="subtitle" *ngIf="usuario()">
-      Bienvenido de nuevo, <strong>{{ usuario()!.firstName }}</strong>. Este es el resumen de CafeSys.
-    </p>
+  <!-- Estado de carga -->
+  <div class="loading-overlay" *ngIf="cargando()">
+    <div class="spinner"></div>
+    <p>Cargando datos del dashboard...</p>
   </div>
 
-  <div class="stats-grid">
-    <div class="stat-card" *ngFor="let stat of estadisticas">
-      <div class="stat-details">
-        <h3>{{ stat.titulo }}</h3>
-        <p class="stat-value">{{ stat.valor }}</p>
+  <!-- Error -->
+  <div class="error-panel" *ngIf="error() && !cargando()">
+    <p>{{ error() }}</p>
+    <button (click)="recargar()">Reintentar</button>
+  </div>
+
+  <!-- Contenido principal (oculto durante carga) -->
+  <ng-container *ngIf="!cargando() && !error()">
+    <div class="panel welcome-panel">
+      <h1>Panel de Control</h1>
+      <p class="subtitle" *ngIf="usuario()">
+        Bienvenido de nuevo, <strong>{{ usuario()!.firstName }}</strong>. Este es el resumen en tiempo real de CafeSys.
+      </p>
+    </div>
+
+    <!-- ── ACCESOS RÁPIDOS ──────────────────────────────────────────── -->
+    <div class="quick-actions">
+      <a routerLink="/admin/productos" class="quick-btn">
+        <span class="quick-icon">☕</span>
+        <span>Gestionar Productos</span>
+      </a>
+      <a routerLink="/admin/categorias" class="quick-btn">
+        <span class="quick-icon">📂</span>
+        <span>Gestionar Categorías</span>
+      </a>
+      <a routerLink="/admin/ordenes" class="quick-btn">
+        <span class="quick-icon">📋</span>
+        <span>Ver Órdenes</span>
+      </a>
+      <a routerLink="/admin/usuarios" class="quick-btn">
+        <span class="quick-icon">👥</span>
+        <span>Gestionar Usuarios</span>
+      </a>
+    </div>
+
+    <!-- ── TARJETAS DE ESTADÍSTICAS (1ª fila) ──────────────────────────── -->
+    <div class="stats-grid">
+      <div class="stat-card stat-ventas">
+        <div class="stat-icon">💰</div>
+        <div class="stat-details">
+          <h3>Ventas de hoy</h3>
+          <p class="stat-value">{{ totalVentasHoy() }}</p>
+        </div>
+      </div>
+
+      <div class="stat-card stat-ordenes">
+        <div class="stat-icon">📋</div>
+        <div class="stat-details">
+          <h3>Órdenes pendientes</h3>
+          <p class="stat-value">{{ ordenesPendientes() }}</p>
+        </div>
+      </div>
+
+      <div class="stat-card stat-productos">
+        <div class="stat-icon">☕</div>
+        <div class="stat-details">
+          <h3>Productos activos</h3>
+          <p class="stat-value">{{ productosActivos() }}</p>
+        </div>
+      </div>
+
+      <div class="stat-card stat-clientes">
+        <div class="stat-icon">👥</div>
+        <div class="stat-details">
+          <h3>Clientes registrados</h3>
+          <p class="stat-value">{{ clientesRegistrados() }}</p>
+        </div>
       </div>
     </div>
-  </div>
+
+    <!-- ── TARJETAS DE ESTADÍSTICAS (2ª fila) ──────────────────────────── -->
+    <div class="stats-grid">
+      <div class="stat-card stat-categorias">
+        <div class="stat-icon">📂</div>
+        <div class="stat-details">
+          <h3>Categorías activas</h3>
+          <p class="stat-value">{{ categoriasActivas() }}</p>
+        </div>
+      </div>
+
+      <div class="stat-card stat-total-ordenes">
+        <div class="stat-icon">📦</div>
+        <div class="stat-details">
+          <h3>Total órdenes</h3>
+          <p class="stat-value">{{ totalOrdenes() }}</p>
+        </div>
+      </div>
+
+      <div class="stat-card stat-repartidores">
+        <div class="stat-icon">🚚</div>
+        <div class="stat-details">
+          <h3>Repartidores</h3>
+          <p class="stat-value">{{ repartidoresActivos() }}</p>
+        </div>
+      </div>
+
+      <div class="stat-card stat-entregas">
+        <div class="stat-icon">📬</div>
+        <div class="stat-details">
+          <h3>Entregas pendientes</h3>
+          <p class="stat-value">{{ entregasPendientes() }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TARJETAS DE ESTADÍSTICAS (3ª fila) ──────────────────────────── -->
+    <div class="stats-grid">
+      <div class="stat-card stat-promociones">
+        <div class="stat-icon">🏷️</div>
+        <div class="stat-details">
+          <h3>Promociones activas</h3>
+          <p class="stat-value">{{ promocionesActivas() }}</p>
+        </div>
+      </div>
+
+      <div class="stat-card stat-resenas">
+        <div class="stat-icon">⭐</div>
+        <div class="stat-details">
+          <h3>Reseñas recibidas</h3>
+          <p class="stat-value">{{ resenasRecientes() }}</p>
+        </div>
+      </div>
+
+      <div class="stat-card stat-mensajes">
+        <div class="stat-icon">✉️</div>
+        <div class="stat-details">
+          <h3>Mensajes no leídos</h3>
+          <p class="stat-value">{{ mensajesNoLeidos() }}</p>
+        </div>
+      </div>
+
+      <div class="stat-card stat-total">
+        <div class="stat-icon">📊</div>
+        <div class="stat-details">
+          <h3>Resumen</h3>
+          <p class="stat-value">{{ totalOrdenes() + productosActivos() + clientesRegistrados() }}</p>
+          <small>Entidades activas</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── GRÁFICOS Y TIMELINE ──────────────────────────────────────────── -->
+    <div class="charts-row">
+      <!-- Gráfico: Órdenes por estado -->
+      <div class="panel chart-panel">
+        <h2>📊 Órdenes por Estado</h2>
+        <div class="bar-chart">
+          @for (item of ordenesPorEstado(); track item.estado) {
+            <div class="bar-item">
+              <div class="bar-label">{{ item.estado }}</div>
+              <div class="bar-track">
+                <div
+                  class="bar-fill"
+                  [style.width.%]="(item.cantidad / maxOrdenesEstado()) * 100"
+                  [style.background]="item.color"
+                ></div>
+              </div>
+              <div class="bar-value">{{ item.cantidad }}</div>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Gráfico: Ventas por día -->
+      <div class="panel chart-panel">
+        <h2>📈 Ventas (últimos 7 días)</h2>
+        <div class="line-chart">
+          @for (item of ventasPorDia(); track item.dia) {
+            <div class="line-item">
+              <div class="line-bar-wrapper">
+                <div
+                  class="line-bar"
+                  [style.height.%]="maxVentasSemana() > 0 ? (item.total / maxVentasSemana()) * 100 : 0"
+                ></div>
+              </div>
+              <div class="line-label">S/ {{ item.total.toFixed(0) }}</div>
+              <div class="line-day">{{ item.dia }}</div>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TIMELINE DE ACTIVIDAD RECIENTE ──────────────────────────────── -->
+    <div class="panel timeline-panel">
+      <h2>🕐 Actividad Reciente</h2>
+      @if (actividadReciente().length > 0) {
+        <div class="timeline">
+          @for (act of actividadReciente(); track act.texto) {
+            <div class="timeline-item">
+              <span class="timeline-icon">{{ act.icono }}</span>
+              <div class="timeline-content">
+                <p class="timeline-text">{{ act.texto }}</p>
+                <span class="timeline-time">{{ act.tiempo }}</span>
+              </div>
+            </div>
+          }
+        </div>
+      } @else {
+        <p class="empty-message">No hay actividad reciente.</p>
+      }
+    </div>
+
+    <!-- ── TABLA DE ÓRDENES RECIENTES ──────────────────────────────────── -->
+    <div class="panel recent-orders-panel">
+      <h2>📋 Órdenes Recientes</h2>
+      <div class="table-wrapper" *ngIf="ordenesRecientes().length > 0; else noOrders">
+        <table class="orders-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Cliente</th>
+              <th>Total</th>
+              <th>Estado</th>
+              <th>Fecha</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let orden of ordenesRecientes()">
+              <td>{{ orden.id }}</td>
+              <td>{{ orden.user_detail?.firstName }} {{ orden.user_detail?.lastName }}</td>
+              <td>S/ {{ orden.total }}</td>
+              <td>
+                <span class="badge" [ngClass]="{
+                  'badge-pending': orden.orderStatus.toLowerCase() === 'pending',
+                  'badge-completed': orden.orderStatus.toLowerCase() === 'delivered',
+                  'badge-cancelled': orden.orderStatus.toLowerCase() === 'cancelled',
+                  'badge-shipped': orden.orderStatus.toLowerCase() === 'shipped'
+                }">
+                  {{ orden.orderStatus }}
+                </span>
+              </td>
+              <td>{{ orden.created | date:'dd/MM/yyyy HH:mm' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <ng-template #noOrders>
+        <p class="empty-message">No hay órdenes registradas aún.</p>
+      </ng-template>
+    </div>
+  </ng-container>
 </div>

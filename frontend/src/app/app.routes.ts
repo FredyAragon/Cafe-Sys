@@ -16,6 +16,8 @@ export const routes: Routes = [
         { path: '', loadComponent: () => import('./pages/home/home').then(m => m.HomeComponent) },
         { path: 'menu', loadComponent: () => import('./pages/menu/menu').then(m => m.MenuComponent) },
         { path: 'carrito', loadComponent: () => import('./pages/cart/cart').then(m => m.CartComponent) },
+        { path: 'ubicacion', loadComponent: () => import('./pages/location/location').then(m => m.LocationComponent) },
+        { path: 'contacto', loadComponent: () => import('./pages/contact/contact').then(m => m.ContactComponent) },
       ]
     },
 
@@ -33,6 +35,7 @@ export const routes: Routes = [
       { path: 'categorias', loadComponent: () => import('./pages/categories/categories').then(m => m.CategoriesComponent), data: { adminOnly: true } },
       { path: 'ordenes', loadComponent: () => import('./pages/admin/ordenes/ordenes').then(m => m.OrdenesComponent) },
       { path: 'usuarios', loadComponent: () => import('./pages/admin/users/users').then(m => m.UsersComponent), data: { adminOnly: true } },
+      { path: 'mensajes', loadComponent: () => import('./pages/admin/mensajes/mensajes').then(m => m.MensajesComponent) },
     ]
   },
 
