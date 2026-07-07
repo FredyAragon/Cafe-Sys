@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>☕ CafeSys API Gateway</title>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body {
+            background: radial-gradient(circle at center, #2c1a11 0%, #110905 100%);
+            overflow-x: hidden;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-12px) rotate(3deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+        .coffee-float { animation: float 4s ease-in-out infinite; }
+
+        .steam-particle {
+            position: absolute;
+            background: rgba(245, 230, 212, 0.12);
+            border-radius: 50%;
+            pointer-events: none;
+            filter: blur(4px);
+            animation: rise 4s linear infinite;
+        }
+        @keyframes rise {
+            0% { transform: translateY(100vh) scale(0.5); opacity: 0; }
+            50% { opacity: 0.5; }
+            100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
+        }
+
+        .glass-card {
+            background: rgba(45, 30, 24, 0.45);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(230, 126, 34, 0.2);
+        }
+    </style>
+</head>
+<body class="relative flex items-center justify-center min-h-screen p-4 md:p-8 select-none">
+
+    <div id="steam-container" class="absolute inset-0 overflow-hidden pointer-events-none z-0"></div>
+
+    <div class="glass-card max-w-3xl w-full p-6 md:p-10 rounded-2xl shadow-2xl z-10 animate__animated animate__fadeInUp">
+        
+        <div class="text-center mb-6">
+            <div class="inline-block text-6xl text-amber-500 mb-3 coffee-float">
+                <i class="fa-solid fa-mug-hot"></i>
+            </div>
+            <h1 class="text-3xl md:text-4xl font-extrabold text-amber-100 tracking-wide animate__animated animate__pulse animate__infinite animate__slow">
+                CafeSys Backend <span class="text-sm font-semibold bg-amber-600/30 text-amber-400 px-2 py-1 rounded-full border border-amber-500/30">v1.0</span>
+            </h1>
+        </div>
+        
+        <p class="text-amber-200/90 text-sm md:text-base leading-relaxed text-justify bg-black/25 p-4 rounded-xl border border-amber-900/40 mb-6 shadow-inner">
+            {{ project_description }}
+        </p>
+
+        <h2 class="text-amber-400 font-bold text-lg border-b border-amber-900/30 pb-2 mb-4 flex items-center gap-2">
+            <i class="fa-solid fa-users-gear"></i> Mapeo de Roles y Enlaces del Ecosistema (Frontend Vercel)
+        </h2>
+
+        <div class="space-y-4 mb-8">
+            
+            <div class="bg-gradient-to-b from-amber-950/40 to-stone-900/60 p-5 rounded-xl border border-amber-500/30 shadow-lg">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+                    <span class="text-xs font-bold uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
+                        <i class="fa-solid fa-earth-americas animate__animated animate__spin animate__slow"></i> Acceso Público Total
+                    </span>
+                    <span class="text-[11px] text-amber-300 font-medium bg-amber-950/80 px-2 py-0.5 rounded border border-amber-700/50">
+                        Visibilidad: Cliente, Administrador, Empleado, Repartidor
+                    </span>
+                </div>
+
+                <p class="text-xs text-amber-100/80 mb-4 text-justify">
+                    <strong>Perfil Cliente/Usuario:</strong> Explora el menú, selecciona productos o promociones para armar pedidos, define la locación (ya sea envío a domicilio o retiro en el mismo local), envía mensajes y deja reseñas sobre sus consumos.
+                </p>
+
+                <div class="mb-4">
+                    <a href="{{ frontend_url }}/tienda" target="_blank" 
+                       class="group relative flex items-center justify-center gap-3 w-full p-4 bg-gradient-to-r from-amber-600 to-orange-600 text-white font-extrabold text-base rounded-xl shadow-xl transition-all duration-300 transform hover:-translate-y-1 hover:shadow-orange-500/30 hover:from-amber-500 hover:to-orange-500 border border-amber-400/20">
+                        <i class="fa-solid fa-store text-lg animate__animated group-hover:animate__tada"></i>
+                        <span>🛒 ENTRAR A LA TIENDA PRINCIPAL (Cafesys Front)</span>
+                        <i class="fa-solid fa-circle-chevron-right text-sm ml-1 opacity-70 group-hover:translate-x-1 transition-transform"></i>
+                    </a>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
+                    <a href="{{ frontend_url }}/tienda/menu" target="_blank" class="p-2.5 bg-stone-900/50 hover:bg-amber-900/20 border border-stone-800 text-amber-200/90 rounded-lg flex items-center justify-center gap-2 transition-all group">
+                        <i class="fa-solid fa-utensils text-amber-500 group-hover:animate__bounce"></i> Menú Digital
+                    </a>
+                    <a href="{{ frontend_url }}/tienda/ubicacion" target="_blank" class="p-2.5 bg-stone-900/50 hover:bg-amber-900/20 border border-stone-800 text-amber-200/90 rounded-lg flex items-center justify-center gap-2 transition-all group">
+                        <i class="fa-solid fa-map-location-dot text-amber-500 group-hover:animate__bounce"></i> Ubicación Local
+                    </a>
+                    <a href="{{ frontend_url }}/tienda/contacto" target="_blank" class="p-2.5 bg-stone-900/50 hover:bg-amber-900/20 border border-stone-800 text-amber-200/90 rounded-lg flex items-center justify-center gap-2 transition-all group">
+                        <i class="fa-solid fa-envelope text-amber-500 group-hover:animate__bounce"></i> Contacto / Buzón
+                    </a>
+                </div>
+            </div>
+
+            <div class="bg-stone-900/40 p-4 rounded-xl border border-stone-800">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+                    <span class="text-xs font-bold uppercase tracking-wider text-sky-400 flex items-center gap-1.5">
+                        <i class="fa-solid fa-folder-open"></i> Gestión Interna Común
+                    </span>
+                    <span class="text-[11px] text-sky-400/80 font-medium bg-sky-950/40 px-2 py-0.5 rounded border border-sky-900/40">
+                        Visibilidad: Administrador, Empleado, Repartidor
+                    </span>
+                </div>
+                <p class="text-xs text-amber-100/70 mb-3 text-justify">
+                    <strong>Perfil Repartidor:</strong> Permisos enfocados en logística de última milla. Visualiza métricas básicas de entrega y distribución en el Dashboard y responde la mensajería de soporte en ruta.
+                </p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                    <a href="{{ frontend_url }}/admin/dashboard" target="_blank" class="p-2.5 bg-sky-950/20 hover:bg-sky-950/40 border border-sky-900/40 text-sky-200 rounded-lg flex items-center justify-between transition-all group">
+                        <span class="flex items-center gap-2"><i class="fa-solid fa-chart-pie text-sky-400 group-hover:animate__pulse"></i> Dashboard Administrativo</span>
+                        <i class="fa-solid fa-arrow-up-right-from-square opacity-40"></i>
+                    </a>
+                    <a href="{{ frontend_url }}/admin/mensajes" target="_blank" class="p-2.5 bg-sky-950/20 hover:bg-sky-950/40 border border-sky-900/40 text-sky-200 rounded-lg flex items-center justify-between transition-all group">
+                        <span class="flex items-center gap-2"><i class="fa-solid fa-comments text-sky-400 group-hover:animate__shakeX"></i> Bandeja de Mensajes</span>
+                        <i class="fa-solid fa-arrow-up-right-from-square opacity-40"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="bg-stone-900/40 p-4 rounded-xl border border-stone-800">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+                    <span class="text-xs font-bold uppercase tracking-wider text-purple-400 flex items-center gap-1.5">
+                        <i class="fa-solid fa-truck-ramp-box"></i> Logística de Operaciones
+                    </span>
+                    <span class="text-[11px] text-purple-400/80 font-medium bg-purple-950/40 px-2 py-0.5 rounded border border-purple-900/40">
+                        Visibilidad: Empleado, Repartidor
+                    </span>
+                </div>
+                <p class="text-xs text-amber-100/70 mb-3 text-justify">
+                    <strong>Perfil Empleado:</strong> Centraliza la recepción de órdenes en cocina y despacho, agiliza el flujo de preparación aceptando pedidos o delegando el despacho a un Repartidor disponible.
+                </p>
+                <div class="text-xs">
+                    <a href="{{ frontend_url }}/admin/ordenes" target="_blank" class="p-2.5 bg-purple-950/20 hover:bg-purple-950/40 border border-purple-900/40 text-purple-200 rounded-lg flex items-center justify-between transition-all group">
+                        <span class="flex items-center gap-2"><i class="fa-solid fa-clipboard-list text-purple-400 group-hover:animate__rubberBand"></i> Control y Flujo de Órdenes</span>
+                        <i class="fa-solid fa-arrow-up-right-from-square opacity-40"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="bg-stone-900/40 p-4 rounded-xl border border-stone-800">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+                    <span class="text-xs font-bold uppercase tracking-wider text-red-400 flex items-center gap-1.5">
+                        <i class="fa-solid fa-user-lock"></i> Control Maestro Global
+                    </span>
+                    <span class="text-[11px] text-red-400/80 font-medium bg-red-950/40 px-2 py-0.5 rounded border border-red-900/40">
+                        Visibilidad Única: Administrador
+                    </span>
+                </div>
+                <p class="text-xs text-amber-100/70 mb-3 text-justify">
+                    <strong>Perfil Administrador:</strong> Auditoría y control absoluto. Modifica y parametriza productos, categorías y promociones; audita el registro de usuarios del sistema, y modera el contenido de mensajes y reseñas.
+                </p>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
+                    <a href="{{ frontend_url }}/admin/productos" target="_blank" class="p-2.5 bg-red-950/20 hover:bg-red-950/40 border border-red-900/40 text-red-200 rounded-lg flex items-center justify-center gap-2 transition-all group">
+                        <i class="fa-solid fa-box-open text-red-400 group-hover:animate__headShake"></i> Productos
+                    </a>
+                    <a href="{{ frontend_url }}/admin/categorias" target="_blank" class="p-2.5 bg-red-950/20 hover:bg-red-950/40 border border-red-900/40 text-red-200 rounded-lg flex items-center justify-center gap-2 transition-all group">
+                        <i class="fa-solid fa-tags text-red-400 group-hover:animate__headShake"></i> Categorías
+                    </a>
+                    <a href="{{ frontend_url }}/admin/usuarios" target="_blank" class="p-2.5 bg-red-950/20 hover:bg-red-950/40 border border-red-900/40 text-red-200 rounded-lg flex items-center justify-center gap-2 transition-all group">
+                        <i class="fa-solid fa-users text-red-400 group-hover:animate__headShake"></i> Usuarios
+                    </a>
+                </div>
+            </div>
+
+        </div>
+
+        <h2 class="text-amber-400 font-bold text-lg border-b border-amber-900/30 pb-2 mb-4 flex items-center gap-2">
+            <i class="fa-solid fa-server"></i> Servicios de la API (Backend Interno)
+        </h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+            <a href="/admin/" 
+               class="group flex items-center gap-3 p-4 bg-stone-800/80 hover:bg-stone-700 text-amber-100 font-medium rounded-xl border border-stone-700 transition-all duration-200 transform hover:scale-[1.01]">
+                <div class="w-10 h-10 flex items-center justify-center bg-slate-900 text-sky-400 rounded-lg group-hover:bg-slate-800 transition-colors">
+                    <i class="fa-solid fa-shield-halved group-hover:animate__bounce"></i>
+                </div>
+                <div class="text-left">
+                    <div class="text-xs text-stone-400 font-normal">Django Admin</div>
+                    <span class="text-sm font-semibold">Panel de Control</span>
+                </div>
+            </a>
+
+            <a href="/apps/core/" 
+               class="group flex items-center gap-3 p-4 bg-stone-800/80 hover:bg-stone-700 text-amber-100 font-medium rounded-xl border border-stone-700 transition-all duration-200 transform hover:scale-[1.01]">
+                <div class="w-10 h-10 flex items-center justify-center bg-slate-900 text-emerald-400 rounded-lg group-hover:bg-slate-800 transition-colors">
+                    <i class="fa-solid fa-network-wired group-hover:animate__flash"></i>
+                </div>
+                <div class="text-left">
+                    <div class="text-xs text-stone-400 font-normal">REST Framework</div>
+                    <span class="text-sm font-semibold">Explorar API Rest</span>
+                </div>
+            </a>
+        </div>
+        
+        <footer class="text-xs text-amber-700/60 pt-4 border-t border-amber-900/20 flex flex-col sm:flex-row items-center justify-between gap-2">
+            <span>Estructura modular basado en 'DAW' • UNSA</span>
+            <span class="flex items-center gap-1"><i class="fa-solid fa-database text-[10px]"></i> Render & Supabase</span>
+        </footer>
+    </div>
+
+    <script>
+        function createSteam() {
+            const container = document.getElementById('steam-container');
+            if(!container) return;
+            const particle = document.createElement('div');
+            particle.classList.add('steam-particle');
+            
+            const size = Math.random() * 30 + 15;
+            particle.style.width = `${size}px`;
+            particle.style.height = `${size}px`;
+            particle.style.left = `${Math.random() * 100}vw`;
+            
+            const duration = Math.random() * 3 + 4;
+            particle.style.animationDuration = `${duration}s`;
+            
+            container.appendChild(particle);
+            
+            setTimeout(() => { particle.remove(); }, duration * 1000);
+        }
+        setInterval(createSteam, 400);
+    </script>
+</body>
+</html>
