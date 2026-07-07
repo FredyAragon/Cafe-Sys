@@ -3,6 +3,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny, IsAuthenticate
 from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .serializers import CustomTokenObtainPairSerializer
+from django.shortcuts import render
 
 from .models import (
     Users, Categories, Products,
@@ -25,6 +26,19 @@ from .serializers import (
     MessagesSerializer,
 )
 
+def index_backend(request):
+    context = {
+        # Tu URL principal de producción en Vercel
+        'frontend_url': 'https://cafe-sys.vercel.app',
+        # Descripición mejorada para el proyecto
+        'project_description': (
+            "CafeSys es una plataforma web integral diseñada para optimizar la gestión y operación "
+            "de una cafetería. El sistema automatiza procesos clave permitiendo una interacción "
+            "fluida entre administradores (control de inventario, gestión de pedidos, reportes y usuarios) "
+            "y clientes (exploración del menú, pedidos en línea y seguimiento en tiempo real)."
+        )
+    }
+    return render(request, 'core/index.html', context)
 
 # ──────────────────────────────────────────────
 # AUTHENTICATION VIEW
