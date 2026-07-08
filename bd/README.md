@@ -1,91 +1,61 @@
-# Base de Datos — Sistema de Cafetería ☕
+# Base de Datos — Sistema de Cafetería ☕ (Café-Sys)
 
-## Descripción
-Este módulo contiene el diseño y estructura de la base de datos del sistema de cafetería desarrollado con Django y PostgreSQL.
+##  Descripción
+Este módulo contiene el diseño, scripts, datos iniciales y la estructura de la base de datos relacional para el sistema de cafetería, mapeado directamente desde el backend de **Django ORM** y persistido en **PostgreSQL / Supabase**.
 
-La base de datos permite gestionar:
-
-- Usuarios y roles
-- Categorías y productos
-- Inventario
-- Promociones
-- Pedidos y detalles de pedidos
-- Ubicaciones de entrega
-- Conductores y vehículos
-- Entregas
-- Reseñas
-- Mensajes
+El diseño permite gestionar el flujo completo del negocio:
+* **Usuarios y Autenticación:** Clientes, administradores y roles del sistema.
+* **Catálogo e Inventario:** Categorías, productos y promociones dinámicas.
+* **Ventas:** Pedidos y detalles de facturación (`order_details`).
+* **Logística de Entregas:** Ubicaciones (`locations`), conductores (`drivers`), vehículos y estados de envío.
+* **Feedback y Comunicación:** Sistema de reseñas (`reviews`) y mensajería interna (`messages`).
 
 ---
 
-# Tecnologías utilizadas
-
-- PostgreSQL
-- SQL
-- Django ORM
-- dbdiagram.io
-
----
-
-# Archivos del módulo BD
-
-| Archivo | Descripción |
-|---|---|
-| `cafeteriadb.sql` | Script SQL para crear toda la base de datos |
-| `DER-dbdiagram.io.png` | Imagen del DER generado en dbdiagram.io |
-| `README.md` | Documentación del módulo |
-| `.gitignore` | Archivos ignorados por Git |
+##  Tecnologías Utilizadas
+* **PostgreSQL** (Motor de Base de Datos)
+* **Django ORM** (Modelado y Migraciones)
+* **Graphviz & Django Extensions** (Autogeneración del DER del Backend)
+* **dbdiagram.io** (Diseño conceptual y lógico rápido)
 
 ---
 
-# Estructura de la Base de Datos
+##  Archivos del Módulo BD
 
-La base de datos contiene las siguientes tablas:
-
-1. roles
-2. users
-3. categories
-4. products
-5. inventories
-6. promotions
-7. products_promotions
-8. orders
-9. order_details
-10. locations
-11. deliveries
-12. drivers
-13. vehicles
-14. reviews
-15. messages
+| Archivo / Directorio | Descripción |
+| :--- | :--- |
+| `cafesysdb.sql` | Script SQL base para la creación de las tablas del sistema. |
+| `cafesys_backup_total.sql` | Respaldo completo (`pg_dump`) que incluye estructuras y registros. |
+| `der_cafesys.png` | Diagrama Entidad-Relación completo autogenerado desde el Backend. |
+| `der_cafesys.dot` | Archivo de origen Graphviz para renderizado y edición del DER. |
+| `DER-Resumen.png` | Vista compacta/conceptual del DER diseñada en *dbdiagram.io*. |
+| `*_rows.csv` | Archivos de datos semilla (`categories`, `products`, `promotions`) para poblar la BD. |
+| `README.md` | Documentación técnica del módulo (este archivo). |
 
 ---
 
-# Relaciones principales
+##  Diagrama Entidad-Relación (DER)
 
-- Un usuario pertenece a un rol
-- Un producto pertenece a una categoría
-- Un pedido pertenece a un usuario
-- Un pedido contiene múltiples productos
-- Un producto puede tener múltiples ingredientes
-- Un producto puede tener múltiples promociones
+El proyecto cuenta con dos perspectivas de diseño visual:
 
----
+### 1. DER Detallado (Backend - Graphviz)
+Generado automáticamente analizando la metadata de los modelos de Django. Muestra con precisión los tipos de datos exactos de PostgreSQL y las relaciones físicas a nivel de código (`ForeignKey`, `OneToOneField`, etc.).
+* **Archivo:** `der_cafesys.png` / `der_cafesys.dot`
 
-# DER
-
-El diagrama entidad-relación fue generado usando:
-
-https://dbdiagram.io
-
-Archivo relacionado:
-
-- `DER-dbdiagram.io.png`
+### 2. DER Resumen (Conceptual - dbdiagram.io)
+Abstracción limpia enfocada en las reglas del negocio e interacciones principales para una lectura rápida en la documentación académica.
+* **Archivo:** `DER-Resumen.png`
 
 ---
 
-# Cómo usar el script SQL
+##  Mantenimiento y Comandos Útiles
 
-## 1. Crear la base de datos
+### Generar o Actualizar el DER dinámicamente
+Si realizas cambios en los modelos de Django (`backend/apps/core/models/`), puedes regenerar el archivo `.dot` e imagen ejecutando desde la raíz del **backend**:
 
-```sql
-CREATE DATABASE cafeteriadb;
+```powershell
+# Exportar la estructura limpia en formato Graphviz
+python manage.py graph_models core -o ..\bd\der_cafesys.dot
+
+# Renderizar directamente a imagen PNG (Requiere Graphviz instalado en el PATH)
+python manage.py graph_models core -o ..\bd\der_cafesys.png --rankdir=LR
