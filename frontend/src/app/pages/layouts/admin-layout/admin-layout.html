@@ -1,0 +1,32 @@
+<div class="admin-container">
+  <!-- Barra lateral permanente -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <h2>CafeSys Admin</h2>
+      <div class="sidebar-user">
+        <small>{{ usuario()?.role }}</small>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <a routerLink="/admin/dashboard" routerLinkActive="active">Dashboard</a>
+      <a *ngIf="usuario()?.role === 'Admin'" routerLink="/admin/productos" routerLinkActive="active">Productos</a>
+      <a *ngIf="usuario()?.role === 'Admin'" routerLink="/admin/categorias" routerLinkActive="active">Categorías</a>
+      <a *ngIf="mostrarOrdenes()" routerLink="/admin/ordenes" routerLinkActive="active">Órdenes</a>
+      <a *ngIf="usuario()?.role === 'Admin'" routerLink="/admin/usuarios" routerLinkActive="active">Usuarios</a>
+      <a routerLink="/admin/mensajes" routerLinkActive="active">Mensajes</a>
+      <a routerLink="/tienda" routerLinkActive="active">Ver tienda</a>
+    </nav>
+    <button class="exit-btn" (click)="cerrarSesion()">Salir</button>
+  </aside>
+
+  <!-- Contenedor principal -->
+  <main class="admin-content">
+    <header class="content-header">
+      <div class="user-info">Administrador</div>
+    </header>
+    <!-- Aquí se renderizará el componente UsersComponent al hacer clic en el enlace -->
+    <div class="page-content">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+</div>

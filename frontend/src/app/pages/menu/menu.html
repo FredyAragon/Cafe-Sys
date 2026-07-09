@@ -1,0 +1,97 @@
+<div class="menu-wrapper">
+
+  <!-- Header del menú -->
+  <div class="menu-header">
+    <h1>☕ Nuestro Menú</h1>
+    <p>Selecciona tus productos favoritos y agrégalos a la cesta</p>
+  </div>
+
+  <!-- Mensaje feedback -->
+  @if (mensaje()) {
+    <div class="toast">✅ {{ mensaje() }}</div>
+  }
+  @if (error()) {
+    <div class="alert alert-error">⚠️ {{ error() }}</div>
+  }
+
+  <!-- Filtros de categoría -->
+  <div class="filtros">
+    <button
+      class="filtro-btn"
+      [class.active]="filtroCategoria() === null"
+      (click)="filtroCategoria.set(null)">
+      Todos
+    </button>
+    @for (cat of categorias(); track cat.id) {
+      <button
+        class="filtro-btn"
+        [class.active]="filtroCategoria() === cat.id"
+        (click)="filtroCategoria.set(cat.id)">
+        {{ cat.name }}
+      </button>
+    }
+  </div>
+
+  <!-- Productos -->
+  @if (cargando()) {
+    <div class="loader">Cargando productos...</div>
+  } @else if (filteredProductos.length === 0) {
+    <div class="empty">No hay productos disponibles en esta categoría.</div>
+  } @else {
+    <div class="productos-grid">
+      @for (p of filteredProductos; track p.id) {
+        <div class="producto-card">
+          <!-- Imagen -->
+          <div class="card-img" (click)="abrirDetalle(p)">
+            @if (p.imageUrl) {
+              <img [src]="p.imageUrl" [alt]="p.name" loading="lazy" />
+            } @else {
+              <div class="img-placeholder">☕</div>
+            }
+          </div>
+          <!-- Info -->
+          <div class="card-body">
+            <span class="card-categoria">{{ p.category_name }}</span>
+            <h3 class="card-nombre">{{ p.name }}</h3>
+            <p class="card-desc" *ngIf="p.description">{{ p.description }}</p>
+            <div class="card-footer">
+              <span class="card-precio">S/. {{ p.price }}</span>
+              <button
+                class="btn-add"
+                [class.added]="feedbackId() === p.id"
+                (click)="agregarAlCarrito(p)">
+                @if (feedbackId() === p.id) { ✔ Añadido } @else { 🛒 Añadir }
+              </button>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Modal detalle -->
+  @if (detalleProducto(); as prod) {
+    <div class="modal-overlay" (click)="cerrarDetalle()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <button class="modal-close" (click)="cerrarDetalle()">✖</button>
+        <div class="modal-img">
+          @if (prod.imageUrl) {
+            <img [src]="prod.imageUrl" [alt]="prod.name" />
+          } @else {
+            <div class="img-placeholder large">☕</div>
+          }
+        </div>
+        <h2>{{ prod.name }}</h2>
+        <span class="modal-categoria">{{ prod.category_name }}</span>
+        <p class="modal-desc">{{ prod.description || 'Sin descripción disponible.' }}</p>
+        <div class="modal-footer">
+          <span class="modal-precio">S/. {{ prod.price }}</span>
+          <button class="btn-add" (click)="agregarAlCarrito(prod); cerrarDetalle()">
+            🛒 Añadir a la cesta
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
+</div>

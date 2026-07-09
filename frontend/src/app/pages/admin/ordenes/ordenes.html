@@ -1,0 +1,60 @@
+<div class="orders-container">
+  <div class="panel">
+    <h3>Órdenes</h3>
+    <p class="subtitle">Área de solo lectura para conductores y empleados.</p>
+
+    @if (cargando()) {
+      <div class="status-bar">Cargando pedidos...</div>
+    }
+
+    @if (!cargando() && error()) {
+      <div class="status-bar error">{{ error() }}</div>
+    }
+
+    @if (!cargando() && !error() && orders().length === 0) {
+      <p class="empty-state">No hay pedidos disponibles.</p>
+    }
+
+    @if (!cargando() && !error()) {
+      @for (order of orders(); track order.id) {
+        <div class="order-card">
+          <div class="order-header">
+            <span class="order-id">Orden #{{ order.id }}</span>
+            <span class="order-status" [class]="'status-' + order.orderStatus">
+              {{ order.orderStatus }}
+            </span>
+            <span class="order-total">S/. {{ order.total }}</span>
+            <span class="order-date">{{ order.created | date:'short' }}</span>
+          </div>
+          <div class="order-user">
+            Cliente: {{ order.user_detail.firstName }} {{ order.user_detail.lastName }}
+            ({{ order.user_detail.email }})
+          </div>
+          @if (order.notes) {
+            <div class="order-notes">Notas: {{ order.notes }}</div>
+          }
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Producto</th>
+                <th>Cantidad</th>
+                <th>Precio unitario</th>
+                <th>Subtotal</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (detail of order.details; track detail.id) {
+                <tr>
+                  <td>{{ detail.product_detail.name }}</td>
+                  <td>{{ detail.quantity }}</td>
+                  <td>S/. {{ detail.unitPrice }}</td>
+                  <td>S/. {{ detail.subtotal }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    }
+  </div>
+</div>

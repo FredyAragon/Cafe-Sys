@@ -1,0 +1,147 @@
+<section class="contact-page">
+  <div class="page-header">
+    <h1>💬 Contáctanos</h1>
+    <p>¿Tienes alguna consulta, sugerencia o pedido especial? Estamos aquí para ayudarte.</p>
+  </div>
+
+  <div class="contact-grid">
+    <div class="contact-info-side">
+      <div class="contact-method-card">
+        <div class="method-item">
+          <span class="method-icon">📞</span>
+          <div>
+            <h4>Teléfono</h4>
+            <p>+51 991 293 300</p>
+            <small>Lun - Dom: 7:00 AM - 10:00 PM</small>
+          </div>
+        </div>
+        <div class="method-item">
+          <span class="method-icon">✉️</span>
+          <div>
+            <h4>Email</h4>
+            <p>hola&#64;cafesys.com</p>
+            <small>Respuesta en menos de 24h</small>
+          </div>
+        </div>
+        <div class="method-item">
+          <span class="method-icon">📍</span>
+          <div>
+            <h4>Dirección</h4>
+            <p>Av. Ejército 305, Cercado<br/>Arequipa, Perú</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="social-card">
+        <h4>Síguenos</h4>
+        <div class="social-links">
+          <a href="#" class="social-link" title="Facebook">📘 Facebook</a>
+          <a href="#" class="social-link" title="Instagram">📸 Instagram</a>
+          <a href="#" class="social-link" title="WhatsApp">💬 WhatsApp</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="contact-form-wrapper">
+      @if (mensajeEnviado()) {
+        <div class="contact-success">
+          <span class="success-icon">✅</span>
+          <h3>¡Mensaje enviado con éxito!</h3>
+          <p>Gracias por contactarnos. Te responderemos a la brevedad posible.</p>
+        </div>
+      }
+
+      @if (errorEnvio()) {
+        <div class="contact-error">
+          <span>⚠️</span> {{ errorEnvio() }}
+        </div>
+      }
+
+      <form class="contact-form" (ngSubmit)="enviarMensaje()" #contactForm="ngForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="nombre">Nombre <span class="required">*</span></label>
+            <input
+              id="nombre"
+              type="text"
+              [ngModel]="contactoNombre()"
+              (ngModelChange)="contactoNombre.set($event)"
+              name="nombre"
+              placeholder="Tu nombre completo"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="email">Email <span class="required">*</span></label>
+            <input
+              id="email"
+              type="email"
+              [ngModel]="contactoEmail()"
+              (ngModelChange)="contactoEmail.set($event)"
+              name="email"
+              placeholder="tu@email.com"
+              required
+            />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="tema">Asunto</label>
+          <select
+            id="tema"
+            [ngModel]="contactoTema()"
+            (ngModelChange)="contactoTema.set($event)"
+            name="tema"
+          >
+            <option value="">Selecciona un asunto</option>
+            <option value="Consulta">Consulta general</option>
+            <option value="Sugerencia">Sugerencia</option>
+            <option value="Pedido especial">Pedido especial</option>
+            <option value="Reclamo">Reclamo</option>
+            <option value="Otro">Otro</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="mensaje">Mensaje <span class="required">*</span></label>
+          <textarea
+            id="mensaje"
+            [ngModel]="contactoMensaje()"
+            (ngModelChange)="contactoMensaje.set($event)"
+            name="mensaje"
+            rows="5"
+            placeholder="Escribe tu mensaje aquí..."
+            required
+          ></textarea>
+        </div>
+        <button type="submit" class="submit-btn" [disabled]="enviando()">
+          @if (enviando()) {
+            <span class="btn-loading">⏳ Enviando...</span>
+          } @else {
+            <span>✉️ Enviar mensaje</span>
+          }
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <div class="faq-section">
+    <h2>❓ Preguntas Frecuentes</h2>
+    <div class="faq-grid">
+      <div class="faq-item">
+        <h4>¿Cuánto tiempo tardan en responder?</h4>
+        <p>Normalmente respondemos todos los mensajes en menos de 24 horas hábiles.</p>
+      </div>
+      <div class="faq-item">
+        <h4>¿Hacen envíos a domicilio?</h4>
+        <p>Sí, realizamos delivery a toda la ciudad de Arequipa con un tiempo estimado de 30-45 minutos.</p>
+      </div>
+      <div class="faq-item">
+        <h4>¿Aceptan pedidos personalizados?</h4>
+        <p>Sí, puedes hacer pedidos especiales para eventos. Contáctanos con al menos 48h de anticipación.</p>
+      </div>
+      <div class="faq-item">
+        <h4>¿Tienen opciones sin gluten o veganas?</h4>
+        <p>Sí, contamos con alternativas para dietas especiales. Consulta nuestro menú o pregunta directamente.</p>
+      </div>
+    </div>
+  </div>
+</section>

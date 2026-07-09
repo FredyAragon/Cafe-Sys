@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, timeout } from 'rxjs';
+import { getApiUrl } from './api-config';
 
 // ── Tipos básicos que devuelve Django ──────────────────────────────────────
 export interface Categoria {
@@ -38,55 +39,199 @@ export interface NuevoProducto {
   status?: string;
 }
 
+// ── Órdenes ─────────────────────────────────────────────────────────────────
+export interface OrderDetailData {
+  product: number;
+  quantity: number;
+  unitPrice: number;
+}
+
+export interface NewOrder {
+  user: number;
+  location: number;
+  orderStatus: string;
+  total: number;
+  notes?: string;
+  details_data?: OrderDetailData[];
+}
+
+export interface ProductDetail {
+  id: number;
+  name: string;
+  price: string;
+  imageUrl: string | null;
+  status: string;
+}
+
+/** Formato plano devuelto por GET /order-details/ */
+export interface OrderDetailFlat {
+  id: number;
+  order: number;
+  product: number;
+  product_name: string;
+  quantity: number;
+  unitPrice: string;
+  subtotal: string;
+  status: string;
+  created: string;
+  modified: string;
+}
+
+/** Formato anidado dentro de una orden (GET /orders/) */
+export interface OrderDetailNested {
+  id: number;
+  product: number;
+  product_detail: ProductDetail;
+  quantity: number;
+  unitPrice: string;
+  subtotal: string;
+  status: string;
+}
+
+export interface UserDetail {
+  id: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+  role: string;
+  status: string;
+}
+
+export interface Order {
+  id: number;
+  user: number;
+  user_detail: UserDetail;
+  location: number;
+  orderStatus: string;
+  total: string;
+  notes: string | null;
+  details: OrderDetailNested[];
+  status: string;
+  created: string;
+  modified: string;
+}
+
+// ── Ubicaciones ─────────────────────────────────────────────────────────────
+export interface Ubicacion {
+  id: number;
+  user: number;
+  alias: string;
+  address: string;
+  reference: string | null;
+  isDefault: boolean;
+  status: string;
+  created: string;
+  modified: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
 
-  private readonly API_URL = 'http://127.0.0.1:8000/apps/core';
+  private readonly API_URL = getApiUrl();
 
-  constructor(private http: HttpClient) {}
+  /** Tiempo máximo de espera para cada petición (ms) */
+  private readonly TIMEOUT = 10_000;
+
+  constructor(private readonly http: HttpClient) {}
 
   // ── PRODUCTOS ─────────────────────────────────────────────────────────────
   getProducts(): Observable<Producto[]> {
-    return this.http.get<Producto[]>(`${this.API_URL}/products/`);
+    return this.http.get<Producto[]>(`${this.API_URL}/products/`).pipe(timeout(this.TIMEOUT));
   }
 
   createProduct(productData: NuevoProducto): Observable<Producto> {
-    return this.http.post<Producto>(`${this.API_URL}/products/`, productData);
+    return this.http.post<Producto>(`${this.API_URL}/products/`, productData).pipe(timeout(this.TIMEOUT));
   }
 
   updateProduct(id: number, productData: Partial<NuevoProducto>): Observable<Producto> {
-    return this.http.patch<Producto>(`${this.API_URL}/products/${id}/`, productData);
+    return this.http.patch<Producto>(`${this.API_URL}/products/${id}/`, productData).pipe(timeout(this.TIMEOUT));
   }
 
   deleteProduct(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.API_URL}/products/${id}/`);
+    return this.http.delete<void>(`${this.API_URL}/products/${id}/`).pipe(timeout(this.TIMEOUT));
   }
 
   // ── CATEGORÍAS ────────────────────────────────────────────────────────────
   getCategories(): Observable<Categoria[]> {
-    return this.http.get<Categoria[]>(`${this.API_URL}/categories/`);
+    return this.http.get<Categoria[]>(`${this.API_URL}/categories/`).pipe(timeout(this.TIMEOUT));
   }
 
   createCategory(categoryData: NuevaCategoria): Observable<Categoria> {
-    return this.http.post<Categoria>(`${this.API_URL}/categories/`, categoryData);
+    return this.http.post<Categoria>(`${this.API_URL}/categories/`, categoryData).pipe(timeout(this.TIMEOUT));
   }
 
   updateCategory(id: number, categoryData: Partial<NuevaCategoria>): Observable<Categoria> {
-    return this.http.patch<Categoria>(`${this.API_URL}/categories/${id}/`, categoryData);
+    return this.http.patch<Categoria>(`${this.API_URL}/categories/${id}/`, categoryData).pipe(timeout(this.TIMEOUT));
   }
 
   deleteCategory(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.API_URL}/categories/${id}/`);
+    return this.http.delete<void>(`${this.API_URL}/categories/${id}/`).pipe(timeout(this.TIMEOUT));
   }
 
-  // ── PEDIDOS ───────────────────────────────────────────────────────────────
-  getOrders(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.API_URL}/orders/`);
+  // ── UBICACIONES ───────────────────────────────────────────────────────────
+  getLocations(): Observable<Ubicacion[]> {
+    return this.http.get<Ubicacion[]>(`${this.API_URL}/locations/`).pipe(timeout(this.TIMEOUT));
   }
 
-  updateOrderStatus(id: number, orderStatus: string): Observable<any> {
-    return this.http.patch<any>(`${this.API_URL}/orders/${id}/`, { orderStatus });
+  createLocation(locationData: { user: number; alias: string; address: string; reference?: string; isDefault?: boolean }): Observable<Ubicacion> {
+    return this.http.post<Ubicacion>(`${this.API_URL}/locations/`, locationData).pipe(timeout(this.TIMEOUT));
+  }
+
+  // ── ÓRDENES ───────────────────────────────────────────────────────────────
+  getOrders(): Observable<Order[]> {
+    return this.http.get<Order[]>(`${this.API_URL}/orders/`).pipe(timeout(this.TIMEOUT));
+  }
+
+  createOrder(orderData: NewOrder): Observable<Order> {
+    return this.http.post<Order>(`${this.API_URL}/orders/`, orderData).pipe(timeout(this.TIMEOUT));
+  }
+
+  // ── DETALLES DE ÓRDENES ───────────────────────────────────────────────────
+  getOrderDetails(): Observable<OrderDetailFlat[]> {
+    return this.http.get<OrderDetailFlat[]>(`${this.API_URL}/order-details/`).pipe(timeout(this.TIMEOUT));
+  }
+
+  createOrderDetail(detailData: { order: number; product: number; quantity: number; unitPrice: number }): Observable<OrderDetailFlat> {
+    return this.http.post<OrderDetailFlat>(`${this.API_URL}/order-details/`, detailData).pipe(timeout(this.TIMEOUT));
+  }
+
+  // ── USUARIOS ───────────────────────────────────────────────────────────────
+  getUsers(): Observable<UserDetail[]> {
+    return this.http.get<UserDetail[]>(`${this.API_URL}/users/`).pipe(timeout(this.TIMEOUT));
+  }
+
+  // ── DRIVERS ────────────────────────────────────────────────────────────────
+  getDrivers(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.API_URL}/drivers/`).pipe(timeout(this.TIMEOUT));
+  }
+
+  // ── DELIVERIES ─────────────────────────────────────────────────────────────
+  getDeliveries(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.API_URL}/deliveries/`).pipe(timeout(this.TIMEOUT));
+  }
+
+  // ── PROMOTIONS ─────────────────────────────────────────────────────────────
+  getPromotions(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.API_URL}/promotions/`).pipe(timeout(this.TIMEOUT));
+  }
+
+  // ── REVIEWS ────────────────────────────────────────────────────────────────
+  getReviews(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.API_URL}/reviews/`).pipe(timeout(this.TIMEOUT));
+  }
+
+  // ── MESSAGES ───────────────────────────────────────────────────────────────
+  getMessages(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.API_URL}/messages/`).pipe(timeout(this.TIMEOUT));
+  }
+
+  createMessage(messageData: { subject: string; body: string }): Observable<any> {
+    return this.http.post<any>(`${this.API_URL}/messages/`, messageData).pipe(timeout(this.TIMEOUT));
+  }
+
+  updateMessage(id: number, data: Partial<{ isRead: boolean; status: string }>): Observable<any> {
+    return this.http.patch<any>(`${this.API_URL}/messages/${id}/`, data).pipe(timeout(this.TIMEOUT));
   }
 }
