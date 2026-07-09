@@ -81,5 +81,12 @@ export class ApiService {
     return this.http.delete<void>(`${this.API_URL}/categories/${id}/`);
   }
 
-  // Aquí irán los demás endpoints (órdenes, usuarios, etc.)
+  // ── PEDIDOS ───────────────────────────────────────────────────────────────
+  getOrders(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.API_URL}/orders/`);
+  }
+
+  updateOrderStatus(id: number, orderStatus: string): Observable<any> {
+    return this.http.patch<any>(`${this.API_URL}/orders/${id}/`, { orderStatus });
+  }
 }
