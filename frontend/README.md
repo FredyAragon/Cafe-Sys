@@ -1,99 +1,129 @@
-Markdown
-# CafeSys - Frontend ☕
+# ☕ CafeSys — Frontend
 
-Este es el repositorio del frontend para **CafeSys**, un sistema de gestión y tienda virtual para una cafetería. El proyecto ha sido desarrollado utilizando [Angular CLI](https://github.com/angular/angular-cli) versión 21.1.4.
+<p align="center">
+  <img src="https://img.shields.io/badge/Angular-21.1.4-DD0031?logo=angular&logoColor=white" alt="Angular 21.1.4" />
+  <img src="https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/Vitest-6E9F18?logo=vitest&logoColor=white" alt="Vitest" />
+  <img src="https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white" alt="Docker" />
+  <img src="https://img.shields.io/badge/Vercel-000000?logo=vercel&logoColor=white" alt="Vercel" />
+</p>
+
+Frontend de **CafeSys**, un sistema integral de gestión y tienda virtual diseñado para cafeterías. Desarrollado con [Angular CLI](https://github.com/angular/angular-cli) v21.1.4.
 
 ---
 
-## 📂 Estructura del Proyecto (Tree)
+## 📂 Estructura del Proyecto
 
-A continuación se detalla la estructura principal de directorios y archivos clave del frontend:
-
-```text
+```
 frontend/
-├── public/                 # Archivos estáticos públicos (imágenes, favicon, etc.)
+├── public/                 # Archivos estáticos (favicon, imágenes, assets)
 │   └── favicon.ico
-├── src/                    # Código fuente de la aplicación
-│   ├── app/                # Lógica principal de Angular
-│   │   ├── guards/         # Protectores de rutas (Control de acceso)
+├── src/
+│   ├── app/
+│   │   ├── guards/         # 🔒 Protección de rutas
 │   │   │   ├── auth.guard.ts
 │   │   │   └── role.guard.ts
-│   │   ├── interceptors/   # Interceptores HTTP (Inyección de tokens)
+│   │   ├── interceptors/   # 🔄 Interceptores HTTP
 │   │   │   └── auth.interceptor.ts
-│   │   ├── pages/          # Componentes de vistas/páginas de la app
-│   │   │   ├── admin/      # Panel de administración (Mensajes, Órdenes, Usuarios)
+│   │   ├── pages/          # 📄 Vistas y páginas de la aplicación
+│   │   │   ├── admin/      # Panel de administración
 │   │   │   │   ├── mensajes/
 │   │   │   │   ├── ordenes/
 │   │   │   │   └── users/
-│   │   │   ├── cart/       # Gestión del carrito de compras
+│   │   │   ├── cart/       # Carrito de compras
 │   │   │   ├── categories/ # Catálogo de categorías
 │   │   │   ├── contact/    # Formulario de contacto
-│   │   │   ├── dashboard/  # Panel de control general
+│   │   │   ├── dashboard/  # Panel de control
 │   │   │   ├── home/       # Página de inicio
-│   │   │   ├── layouts/    # Estructuras de diseño comunes (Navbar, Sidebar)
-│   │   │   ├── location/   # Ubicación de las sucursales
-│   │   │   ├── login/      # Autenticación de usuarios
-│   │   │   ├── menu/       # Carta/Menú de la cafetería
-│   │   │   ├── products/   # Detalle/Gestión de productos
-│   │   │   └── register/   # Registro de nuevos usuarios
-│   │   ├── services/       # Servicios de comunicación con la API y estados
+│   │   │   ├── layouts/    # Estructuras comunes (Navbar, Sidebar)
+│   │   │   ├── location/   # Ubicación de sucursales
+│   │   │   ├── login/      # Autenticación
+│   │   │   ├── menu/       # Carta / Menú
+│   │   │   ├── products/   # Detalle y gestión de productos
+│   │   │   └── register/   # Registro de usuarios
+│   │   ├── services/       # 🔌 Servicios y lógica de negocio
 │   │   │   ├── api-config.ts
 │   │   │   ├── api.ts
 │   │   │   ├── auth.service.ts
 │   │   │   └── cart.service.ts
-│   │   ├── app.config.ts   # Configuración global del core de la aplicación
-│   │   ├── app.routes.ts   # Enrutamiento general del sistema
-│   │   └── app.ts          # Componente raíz (Root Component)
-│   ├── index.html          # Archivo HTML principal
-│   ├── main.ts             # Punto de entrada de la aplicación
+│   │   ├── app.config.ts   # Configuración global
+│   │   ├── app.routes.ts   # Enrutamiento
+│   │   └── app.ts          # Componente raíz
+│   ├── index.html
+│   ├── main.ts             # Punto de entrada
 │   └── styles.css          # Estilos globales
-├── angular.json            # Configuración de Angular CLI
-├── Dockerfile              # Configuración de contenedorización
-├── package.json            # Dependencias del proyecto y scripts
-├── tsconfig.json           # Configuración de TypeScript
-└── vercel.json             # Configuración para despliegue en Vercel
+├── angular.json
+├── Dockerfile
+├── package.json
+├── tsconfig.json
+└── vercel.json
+```
 
-## Arquitectura y Componentes Clave
+---
 
-guards/: Se encargan de proteger las rutas del sistema. auth.guard.ts evita el ingreso a páginas protegidas si el usuario no está logueado, y role.guard.ts restringe accesos específicos según el tipo de rol (ej. Cliente vs Admin).
+## 🏗️ Arquitectura y Componentes Clave
 
-interceptors/: auth.interceptor.ts intercepta de manera automática las peticiones HTTP salientes para adjuntar el token de autenticación (JWT) y manejar errores globales del servidor.
+| Módulo | Descripción |
+|--------|-------------|
+| **`guards/`** | Protegen el acceso a rutas. `auth.guard.ts` bloquea páginas privadas si el usuario no está autenticado; `role.guard.ts` restringe el acceso según el rol (Cliente vs. Administrador). |
+| **`interceptors/`** | `auth.interceptor.ts` intercepta automáticamente las peticiones HTTP para inyectar el token JWT y gestionar errores globales del servidor. |
+| **`services/`** | Capa de comunicación con el backend: `api.ts` maneja las peticiones, `auth.service.ts` controla la sesión y `cart.service.ts` gestiona el estado del carrito de compras. |
+| **`pages/`** | Cada vista está aislada con sus archivos `.ts`, `.html` y `.css`, garantizando un diseño modular y mantenible. |
 
-services/: Proveen la conexión al backend a través de api.ts, manejan la sesión en auth.service.ts y gestionan el estado pragmático de las compras a través de cart.service.ts.
+---
 
-pages/: Cada módulo visual está aislado con sus respectivos archivos .ts, .html y .css, asegurando un orden óptimo en el diseño del sistema de ventas.
+## 🚀 Comandos de Desarrollo
 
-## Servidor de Desarrollo
+### Servidor de desarrollo
 
-Para iniciar un servidor de desarrollo local, ejecuta el siguiente comando en la raíz del proyecto:
-
-Bash
+```bash
 ng serve
-Una vez que el servidor esté corriendo, abre tu navegador y navega a http://localhost:4200/. La aplicación se recargará automáticamente cada vez que modifiques cualquiera de los archivos fuente.
+```
 
-## Construcción (Build)
-Para compilar el proyecto de cara a producción, ejecuta:
+La aplicación estará disponible en [`http://localhost:4200/`](http://localhost:4200/).  
+Se recarga automáticamente al detectar cambios en los archivos fuente.
 
-Bash
+### Compilación para producción
+
+```bash
 ng build
-Esto compilará los archivos de TypeScript y optimizará los recursos dentro del directorio dist/. El build de producción optimiza la aplicación de manera automática para maximizar la velocidad y rendimiento.
+```
 
-## Docker y Despliegue
-Local / Contenedor: Este proyecto incluye un Dockerfile optimizado para desplegar la aplicación mediante contenedores de manera local o en la nube.
+Genera los archivos optimizados en el directorio `dist/`, listos para desplegar.
 
-Producción cloud: El proyecto cuenta con un archivo vercel.json listo para integrarse directamente con plataformas como Vercel mediante Integración Continua (CI/CD).
+### Pruebas unitarias
 
-## Pruebas Unitarias
-Para ejecutar las pruebas unitarias utilizando el framework de pruebas Vitest, usa el comando:
-
-Bash
+```bash
 ng test
-## Generación de Código (Scaffolding)
-Angular CLI incluye potentes herramientas de andamiaje. Para generar un nuevo componente o servicio, utiliza:
+```
 
-Bash
-# Generar un componente nuevo
+Ejecuta el conjunto de pruebas con el framework **Vitest**.
+
+---
+
+## 🐳 Docker y Despliegue
+
+| Entorno | Descripción |
+|---------|-------------|
+| **Local / Contenedor** | Incluye un `Dockerfile` optimizado para ejecutar la aplicación en contenedores, tanto en entornos locales como en la nube. |
+| **Producción (Cloud)** | El archivo `vercel.json` permite el despliegue directo en [Vercel](https://vercel.com) con Integración Continua (CI/CD). |
+
+---
+
+## 🛠️ Generación de Código (Scaffolding)
+
+Angular CLI proporciona herramientas de andamiaje para crear componentes y servicios rápidamente:
+
+```bash
+# Generar un nuevo componente
 ng generate component nombre-del-componente
 
 # Generar un nuevo servicio
 ng generate service services/nombre-del-servicio
+```
+
+---
+
+<p align="center">
+  <sub>Desarrollado con ☕ y Angular</sub>
+</p>
