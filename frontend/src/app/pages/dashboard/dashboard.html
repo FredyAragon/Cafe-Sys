@@ -225,7 +225,7 @@
           <tbody>
             <tr *ngFor="let orden of ordenesRecientes()">
               <td>{{ orden.id }}</td>
-              <td>{{ orden.user_detail?.firstName }} {{ orden.user_detail?.lastName }}</td>
+              <td>{{ orden.user_detail.firstName }} {{ orden.user_detail.lastName }}</td>
               <td>S/ {{ orden.total }}</td>
               <td>
                 <span class="badge" [ngClass]="{

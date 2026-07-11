@@ -8,7 +8,7 @@ import { AuthService } from '../../services/auth.service';
 @Component({
   standalone: true,
   selector: 'app-cart',
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule],
   templateUrl: './cart.html',
   styleUrls: ['./cart.css']
 })
