@@ -1,0 +1,102 @@
+<div class="cart-wrapper">
+
+  @if (compraExitosa() && ordenCreada(); as orden) {
+    <!-- ── Éxito ─────────────────────────────── -->
+    <div class="success-container">
+      <div class="success-icon">🎉</div>
+      <h1>¡Pedido realizado con éxito!</h1>
+      <p class="success-order">Orden #{{ orden.id }}</p>
+      <p>Gracias por tu compra. Tu pedido ya está en preparación.</p>
+      <div class="success-actions">
+        <button class="btn-primary" (click)="irMenu()">Seguir comprando</button>
+        <button class="btn-outline" (click)="irMisOrdenes()">Ir al inicio</button>
+      </div>
+    </div>
+  } @else {
+    <!-- ── Header ─────────────────────────────── -->
+    <div class="cart-header">
+      <h1>🛒 Tu Cesta</h1>
+      @if (items().length > 0) {
+        <button class="btn-clear" (click)="vaciarCarrito()">🗑️ Vaciar cesta</button>
+      }
+    </div>
+
+    @if (error()) {
+      <div class="alert alert-error">⚠️ {{ error() }}</div>
+    }
+
+    @if (items().length === 0) {
+      <!-- ── Vacío ────────────────────────────── -->
+      <div class="empty-cart">
+        <div class="empty-icon">🛒</div>
+        <h2>Tu cesta está vacía</h2>
+        <p>Agrega productos desde nuestro menú para empezar tu pedido.</p>
+        <button class="btn-primary" (click)="irMenu()">Ver menú</button>
+      </div>
+    } @else {
+      <!-- ── Lista de items ────────────────────── -->
+      <div class="cart-items">
+        @for (item of items(); track item.product.id) {
+          <div class="cart-item">
+            <div class="item-img">
+              @if (item.product.imageUrl) {
+                <img [src]="item.product.imageUrl" [alt]="item.product.name" />
+              } @else {
+                <div class="img-placeholder">☕</div>
+              }
+            </div>
+            <div class="item-info">
+              <h3>{{ item.product.name }}</h3>
+              <span class="item-categoria">{{ item.product.category_name }}</span>
+              <span class="item-precio-unit">S/. {{ item.product.price }} c/u</span>
+            </div>
+            <div class="item-qty">
+              <button
+                class="qty-btn"
+                [disabled]="item.quantity <= 1"
+                (click)="actualizarCantidad(item.product.id, item.quantity - 1)">
+                −
+              </button>
+              <span class="qty-value">{{ item.quantity }}</span>
+              <button
+                class="qty-btn"
+                (click)="actualizarCantidad(item.product.id, item.quantity + 1)">
+                +
+              </button>
+            </div>
+            <div class="item-subtotal">
+              <span class="subtotal-label">Subtotal</span>
+              <span class="subtotal-valor">S/. {{ (Number(item.product.price) * item.quantity).toFixed(2) }}</span>
+            </div>
+            <button class="item-remove" (click)="eliminar(item.product.id)" title="Eliminar">
+              ✖
+            </button>
+          </div>
+        }
+      </div>
+
+      <!-- ── Resumen y checkout ────────────────── -->
+      <div class="cart-summary">
+        <div class="summary-row">
+          <span>Productos ({{ count() }})</span>
+          <span>{{ count() }} artículos</span>
+        </div>
+        <div class="summary-row summary-total">
+          <span>Total</span>
+          <span>S/. {{ total().toFixed(2) }}</span>
+        </div>
+        <button
+          class="btn-checkout"
+          [disabled]="guardando()"
+          (click)="finalizarCompra()">
+          @if (guardando()) {
+            ⏳ Procesando...
+          } @else {
+            ✅ Confirmar pedido
+          }
+        </button>
+      </div>
+    }
+  }
+
+</div>

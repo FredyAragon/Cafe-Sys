@@ -3,6 +3,7 @@ services:
     name: cafesys-backend
     env: docker
     plan: free
+    healthCheckPath: /
     dockerContext: ./backend
     dockerfilePath: ./backend/Dockerfile
     envVars:
@@ -18,3 +19,5 @@ services:
         sync: false
       - key: DB_HOST
         sync: false
+      - key: CORS_ALLOWED_ORIGINS
+        value: https://cafe-sys.vercel.app

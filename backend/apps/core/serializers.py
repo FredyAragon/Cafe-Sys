@@ -67,21 +67,23 @@ class UsersSerializer(serializers.ModelSerializer):
         model  = Users
         fields = (
             'id', 'firstName', 'lastName', 'email',
-            'role', 'status', 'created', 'modified'
+            'role', 'status', 'created', 'modified','is_staff'
         )
         # passwordHash, created_id, modified_id → excluidos totalmente
-        read_only_fields = ('id', 'created', 'modified')
+        read_only_fields = ('id', 'created', 'modified', 'is_staff')
 
 
 class UsersWriteSerializer(serializers.ModelSerializer):
     """Para crear/actualizar usuarios encriptando la contraseña nativamente."""
     password = serializers.CharField(write_only=True, required=True, validators=[validate_not_blank])
+    role = serializers.CharField(required=False, default='Customer')
+    status = serializers.CharField(required=False, default='active')
 
     class Meta:
         model  = Users
         fields = (
             'id', 'firstName', 'lastName', 'email',
-            'password', 'role', 'status'
+            'password', 'role', 'status', 'is_staff'
         )
         read_only_fields = ('id',)
 
@@ -100,6 +102,22 @@ class UsersWriteSerializer(serializers.ModelSerializer):
         if password:
             instance.set_password(password)
         return super().update(instance, validated_data)
+
+
+class SuperuserCreateSerializer(serializers.Serializer):
+    firstName = serializers.CharField(required=True, validators=[validate_not_blank])
+    lastName = serializers.CharField(required=True, validators=[validate_not_blank])
+    email = serializers.EmailField(required=True)
+    password = serializers.CharField(write_only=True, required=True, validators=[validate_not_blank])
+
+    def validate_email(self, value):
+        value = value.lower().strip()
+        if Users.objects.filter(email=value).exists():
+            raise serializers.ValidationError('Ya existe un usuario con este correo.')
+        return value
+
+    def create(self, validated_data):
+        return Users.objects.create_superuser(**validated_data)
 
 
 # ──────────────────────────────────────────────
@@ -207,17 +225,48 @@ class OrderDetailsNestedSerializer(serializers.ModelSerializer):
         read_only_fields = ('id', 'subtotal', 'product_detail')
 
 
+class OrderDetailWriteSerializer(serializers.Serializer):
+    product = serializers.IntegerField()
+    quantity = serializers.IntegerField(min_value=1)
+    unitPrice = serializers.DecimalField(max_digits=10, decimal_places=2, min_value=0.01)
+
+
 class OrdersSerializer(serializers.ModelSerializer):
     details = OrderDetailsNestedSerializer(many=True, read_only=True)
     user_detail = UsersSerializer(source='user', read_only=True)
+    # Campos de entrada para crear detalles inline
+    details_data = OrderDetailWriteSerializer(many=True, write_only=True, required=False)
 
     class Meta:
         model = Orders
         fields = (
             'id', 'user', 'user_detail', 'location', 'orderStatus',
-            'total', 'notes', 'details', 'status', 'created', 'modified'
+            'total', 'notes', 'details', 'details_data',
+            'status', 'created', 'modified'
         )
-        read_only_fields = ('id', 'total', 'details', 'user_detail', 'created', 'modified')
+        read_only_fields = ('id', 'details', 'user_detail', 'created', 'modified')
+
+    def create(self, validated_data):
+        details_data = validated_data.pop('details_data', [])
+        order = Orders.objects.create(**validated_data)
+        for detail in details_data:
+            qty = detail['quantity']
+            unit_price = detail['unitPrice']
+            # Calcular subtotal antes de crear porque el modelo valida el campo
+            subtotal = round(qty * float(unit_price), 2)
+            OrderDetails.objects.create(
+                order=order,
+                product_id=detail['product'],
+                quantity=qty,
+                unitPrice=unit_price,
+                subtotal=subtotal
+            )
+        return order
+
+    def update(self, instance, validated_data):
+        # En update ignoramos details_data, solo actualizamos campos planos
+        validated_data.pop('details_data', None)
+        return super().update(instance, validated_data)
 
 
 # ──────────────────────────────────────────────

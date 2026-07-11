@@ -1,0 +1,107 @@
+<div class="mensajes-container">
+  <div class="page-header">
+    <h1>✉️ Mensajes Recibidos</h1>
+    <p>Gestiona los mensajes enviados desde el formulario de contacto.</p>
+  </div>
+
+  <!-- Loading -->
+  @if (cargando()) {
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Cargando mensajes...</p>
+    </div>
+  }
+
+  <!-- Error -->
+  @if (error()) {
+    <div class="error-state">
+      <p>⚠️ {{ error() }}</p>
+      <button (click)="cargarMensajes()">Reintentar</button>
+    </div>
+  }
+
+  <!-- Contenido principal -->
+  @if (!cargando() && !error()) {
+    <div class="mensajes-layout">
+      <!-- Lista de mensajes -->
+      <div class="mensajes-list">
+        @if (mensajes().length === 0) {
+          <div class="empty-state">
+            <span class="empty-icon">📭</span>
+            <p>No hay mensajes recibidos aún.</p>
+          </div>
+        }
+
+        @for (msg of mensajes(); track msg.id) {
+          <div
+            class="mensaje-item"
+            [class.unread]="!msg.isRead"
+            [class.selected]="mensajeSeleccionado()?.id === msg.id"
+            (click)="seleccionarMensaje(msg); marcarComoLeido(msg)"
+          >
+            <div class="msg-header">
+              <span class="msg-sender">{{ getNombreUsuario(msg) }}</span>
+              <span class="msg-date">{{ formatearFecha(msg.created) }}</span>
+            </div>
+            <div class="msg-subject">{{ msg.subject }}</div>
+            <div class="msg-preview">{{ msg.body?.slice(0, 80) }}{{ msg.body?.length > 80 ? '...' : '' }}</div>
+            <div class="msg-meta">
+              @if (!msg.isRead) {
+                <span class="badge-unread">Nuevo</span>
+              }
+              <span class="msg-status" [class.inactive]="msg.status === 'inactive'">
+                {{ msg.status === 'active' ? 'Activo' : 'Inactivo' }}
+              </span>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Detalle del mensaje -->
+      <div class="mensaje-detail">
+        @if (mensajeSeleccionado(); as msg) {
+          <div class="detail-card">
+            <div class="detail-header">
+              <h2>{{ msg.subject }}</h2>
+              <button class="close-btn" (click)="cerrarDetalle()">✖</button>
+            </div>
+            <div class="detail-meta">
+              <div class="meta-row">
+                <span class="meta-label">De:</span>
+                <span class="meta-value">{{ getNombreUsuario(msg) }}</span>
+              </div>
+              @if (getEmailUsuario(msg)) {
+                <div class="meta-row">
+                  <span class="meta-label">Email:</span>
+                  <span class="meta-value">{{ getEmailUsuario(msg) }}</span>
+                </div>
+              }
+              <div class="meta-row">
+                <span class="meta-label">Fecha:</span>
+                <span class="meta-value">{{ formatearFecha(msg.created) }}</span>
+              </div>
+              <div class="meta-row">
+                <span class="meta-label">Estado:</span>
+                <span class="meta-value">
+                  @if (msg.isRead) {
+                    <span class="read-tag">✅ Leído</span>
+                  } @else {
+                    <span class="unread-tag">📩 No leído</span>
+                  }
+                </span>
+              </div>
+            </div>
+            <div class="detail-body">
+              <p>{{ msg.body }}</p>
+            </div>
+          </div>
+        } @else {
+          <div class="no-selection">
+            <span class="no-sel-icon">👈</span>
+            <p>Selecciona un mensaje de la lista para ver su contenido completo.</p>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>

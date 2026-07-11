@@ -1,10 +1,18 @@
 import { Injectable, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable, tap } from 'rxjs';
+import { Observable, tap, switchMap, map } from 'rxjs';
+import { getApiUrl } from './api-config';
 
 // ── Tipos que refleja exactamente lo que Django devuelve ──────────────────────
 export interface LoginCredentials {
+  email: string;
+  password: string;
+}
+
+export interface RegisterCredentials {
+  firstName: string;
+  lastName: string;
   email: string;
   password: string;
 }
@@ -52,27 +60,29 @@ export class AuthService {
   }
 
   // ── LOGIN ─────────────────────────────────────────────────────────────────
-  login(credenciales: LoginCredentials): Observable<AuthTokens> {
+  login(credenciales: LoginCredentials): Observable<UsuarioSesion> {
     return this.http.post<AuthTokens>(`${this.API_URL}/token/`, credenciales).pipe(
       tap(tokens => {
-        // 1. Guardamos los tokens en memoria y sessionStorage
+        // Guardamos los tokens en memoria y sessionStorage
         this._guardarTokens(tokens);
-
-        // 2. Decodificamos el access token para obtener el user_id del payload
-        const payload = this._decodificarToken(tokens.access);
-
-        // 3. Con el user_id, pedimos los datos completos del usuario a Django
-        if (payload?.user_id) {
-          this.http.get<UsuarioSesion>(`${this.API_URL}/users/${payload.user_id}/`).subscribe({
-            next: (usuario) => {
-              this._usuario.set(usuario);
-              sessionStorage.setItem('cafesys_usuario', JSON.stringify(usuario));
-            },
-            error: () => console.error('No se pudo cargar el perfil del usuario.')
-          });
+      }),
+      map(tokens => this._decodificarToken(tokens.access)),
+      switchMap(payload => {
+        if (!payload?.user_id) {
+          throw new Error('Token inválido: falta user_id');
         }
+        return this.http.get<UsuarioSesion>(`${this.API_URL}/users/${payload.user_id}/`);
+      }),
+      tap(usuario => {
+        this._usuario.set(usuario);
+        sessionStorage.setItem('cafesys_usuario', JSON.stringify(usuario));
       })
     );
+  }
+
+  // ── REGISTER ─────────────────────────────────────────────────────────────
+  register(credenciales: RegisterCredentials): Observable<UsuarioSesion> {
+    return this.http.post<UsuarioSesion>(`${this.API_URL}/users/`, credenciales);
   }
 
   // ── LOGOUT ────────────────────────────────────────────────────────────────
@@ -132,9 +142,10 @@ export class AuthService {
 
   private _decodificarToken(token: string): any {
     try {
-      // El payload de un JWT está en la segunda parte (base64)
       const payload = token.split('.')[1];
-      return JSON.parse(atob(payload));
+      const base64 = payload.replace(/-/g, '+').replace(/_/g, '/');
+      const padded = base64.padEnd(Math.ceil(base64.length / 4) * 4, '=');
+      return JSON.parse(atob(padded));
     } catch {
       return null;
     }

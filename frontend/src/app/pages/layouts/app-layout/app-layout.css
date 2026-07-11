@@ -1,0 +1,157 @@
+/* Paleta Feng Shui: 
+   Fondo: #F9F6F0 (Beige muy suave)
+   Texto principal: #3E2723 (Café oscuro)
+   Acentos: #D4A373 (Caramelo cálido) 
+*/
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #F9F6F0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #3E2723;
+}
+
+/* --- HEADER --- */
+.main-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 5%;
+  height: 80px;
+  background-color: #FFFFFF;
+  box-shadow: 0 2px 15px rgba(62, 39, 35, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.logo {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #3E2723;
+  text-decoration: none;
+  letter-spacing: 1px;
+}
+
+.center-nav {
+  display: flex;
+  gap: 30px;
+}
+
+.center-nav a {
+  text-decoration: none;
+  color: #6D4C41;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.center-nav a:hover, .center-nav a.active {
+  color: #D4A373;
+}
+
+.right-actions {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.btn-outline, .btn-solid {
+  padding: 8px 20px;
+  border-radius: 25px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-outline {
+  color: #D4A373;
+  border: 2px solid #D4A373;
+}
+
+.right-actions .btn-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+.btn-outline:hover {
+  background-color: #D4A373;
+  color: #FFFFFF;
+}
+
+.btn-solid {
+  background-color: #3E2723;
+  color: #FFFFFF;
+}
+
+.btn-solid:hover {
+  background-color: #5D4037;
+}
+
+.cart-btn {
+  background: none;
+  border: none;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #3E2723;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  text-decoration: none;
+}
+
+.badge {
+  background-color: #D4A373;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+}
+
+.user-dropdown {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  border-left: 1px solid #EFEBE9;
+  padding-left: 15px;
+}
+
+.user-name {
+  font-weight: 600;
+}
+
+.logout-text {
+  background: none;
+  border: none;
+  color: #8D6E63;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+/* --- MAIN & FOOTER --- */
+.main-content {
+  flex: 1;
+}
+
+.main-footer {
+  background-color: #3E2723;
+  color: #D7CCC8;
+  padding: 40px 5%;
+  text-align: center;
+}
+
+.footer-info {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin-bottom: 20px;
+}
+
+.footer-copy {
+  border-top: 1px solid #5D4037;
+  padding-top: 20px;
+  font-size: 0.9rem;
+}

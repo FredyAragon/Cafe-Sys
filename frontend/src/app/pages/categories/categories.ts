@@ -1,174 +1,143 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { ApiService, Categoria } from '../../services/api';
+import { Component, inject, OnInit, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { timeout } from 'rxjs';
+import { getApiUrl } from '../../services/api-config';
+
+export interface Categoria {
+  id: number;
+  name: string;
+  description: string | null;
+  imageUrl: string | null;
+  status: string;
+}
 
 @Component({
-  standalone: true,
   selector: 'app-categories',
-  imports: [FormsModule],
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './categories.html',
   styleUrls: ['./categories.css']
 })
 export class CategoriesComponent implements OnInit {
+  private http = inject(HttpClient);
+  private fb = inject(FormBuilder);
 
-  private apiService = inject(ApiService);
+  private readonly API_URL = `${getApiUrl()}/categories/`;
 
-  // ── Datos ──────────────────────────────────────────────────────────────
   categorias = signal<Categoria[]>([]);
-
-  // ── Estado de la UI ────────────────────────────────────────────────────
   cargando = signal(false);
-  guardando = signal(false);
-  mensaje = signal('');
   error = signal('');
+  showForm = signal(false);
+  isEditing = signal(false);
+  editingId = signal<number | null>(null);
 
-  // ── Modelo del formulario de creación ───────────────────────────────────
-  nombre = signal('');
-  descripcion = signal('');
-  imagenUrl = signal('');
+  categoriaForm: FormGroup;
 
-  // ── Edición inline (fila que se está editando) ──────────────────────────
-  editandoId = signal<number | null>(null);
-  editNombre = signal('');
-  editDescripcion = signal('');
-  editImagenUrl = signal('');
-  editStatus = signal('active');
-  guardandoEdicion = signal(false);
-
-  ngOnInit() {
-    this.cargarDatos();
+  constructor() {
+    this.categoriaForm = this.fb.group({
+      name: ['', Validators.required],
+      description: [''],
+      status: ['active']
+    });
   }
 
-  cargarDatos() {
-    this.cargando.set(true);
+  ngOnInit(): void {
+    this.cargarCategorias();
+  }
 
-    this.apiService.getCategories().subscribe({
+  cargarCategorias(): void {
+    this.cargando.set(true);
+    this.error.set('');
+
+    this.http.get<Categoria[]>(this.API_URL).pipe(timeout(8000)).subscribe({
       next: (data) => {
         this.categorias.set(data);
         this.cargando.set(false);
       },
-      error: () => {
-        this.error.set('No se pudieron cargar las categorías.');
+      error: (err) => {
+        console.error('Error al cargar categorias:', err);
+        if (err.name === 'TimeoutError') {
+          this.error.set('El servidor no respondio a tiempo. Verifica que el backend este corriendo.');
+        } else {
+          this.error.set('No se pudieron cargar las categorias. Verifica la conexion con el backend.');
+        }
         this.cargando.set(false);
       }
     });
   }
 
-  // ── CREAR ────────────────────────────────────────────────────────────────
-  onSubmit() {
-    if (!this.nombre().trim()) {
-      this.error.set('El nombre de la categoría es obligatorio.');
-      return;
-    }
-
-    this.error.set('');
-    this.mensaje.set('');
-    this.guardando.set(true);
-
-    this.apiService.createCategory({
-      name: this.nombre().trim(),
-      description: this.descripcion().trim() || undefined,
-      imageUrl: this.imagenUrl().trim() || undefined
-    }).subscribe({
-      next: (nuevaCategoria) => {
-        this.categorias.update(actuales => [...actuales, nuevaCategoria]);
-        this.mensaje.set(`✅ Categoría "${nuevaCategoria.name}" creada con éxito.`);
-        this.guardando.set(false);
-        this._limpiarFormulario();
-      },
-      error: (err) => {
-        this.guardando.set(false);
-        this.error.set(this._formatearErrorDjango(err));
-      }
-    });
+  abrirFormulario(): void {
+    this.showForm.set(true);
+    this.isEditing.set(false);
+    this.editingId.set(null);
+    this.categoriaForm.reset({ name: '', description: '', status: 'active' });
   }
 
-  private _limpiarFormulario() {
-    this.nombre.set('');
-    this.descripcion.set('');
-    this.imagenUrl.set('');
+  cerrarFormulario(): void {
+    this.showForm.set(false);
+    this.isEditing.set(false);
+    this.editingId.set(null);
+    this.categoriaForm.reset({ name: '', description: '', status: 'active' });
   }
 
-  // ── EDITAR ───────────────────────────────────────────────────────────────
-  iniciarEdicion(c: Categoria) {
-    this.error.set('');
-    this.mensaje.set('');
-    this.editandoId.set(c.id);
-    this.editNombre.set(c.name);
-    this.editDescripcion.set(c.description ?? '');
-    this.editImagenUrl.set(c.imageUrl ?? '');
-    this.editStatus.set(c.status);
-  }
+  onSubmit(): void {
+    if (this.categoriaForm.invalid) return;
 
-  cancelarEdicion() {
-    this.editandoId.set(null);
-  }
+    const payload = {
+      name: this.categoriaForm.value.name,
+      description: this.categoriaForm.value.description || null,
+      status: this.categoriaForm.value.status
+    };
 
-  guardarEdicion(c: Categoria) {
-    if (!this.editNombre().trim()) {
-      this.error.set('El nombre de la categoría es obligatorio.');
-      return;
-    }
-
-    this.error.set('');
-    this.guardandoEdicion.set(true);
-
-    this.apiService.updateCategory(c.id, {
-      name: this.editNombre().trim(),
-      description: this.editDescripcion().trim() || undefined,
-      imageUrl: this.editImagenUrl().trim() || undefined,
-      status: this.editStatus()
-    }).subscribe({
-      next: (actualizada) => {
-        this.categorias.update(actuales =>
-          actuales.map(item => item.id === actualizada.id ? actualizada : item)
-        );
-        this.mensaje.set(`✅ Categoría "${actualizada.name}" actualizada.`);
-        this.guardandoEdicion.set(false);
-        this.editandoId.set(null);
-      },
-      error: (err) => {
-        this.guardandoEdicion.set(false);
-        this.error.set(this._formatearErrorDjango(err));
-      }
-    });
-  }
-
-  // ── ELIMINAR ─────────────────────────────────────────────────────────────
-  eliminarCategoria(c: Categoria) {
-    const confirmado = confirm(`¿Eliminar "${c.name}"? Esta acción no se puede deshacer.`);
-    if (!confirmado) return;
-
-    this.error.set('');
-    this.mensaje.set('');
-
-    this.apiService.deleteCategory(c.id).subscribe({
-      next: () => {
-        this.categorias.update(actuales => actuales.filter(item => item.id !== c.id));
-        this.mensaje.set(`🗑️ Categoría "${c.name}" eliminada.`);
-      },
-      error: (err) => {
-        // ⚠️ Si la categoría tiene productos asociados, Django no permite borrarla
-        //    (la relación Producto → Categoría es PROTECT). Mostramos un mensaje claro.
-        if (err.status === 500 || err.status === 409 || err.status === 400) {
-          this.error.set(`No se pudo eliminar "${c.name}": probablemente tiene productos asociados.`);
-        } else {
-          this.error.set(`No se pudo eliminar "${c.name}".`);
+    if (this.isEditing() && this.editingId()) {
+      // Editar
+      this.http.patch(`${this.API_URL}${this.editingId()}/`, payload).pipe(timeout(8000)).subscribe({
+        next: () => {
+          this.cargarCategorias();
+          this.cerrarFormulario();
+        },
+        error: (err) => {
+          console.error('Error al actualizar categoria:', err);
+          this.error.set('No se pudo actualizar la categoria.');
         }
-      }
+      });
+    } else {
+      // Crear
+      this.http.post(this.API_URL, payload).pipe(timeout(8000)).subscribe({
+        next: () => {
+          this.cargarCategorias();
+          this.cerrarFormulario();
+        },
+        error: (err) => {
+          console.error('Error al crear categoria:', err);
+          this.error.set('No se pudo crear la categoria. Verifica que el nombre no exista.');
+        }
+      });
+    }
+  }
+
+  editarCategoria(cat: Categoria): void {
+    this.showForm.set(true);
+    this.isEditing.set(true);
+    this.editingId.set(cat.id);
+    this.categoriaForm.patchValue({
+      name: cat.name,
+      description: cat.description || '',
+      status: cat.status
     });
   }
 
-  // ── Helper: extraer mensaje de error legible desde la respuesta de Django ──
-  private _formatearErrorDjango(err: any): string {
-    const detalle = err?.error;
-    if (detalle && typeof detalle === 'object') {
-      const primeraClave = Object.keys(detalle)[0];
-      const primerError = Array.isArray(detalle[primeraClave])
-        ? detalle[primeraClave][0]
-        : detalle[primeraClave];
-      return `${primeraClave}: ${primerError}`;
-    }
-    return 'Ocurrió un error. Intenta de nuevo.';
+  eliminarCategoria(id: number): void {
+    if (!confirm('¿Esta seguro de eliminar esta categoria? Esta accion es irreversible.')) return;
+
+    this.http.delete(`${this.API_URL}${id}/`).pipe(timeout(8000)).subscribe({
+      next: () => this.cargarCategorias(),
+      error: (err) => {
+        console.error('Error al eliminar categoria:', err);
+        this.error.set('No se pudo eliminar la categoria.');
+      }
+    });
   }
 }

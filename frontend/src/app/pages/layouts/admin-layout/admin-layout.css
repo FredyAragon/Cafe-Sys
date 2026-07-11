@@ -1,0 +1,99 @@
+:host {
+  display: block;
+  min-height: 100vh;
+}
+
+.admin-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: #F9F6F0;
+  color: #3E2723;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.sidebar {
+  width: 260px;
+  background-color: #FFFFFF;
+  border-right: 1px solid #E4D9CC;
+  display: flex;
+  flex-direction: column;
+  padding: 24px 20px;
+  box-shadow: 0 2px 15px rgba(62, 39, 35, 0.05);
+}
+
+.sidebar-header h2 {
+  color: #3E2723;
+  font-size: 1.4rem;
+  margin-bottom: 30px;
+  letter-spacing: 1px;
+}
+
+.sidebar-nav a {
+  display: block;
+  padding: 14px 16px;
+  color: #6D4C41;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  border-radius: 12px;
+  margin-bottom: 8px;
+  background-color: #FBF5ED;
+}
+
+.sidebar-nav a:hover,
+.sidebar-nav a.active {
+  background-color: #D4A373;
+  color: #FFFFFF;
+}
+
+.exit-btn {
+  margin-top: auto;
+  background-color: #D4A373;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 16px;
+  cursor: pointer;
+  font-weight: 700;
+  width: 100%;
+  transition: background-color 0.3s ease;
+}
+
+.exit-btn:hover {
+  background-color: #b57c4b;
+}
+
+.admin-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.content-header {
+  min-height: 80px;
+  background-color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 30px;
+  border-bottom: 1px solid #E4D9CC;
+  box-shadow: 0 2px 10px rgba(62, 39, 35, 0.04);
+}
+
+.page-content {
+  padding: 30px;
+  overflow-y: auto;
+  background-color: #F9F6F0;
+}
+
+.content-header .user-info {
+  color: #6D4C41;
+  font-weight: 600;
+}
+
+.panel {
+  background-color: #FFFFFF;
+  border: 1px solid #E4D9CC;
+  border-radius: 18px;
+  padding: 30px;
+  box-shadow: 0 8px 20px rgba(62, 39, 35, 0.06);
+}

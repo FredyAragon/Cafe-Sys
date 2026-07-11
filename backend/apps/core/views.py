@@ -1,7 +1,9 @@
-from rest_framework import viewsets, filters
+from rest_framework import viewsets, filters, status
 from rest_framework.permissions import IsAuthenticated, AllowAny, IsAuthenticatedOrReadOnly
+from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .serializers import CustomTokenObtainPairSerializer
+from django.shortcuts import render
 
 from .models import (
     Users, Categories, Products,
@@ -24,6 +26,19 @@ from .serializers import (
     MessagesSerializer,
 )
 
+def index_backend(request):
+    context = {
+        # Tu URL principal de producción en Vercel
+        'frontend_url': 'https://cafe-sys.vercel.app',
+        # Descripición mejorada para el proyecto
+        'project_description': (
+            "CafeSys es una plataforma web integral diseñada para optimizar la gestión y operación "
+            "de una cafetería. El sistema automatiza procesos clave permitiendo una interacción "
+            "fluida entre administradores (control de inventario, gestión de pedidos, reportes y usuarios) "
+            "y clientes (exploración del menú, pedidos en línea y seguimiento en tiempo real)."
+        )
+    }
+    return render(request, 'core/index.html', context)
 
 # ──────────────────────────────────────────────
 # AUTHENTICATION VIEW
@@ -47,6 +62,11 @@ class UsersViewSet(viewsets.ModelViewSet):
     search_fields   = ['firstName', 'lastName', 'email']
     ordering_fields = ['lastName', 'email', 'created']
     ordering        = ['lastName']
+
+    def get_permissions(self):
+        if self.action == 'create':
+            return [AllowAny()]
+        return [IsAuthenticated()]
 
     def get_serializer_class(self):
         if self.action in ('create', 'update', 'partial_update'):
@@ -78,6 +98,12 @@ class ProductsViewSet(viewsets.ModelViewSet):
     search_fields    = ['name', 'description', 'category__name']
     ordering_fields  = ['name', 'price', 'created']
     ordering         = ['category__name', 'name']
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        OrderDetails.objects.filter(product=instance).delete()
+        instance.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 # ──────────────────────────────────────────────
@@ -134,6 +160,15 @@ class OrdersViewSet(viewsets.ModelViewSet):
     ordering_fields  = ['created', 'total', 'orderStatus']
     ordering         = ['-created']
 
+    def get_permissions(self):
+        """
+        - GET (list/retrieve): AllowAny (público, solo lectura)
+        - POST/PUT/PATCH/DELETE: IsAuthenticated
+        """
+        if self.action in ('list', 'retrieve'):
+            return [AllowAny()]
+        return [IsAuthenticated()]
+
 
 # ──────────────────────────────────────────────
 # ORDER DETAILS
@@ -145,6 +180,11 @@ class OrderDetailsViewSet(viewsets.ModelViewSet):
     search_fields    = ['product__name', 'order__id']
     ordering_fields  = ['order', 'product__name', 'created']
     ordering         = ['order']
+
+    def get_permissions(self):
+        if self.action in ('list', 'retrieve'):
+            return [AllowAny()]
+        return [IsAuthenticated()]
 
 
 # ──────────────────────────────────────────────
@@ -210,3 +250,12 @@ class MessagesViewSet(viewsets.ModelViewSet):
     search_fields    = ['subject', 'body', 'user__email']
     ordering_fields  = ['created', 'isRead']
     ordering         = ['-created']
+
+    def get_permissions(self):
+        """
+        Permitir POST sin autenticación para el formulario de contacto público.
+        El resto de operaciones requieren autenticación.
+        """
+        if self.request.method == 'POST':
+            return [AllowAny()]
+        return [IsAuthenticated()]

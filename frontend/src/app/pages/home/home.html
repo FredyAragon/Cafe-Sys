@@ -1,0 +1,102 @@
+<!-- ──────────── HERO BANNER ──────────── -->
+<section class="hero-section">
+  <div class="hero-overlay">
+    <div class="hero-content">
+      <h1>Encuentra tu centro en cada sorbo</h1>
+      <p>Bienvenido a CafeSys. Un equilibrio perfecto entre sabor, energía y tranquilidad.</p>
+      <a routerLink="/tienda/menu" class="hero-btn">Explorar Menú</a>
+    </div>
+  </div>
+</section>
+
+<!-- ──────────── FEATURES (FLIP CARDS) ──────────── -->
+<section class="features-section">
+  <h2 class="section-title">¿Qué nos hace especiales?</h2>
+  
+  <div class="cards-grid">
+    <div class="flip-card" *ngFor="let card of tarjetas">
+      <div class="flip-card-inner">
+        <div class="flip-card-front">
+          <h3>{{ card.front }}</h3>
+        </div>
+        <div class="flip-card-back">
+          <p>{{ card.back }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ──────────── PROMOCIONES ACTIVAS ──────────── -->
+@if (promociones().length > 0) {
+  <section class="promo-section">
+    <h2 class="section-title">🎉 Promociones Especiales</h2>
+    <div class="promos-grid">
+      @for (promo of promociones(); track promo.id) {
+        <div class="promo-card">
+          <span class="promo-badge">Oferta</span>
+          <h3>{{ promo.title || promo.name }}</h3>
+          <p>{{ promo.description }}</p>
+          <span class="promo-discount" *ngIf="promo.discount">-{{ promo.discount }}%</span>
+          <a routerLink="/tienda/menu" class="promo-cta">Aprovechar</a>
+        </div>
+      }
+    </div>
+  </section>
+}
+
+<!-- ──────────── PRODUCTOS DESTACADOS ──────────── -->
+@if (productosDestacados().length > 0) {
+  <section class="featured-section">
+    <h2 class="section-title">☕ Productos Destacados</h2>
+    <div class="featured-grid">
+      @for (p of productosDestacados(); track p.id) {
+        <div class="featured-card">
+          <div class="feat-img">
+            @if (p.imageUrl) {
+              <img [src]="p.imageUrl" [alt]="p.name" loading="lazy" />
+            } @else {
+              <div class="feat-placeholder">☕</div>
+            }
+          </div>
+          <div class="feat-body">
+            <h4>{{ p.name }}</h4>
+            <p class="feat-price">S/. {{ p.price }}</p>
+            <a routerLink="/tienda/menu" class="feat-btn">Ver más</a>
+          </div>
+        </div>
+      }
+    </div>
+  </section>
+}
+
+<!-- ──────────── TESTIMONIOS / RESEÑAS ──────────── -->
+@if (resenas().length > 0) {
+  <section class="reviews-section">
+    <h2 class="section-title">⭐ Lo que dicen nuestros clientes</h2>
+    <div class="reviews-grid">
+      @for (r of resenas(); track r.id) {
+        <div class="review-card">
+          <div class="review-stars">
+            @for (star of [1,2,3,4,5]; track star) {
+              <span [class.filled]="star <= (r.rating || 0)">★</span>
+            }
+          </div>
+          <p class="review-text">"{{ r.comment || r.message }}"</p>
+          <span class="review-author">— {{ r.userName || r.user_detail?.firstName || 'Cliente' }}</span>
+        </div>
+      }
+    </div>
+  </section>
+}
+
+<!-- ──────────── CTA FINAL ──────────── -->
+<section class="cta-section">
+  <h2>¿Listo para disfrutar?</h2>
+  <p>Visítanos en nuestro local o haz tu pedido en línea.</p>
+  <div class="cta-buttons">
+    <a routerLink="/tienda/menu" class="cta-btn primary">🍽️ Ver Menú</a>
+    <a routerLink="/tienda/ubicacion" class="cta-btn secondary">📍 Nuestra Ubicación</a>
+    <a routerLink="/tienda/contacto" class="cta-btn secondary">💬 Contáctanos</a>
+  </div>
+</section>
