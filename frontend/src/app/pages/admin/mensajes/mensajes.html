@@ -1,6 +1,6 @@
 <div class="mensajes-container">
   <div class="page-header">
-    <h1>✉️ Mensajes Recibidos</h1>
+    <h1>Mensajes Recibidos</h1>
     <p>Gestiona los mensajes enviados desde el formulario de contacto.</p>
   </div>
 
@@ -15,7 +15,7 @@
   <!-- Error -->
   @if (error()) {
     <div class="error-state">
-      <p>⚠️ {{ error() }}</p>
+      <p>{{ error() }}</p>
       <button (click)="cargarMensajes()">Reintentar</button>
     </div>
   }
@@ -27,7 +27,7 @@
       <div class="mensajes-list">
         @if (mensajes().length === 0) {
           <div class="empty-state">
-            <span class="empty-icon">📭</span>
+            <span class="empty-icon">M</span>
             <p>No hay mensajes recibidos aún.</p>
           </div>
         }
@@ -63,7 +63,7 @@
           <div class="detail-card">
             <div class="detail-header">
               <h2>{{ msg.subject }}</h2>
-              <button class="close-btn" (click)="cerrarDetalle()">✖</button>
+              <button class="close-btn" (click)="cerrarDetalle()">X</button>
             </div>
             <div class="detail-meta">
               <div class="meta-row">
@@ -84,9 +84,9 @@
                 <span class="meta-label">Estado:</span>
                 <span class="meta-value">
                   @if (msg.isRead) {
-                    <span class="read-tag">✅ Leído</span>
+                    <span class="read-tag">Leído</span>
                   } @else {
-                    <span class="unread-tag">📩 No leído</span>
+                    <span class="unread-tag">No leído</span>
                   }
                 </span>
               </div>
@@ -97,7 +97,7 @@
           </div>
         } @else {
           <div class="no-selection">
-            <span class="no-sel-icon">👈</span>
+            <span class="no-sel-icon">S</span>
             <p>Selecciona un mensaje de la lista para ver su contenido completo.</p>
           </div>
         }

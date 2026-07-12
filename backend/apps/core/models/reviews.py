@@ -8,7 +8,10 @@ class Reviews(models.Model):
     
     # 2. Relaciones corregidas (Nombre limpio en Python, columnas exactas del DER en la BD)
     user        = models.ForeignKey('Users', on_delete=models.CASCADE, related_name='reviews', db_column='user_id')
-    product     = models.ForeignKey('Products', on_delete=models.CASCADE, related_name='reviews', db_column='product_id')
+    product     = models.ForeignKey('Products', on_delete=models.CASCADE, related_name='reviews', db_column='product_id',
+                                    null=True, blank=True)
+    order       = models.ForeignKey('Orders', on_delete=models.CASCADE, related_name='reviews', db_column='order_id',
+                                    null=True, blank=True)
     
     rating      = models.SmallIntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
     comment     = models.TextField(blank=True, null=True)
@@ -25,8 +28,8 @@ class Reviews(models.Model):
         db_table = 'reviews'
         verbose_name = 'Review'
         verbose_name_plural = 'Reviews'
-        # Restricción de unicidad usando las variables limpias de Python
-        unique_together = ('user', 'product')
+        # Restricción de unicidad: una reseña por usuario y por orden
+        unique_together = ('user', 'order')
 
     def save(self, *args, **kwargs):
         # Asegurar que se ejecuten las restricciones del rango de calificación (1-5)

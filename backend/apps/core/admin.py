@@ -66,6 +66,15 @@ class PromotionsAdmin(admin.ModelAdmin):
     list_filter   = ('status', 'discountType')
     search_fields = ('name', 'description')
     ordering      = ('-startDate',)
+    date_hierarchy = 'startDate'
+    fields = (
+        'name', 'description',
+        'discount', 'discountType',
+        'imageUrl',
+        'startDate', 'endDate',
+        'status',
+    )
+    readonly_fields = ('created', 'modified')
 
 
 @admin.register(ProductsPromotions)

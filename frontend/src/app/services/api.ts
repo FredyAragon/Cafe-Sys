@@ -95,6 +95,7 @@ export interface UserDetail {
   email: string;
   role: string;
   status: string;
+  is_staff: boolean;
 }
 
 export interface Order {
@@ -188,6 +189,18 @@ export class ApiService {
     return this.http.post<Order>(`${this.API_URL}/orders/`, orderData).pipe(timeout(this.TIMEOUT));
   }
 
+  advanceOrderStatus(id: number): Observable<Order> {
+    return this.http.post<Order>(`${this.API_URL}/orders/${id}/advance_status/`, {}).pipe(timeout(this.TIMEOUT));
+  }
+
+  archiveOrder(id: number): Observable<Order> {
+    return this.http.post<Order>(`${this.API_URL}/orders/${id}/archive/`, {}).pipe(timeout(this.TIMEOUT));
+  }
+
+  cancelOrder(id: number): Observable<Order> {
+    return this.http.post<Order>(`${this.API_URL}/orders/${id}/cancel/`, {}).pipe(timeout(this.TIMEOUT));
+  }
+
   // ── DETALLES DE ÓRDENES ───────────────────────────────────────────────────
   getOrderDetails(): Observable<OrderDetailFlat[]> {
     return this.http.get<OrderDetailFlat[]>(`${this.API_URL}/order-details/`).pipe(timeout(this.TIMEOUT));
@@ -200,6 +213,14 @@ export class ApiService {
   // ── USUARIOS ───────────────────────────────────────────────────────────────
   getUsers(): Observable<UserDetail[]> {
     return this.http.get<UserDetail[]>(`${this.API_URL}/users/`).pipe(timeout(this.TIMEOUT));
+  }
+
+  updateUser(id: number, data: Partial<UserDetail>): Observable<UserDetail> {
+    return this.http.patch<UserDetail>(`${this.API_URL}/users/${id}/`, data).pipe(timeout(this.TIMEOUT));
+  }
+
+  deleteUser(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.API_URL}/users/${id}/`).pipe(timeout(this.TIMEOUT));
   }
 
   // ── DRIVERS ────────────────────────────────────────────────────────────────
@@ -217,9 +238,25 @@ export class ApiService {
     return this.http.get<any[]>(`${this.API_URL}/promotions/`).pipe(timeout(this.TIMEOUT));
   }
 
+  createPromotion(data: any): Observable<any> {
+    return this.http.post<any>(`${this.API_URL}/promotions/`, data).pipe(timeout(this.TIMEOUT));
+  }
+
+  updatePromotion(id: number, data: any): Observable<any> {
+    return this.http.patch<any>(`${this.API_URL}/promotions/${id}/`, data).pipe(timeout(this.TIMEOUT));
+  }
+
+  deletePromotion(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.API_URL}/promotions/${id}/`).pipe(timeout(this.TIMEOUT));
+  }
+
   // ── REVIEWS ────────────────────────────────────────────────────────────────
   getReviews(): Observable<any[]> {
     return this.http.get<any[]>(`${this.API_URL}/reviews/`).pipe(timeout(this.TIMEOUT));
+  }
+
+  createReview(reviewData: { user: number; order: number; product?: number; rating: number; comment?: string }): Observable<any> {
+    return this.http.post<any>(`${this.API_URL}/reviews/`, reviewData).pipe(timeout(this.TIMEOUT));
   }
 
   // ── MESSAGES ───────────────────────────────────────────────────────────────

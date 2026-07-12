@@ -90,6 +90,33 @@
   font-weight: 600;
 }
 
+.admin-footer {
+  margin-top: auto;
+  background: linear-gradient(160deg, #3E2723 0%, #4E342E 100%);
+  color: #D7CCC8;
+  padding: 26px 30px;
+  border-top: 6px solid #D4A373;
+  box-shadow: 0 -8px 24px rgba(62, 39, 35, 0.08);
+}
+
+.admin-footer-inner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 18px;
+}
+
+.admin-footer-inner span {
+  color: #EFEBE9;
+  font-size: 0.95rem;
+  letter-spacing: 0.2px;
+}
+
+.admin-footer-sep {
+  opacity: 0.35;
+}
+
 .panel {
   background-color: #FFFFFF;
   border: 1px solid #E4D9CC;

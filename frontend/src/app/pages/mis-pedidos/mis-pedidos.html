@@ -1,0 +1,155 @@
+<div class="mis-pedidos-container">
+
+  <div class="panel">
+    <h1>Mis Pedidos</h1>
+    <p class="subtitle">Historial de todos tus pedidos realizados en CafeSys.</p>
+  </div>
+
+  @if (cargando()) {
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Cargando tus pedidos...</p>
+    </div>
+  }
+
+  @if (!cargando() && error()) {
+    <div class="alert alert-error">{{ error() }}</div>
+  }
+
+  @if (!cargando() && !error() && orders().length === 0) {
+    <div class="empty-state">
+      <div class="empty-icon">Pedidos</div>
+      <h2>Aún no tienes pedidos</h2>
+      <p>Cuando realices tu primera compra, podrás ver el historial aquí.</p>
+      <a routerLink="/tienda/menu" class="btn-primary">Ir al menú</a>
+    </div>
+  }
+
+  @if (!cargando() && !error()) {
+    <div class="orders-list">
+      @for (order of orders(); track order.id) {
+        <div class="order-card" [class.order-inactive]="order.status === 'inactive'">
+          <div class="order-header">
+            <div class="order-id-section">
+              <span class="order-id">Orden #{{ order.id }}</span>
+              <span class="order-date">{{ order.created | date:'dd/MM/yyyy HH:mm' }}</span>
+            </div>
+            <div class="order-status-section">
+              <span class="order-status-badge" [style.background]="statusColors[order.orderStatus] || '#6D4C41'">
+                {{ statusLabels[order.orderStatus] || order.orderStatus }}
+              </span>
+              <span class="order-total">S/ {{ order.total }}</span>
+            </div>
+          </div>
+
+          @if (puedeDejarResena(order) && !yaTieneReview(order.id)) {
+            <div class="order-review-banner">
+              <button class="btn-review" type="button" (click)="abrirReviewForm(order.id, '')">
+                Reseñar orden
+              </button>
+            </div>
+          } @else if (yaTieneReview(order.id)) {
+            <div class="order-review-banner">
+              <span class="review-done">Orden reseñada</span>
+            </div>
+          }
+
+          <div class="order-body">
+            <table class="details-table">
+              <thead>
+                <tr>
+                  <th>Producto</th>
+                  <th>Cant.</th>
+                  <th>P. Unit.</th>
+                  <th>Subtotal</th>
+                  <th>Opción</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (detail of order.details; track detail.id) {
+                  <tr>
+                    <td>
+                      <div class="product-info">
+                        <span class="product-name">{{ detail.product_detail.name }}</span>
+                      </div>
+                    </td>
+                    <td>{{ detail.quantity }}</td>
+                    <td>S/ {{ detail.unitPrice }}</td>
+                    <td>S/ {{ detail.subtotal }}</td>
+                    <td></td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+
+          <div class="order-footer">
+            @if (order.notes) {
+              <span class="order-notes">Nota: {{ order.notes }}</span>
+            }
+            @if (puedeCancelar(order)) {
+              <button class="btn-cancel" type="button" (click)="cancelarOrden(order.id)" [disabled]="cancelandoId() === order.id">
+                @if (cancelandoId() === order.id) {
+                  Cancelando...
+                } @else {
+                  Cancelar pedido
+                }
+              </button>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- ── Modal de reseña ──────────────────── -->
+  @if (reviewForm(); as form) {
+    <div class="modal-overlay" (click)="cerrarReviewForm()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <button class="modal-close" type="button" (click)="cerrarReviewForm()">Cerrar</button>
+        <h2>Reseñar orden #{{ form.orderId }}</h2>
+        <p class="modal-product">{{ form.productName }}</p>
+
+        @if (reviewExito()) {
+          <div class="alert alert-success">{{ reviewExito() }}</div>
+        }
+        @if (reviewError()) {
+          <div class="alert alert-error">{{ reviewError() }}</div>
+        }
+
+        <div class="form-group">
+          <label>Calificación</label>
+          <div class="stars">
+            @for (star of [1,2,3,4,5]; track star) {
+              <span class="star" [class.active]="star <= form.rating" (click)="reviewForm.set({ ...form, rating: star })">
+                {{ star <= form.rating ? '★' : '☆' }}
+              </span>
+            }
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="review-comment">Comentario (opcional)</label>
+          <textarea
+            id="review-comment"
+            [(ngModel)]="form.comment"
+            placeholder="Cuéntanos qué te pareció el producto..."
+            rows="4"
+          ></textarea>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn-secondary" type="button" (click)="cerrarReviewForm()">Cancelar</button>
+          <button class="btn-primary" type="button" (click)="enviarReview()" [disabled]="enviandoReview()">
+            @if (enviandoReview()) {
+              Enviando...
+            } @else {
+              Enviar reseña
+            }
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
+</div>

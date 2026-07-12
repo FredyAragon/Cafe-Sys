@@ -3,6 +3,14 @@
     <h3>Órdenes</h3>
     <p class="subtitle">Área de solo lectura para conductores y empleados.</p>
 
+    <div class="sort-bar">
+      <span class="sort-label">Ordenar por:</span>
+      <button class="sort-btn" type="button" (click)="sortOrders('id')">ID {{ sortKey === 'id' ? (sortDir === 'asc' ? '▲' : '▼') : '' }}</button>
+      <button class="sort-btn" type="button" (click)="sortOrders('orderStatus')">Estado {{ sortKey === 'orderStatus' ? (sortDir === 'asc' ? '▲' : '▼') : '' }}</button>
+      <button class="sort-btn" type="button" (click)="sortOrders('total')">Total {{ sortKey === 'total' ? (sortDir === 'asc' ? '▲' : '▼') : '' }}</button>
+      <button class="sort-btn" type="button" (click)="sortOrders('created')">Fecha {{ sortKey === 'created' ? (sortDir === 'asc' ? '▲' : '▼') : '' }}</button>
+    </div>
+
     @if (cargando()) {
       <div class="status-bar">Cargando pedidos...</div>
     }
@@ -25,6 +33,23 @@
             </span>
             <span class="order-total">S/. {{ order.total }}</span>
             <span class="order-date">{{ order.created | date:'short' }}</span>
+            @if (puedeGestionar()) {
+              @if (order.orderStatus === 'delivered') {
+                <button class="action-btn btn-archive" type="button" (click)="archivarOrden(order.id)">
+                  Archivar orden
+                </button>
+              } @else if (order.status !== 'inactive' && order.orderStatus !== 'delivered') {
+                <button class="action-btn" type="button" (click)="avanzarEstado(order.id)">
+                  @switch (order.orderStatus) {
+                    @case ('pending') { Tomar orden }
+                    @case ('assigned') { Iniciar preparación }
+                    @case ('preparing') { Marcar lista }
+                    @case ('ready') { Entregar orden }
+                    @default { Completada }
+                  }
+                </button>
+              }
+            }
           </div>
           <div class="order-user">
             Cliente: {{ order.user_detail.firstName }} {{ order.user_detail.lastName }}

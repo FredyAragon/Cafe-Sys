@@ -8,15 +8,10 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('core', '0002_alter_users_role'),
+        ('core', '0003_alter_users_role'),
     ]
 
     operations = [
-        migrations.AddField(
-            model_name='promotions',
-            name='imageUrl',
-            field=models.CharField(blank=True, max_length=255, null=True, validators=[apps.core.models.validators.validate_http_url]),
-        ),
         migrations.AlterField(
             model_name='promotions',
             name='discount',

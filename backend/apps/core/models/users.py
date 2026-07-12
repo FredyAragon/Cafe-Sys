@@ -54,6 +54,9 @@ class Users(AbstractBaseUser, PermissionsMixin):
         if self.lastName:
             self.lastName  = self.lastName.strip().title()
 
+        # Auto-set is_staff based on role
+        self.is_staff = self.role in ('Admin', 'Employee', 'Driver')
+
         super().save(*args, **kwargs)
 
     def __str__(self):

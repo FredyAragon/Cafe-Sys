@@ -85,7 +85,7 @@
 
     <!-- Mensajes -->
     @if (error()) {
-      <div class="alert alert-error">⚠️ {{ error() }}</div>
+      <div class="alert alert-error">{{ error() }}</div>
     }
     @if (mensaje()) {
       <div class="alert alert-success">{{ mensaje() }}</div>
@@ -95,7 +95,7 @@
       @if (guardando()) {
         <span>Guardando...</span>
       } @else {
-        <span>➕ Crear producto</span>
+        <span>Crear producto</span>
       }
     </button>
   </form>
@@ -170,10 +170,10 @@
               </td>
               <td class="actions-cell">
                 <button class="btn-icon btn-save" (click)="guardarEdicion(p)" [disabled]="guardandoEdicion()">
-                  @if (guardandoEdicion()) { Guardando... } @else { 💾 Guardar }
+                  @if (guardandoEdicion()) { Guardando... } @else { Guardar }
                 </button>
                 <button class="btn-icon btn-cancel" (click)="cancelarEdicion()" [disabled]="guardandoEdicion()">
-                  ✖ Cancelar
+                  Cancelar
                 </button>
               </td>
             </tr>
@@ -189,8 +189,8 @@
                 </span>
               </td>
               <td class="actions-cell">
-                <button class="btn-icon btn-edit" (click)="iniciarEdicion(p)">✏️ Editar</button>
-                <button class="btn-icon btn-delete" (click)="eliminarProducto(p)">🗑️ Eliminar</button>
+                <button class="btn-icon btn-edit" (click)="iniciarEdicion(p)">Editar</button>
+                <button class="btn-icon btn-delete" (click)="eliminarProducto(p)">Eliminar</button>
               </td>
             </tr>
           }

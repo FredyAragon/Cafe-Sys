@@ -19,9 +19,9 @@ class Promotions(models.Model):
     discountType = models.CharField(max_length=20, choices=DISCOUNT_TYPES)
     
     imageUrl     = models.CharField(max_length=255, blank=True, null=True, validators=[validate_http_url])
-    
-    startDate    = models.DateField()
-    endDate      = models.DateField()
+
+    startDate    = models.DateField(null=True, blank=True)
+    endDate      = models.DateField(null=True, blank=True)
     status       = models.CharField(max_length=20, default='active', choices=[('active', 'Active'), ('inactive', 'Inactive')])
     created      = models.DateTimeField(auto_now_add=True)
     modified     = models.DateTimeField(auto_now=True)
@@ -40,13 +40,21 @@ class Promotions(models.Model):
         
         if self.endDate and self.endDate < timezone.now().date():
             self.status = 'inactive'
+        elif not self.endDate:
+            # Sin fecha de fin, la promoción permanece activa
+            self.status = self.status or 'active'
             
         super().save(*args, **kwargs)
 
     def clean(self):
         # 1. Tu validación existente para las fechas
-        validate_end_date(self)
+        if self.startDate and self.endDate:
+            validate_end_date(self)
 
-        # 2. NUEVA VALIDACIÓN DINÁMICA: Valida el 100% solo si es porcentaje
+        # 2. Validar que la fecha de inicio no sea posterior a la de fin
+        if self.startDate and self.endDate and self.startDate > self.endDate:
+            raise ValidationError({'endDate': 'La fecha de fin no puede ser anterior a la de inicio.'})
+
+        # 3. NUEVA VALIDACIÓN DINÁMICA: Valida el 100% solo si es porcentaje
         if self.discountType == 'percentage' and self.discount > 100:
             raise ValidationError({'discount': 'Un descuento porcentual no puede ser mayor al 100%.'})

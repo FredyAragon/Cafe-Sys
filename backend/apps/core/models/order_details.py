@@ -30,13 +30,14 @@ class OrderDetails(models.Model):
         unique_together = ('order', 'product')
 
     def save(self, *args, **kwargs):
-        # Asegurar que se ejecuten las restricciones de cantidad y precio
         self.clean_fields()
-        
-        # Calcular subtotal automáticamente de forma segura
+
         if self.quantity is not None and self.unitPrice is not None:
             self.subtotal = round(self.quantity * float(self.unitPrice), 2)
-            
+
+        if self.subtotal is not None:
+            self.subtotal = round(self.subtotal, 2)
+
         super().save(*args, **kwargs)
 
     def __str__(self):

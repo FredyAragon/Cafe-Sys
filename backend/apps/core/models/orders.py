@@ -5,6 +5,7 @@ from django.core.validators import MinValueValidator
 class Orders(models.Model):
     ORDER_STATUS = [
         ('pending',   'Pending'),
+        ('assigned',  'Assigned'),
         ('preparing', 'Preparing'),
         ('ready',     'Ready'),
         ('delivered', 'Delivered'),
@@ -36,17 +37,14 @@ class Orders(models.Model):
         verbose_name_plural = 'Orders'
 
     def save(self, *args, **kwargs):
-        # Asegurar que se ejecuten las restricciones del validador de total
         self.clean_fields()
-        
-        # Si el pedido es cancelado, marcarlo como inactivo
+
         if self.orderStatus == 'cancelled':
             self.status = 'inactive'
-            
-        # Redondear total
+
         if self.total is not None:
             self.total = round(self.total, 2)
-            
+
         super().save(*args, **kwargs)
 
     def __str__(self):

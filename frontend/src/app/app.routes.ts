@@ -17,6 +17,7 @@ export const routes: Routes = [
         { path: 'menu', loadComponent: () => import('./pages/menu/menu').then(m => m.MenuComponent) },
         { path: 'carrito', loadComponent: () => import('./pages/cart/cart').then(m => m.CartComponent) },
         { path: 'ubicacion', loadComponent: () => import('./pages/location/location').then(m => m.LocationComponent) },
+        { path: 'mis-pedidos', loadComponent: () => import('./pages/mis-pedidos/mis-pedidos').then(m => m.MisPedidosComponent) },
         { path: 'contacto', loadComponent: () => import('./pages/contact/contact').then(m => m.ContactComponent) },
       ]
     },
@@ -35,6 +36,7 @@ export const routes: Routes = [
       { path: 'categorias', loadComponent: () => import('./pages/categories/categories').then(m => m.CategoriesComponent), data: { adminOnly: true } },
       { path: 'ordenes', loadComponent: () => import('./pages/admin/ordenes/ordenes').then(m => m.OrdenesComponent) },
       { path: 'usuarios', loadComponent: () => import('./pages/admin/users/users').then(m => m.UsersComponent), data: { adminOnly: true } },
+      { path: 'promociones', loadComponent: () => import('./pages/admin/promotions/promotions').then(m => m.AdminPromotionsComponent), data: { adminOnly: true } },
       { path: 'mensajes', loadComponent: () => import('./pages/admin/mensajes/mensajes').then(m => m.MensajesComponent) },
     ]
   },

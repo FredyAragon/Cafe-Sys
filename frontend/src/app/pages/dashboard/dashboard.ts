@@ -25,12 +25,23 @@ export class DashboardComponent implements OnInit {
   clientesRegistrados = signal(0);
   categoriasActivas = signal(0);
   totalOrdenes = signal(0);
+  ordenesArchivadas = signal(0);
   repartidoresActivos = signal(0);
   entregasPendientes = signal(0);
   promocionesActivas = signal(0);
   resenasRecientes = signal(0);
   mensajesNoLeidos = signal(0);
   mensajesRecientes = signal<any[]>([]);
+
+  /** Top 3 clientes con más pedidos (Clientes Estrella) */
+  clientesEstrella = signal<{ id: number; nombre: string; pedidos: number; total: number }[]>([]);
+
+  /**
+   * Estados de orden que representan ingresos reales (dinero efectivamente
+   * comprometido/recibido). Excluimos las que aún no se confirman ('pending')
+   * y las que fueron canceladas, para no inflar las ventas.
+   */
+  private readonly estadosConVenta = new Set(['assigned', 'preparing', 'ready', 'delivered']);
 
   // ── Datos para gráficos ────────────────────────────────────────────────
   ordenesPorEstado = signal<{ estado: string; cantidad: number; color: string }[]>([]);
@@ -44,8 +55,6 @@ export class DashboardComponent implements OnInit {
   actividadReciente = signal<{ icono: string; texto: string; tiempo: string }[]>([]);
 
   // ── Fechas calculadas ──────────────────────────────────────────────────
-  fechaInicioHoy = signal('');
-  fechaFinHoy = signal('');
 
   cargando = signal(true);
   error = signal('');
@@ -55,16 +64,7 @@ export class DashboardComponent implements OnInit {
   }
 
   recargar() {
-    this.calcularRangoHoy();
     this.cargarDashboard();
-  }
-
-  private calcularRangoHoy() {
-    const ahora = new Date();
-    const inicio = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate());
-    const fin = new Date(inicio.getTime() + 24 * 60 * 60 * 1000);
-    this.fechaInicioHoy.set(inicio.toISOString());
-    this.fechaFinHoy.set(fin.toISOString());
   }
 
   /** Para el tooltip del gráfico de estados */
@@ -93,7 +93,6 @@ export class DashboardComponent implements OnInit {
       categorias: this.apiService.getCategories(),
       ordenes: this.apiService.getOrders(),
       usuarios: this.apiService.getUsers(),
-      repartidores: this.apiService.getDrivers(),
       entregas: this.apiService.getDeliveries(),
       promociones: this.apiService.getPromotions(),
       resenas: this.apiService.getReviews(),
@@ -113,8 +112,11 @@ export class DashboardComponent implements OnInit {
         this.totalOrdenes.set(ordenes.length);
         const pendientes = ordenes.filter(o => o.orderStatus?.toLowerCase() === 'pending');
         this.ordenesPendientes.set(pendientes.length);
+        const archivadas = ordenes.filter(o => o.status?.toLowerCase() === 'inactive');
+        this.ordenesArchivadas.set(archivadas.length);
 
-        // Ventas de hoy
+        // Ventas de hoy: suma el total de las órdenes creadas hoy cuyo
+        // estado representa ingreso real (excluye 'pending' y 'cancelled')
         const ordenesHoy = ordenes.filter(o => {
           const creada = new Date(o.created);
           const hoy = new Date();
@@ -122,11 +124,10 @@ export class DashboardComponent implements OnInit {
                  creada.getMonth() === hoy.getMonth() &&
                  creada.getFullYear() === hoy.getFullYear();
         });
-        const completadasHoy = ordenesHoy.filter(o => {
-          const status = o.orderStatus?.toLowerCase();
-          return status === 'delivered';
-        });
-        const total = completadasHoy.reduce((sum, o) => sum + parseFloat(o.total || '0'), 0);
+        const conVentaHoy = ordenesHoy.filter(o =>
+          this.estadosConVenta.has(o.orderStatus?.toLowerCase() || '')
+        );
+        const total = conVentaHoy.reduce((sum, o) => sum + parseFloat(o.total || '0'), 0);
         this.totalVentasHoy.set(`S/ ${total.toFixed(2)}`);
 
         // ── Órdenes recientes (últimas 5) ──────────────────────────
@@ -139,8 +140,26 @@ export class DashboardComponent implements OnInit {
         const clientes = data.usuarios.filter(u => u.role === 'Cliente' || u.role === 'Customer');
         this.clientesRegistrados.set(clientes.length);
 
-        // ── Repartidores activos ───────────────────────────────────
-        this.repartidoresActivos.set(data.repartidores.length);
+        // ── Repartidores: usuarios con rol 'Driver' ────────────────
+        const drivers = data.usuarios.filter(u => u.role === 'Driver');
+        this.repartidoresActivos.set(drivers.length);
+
+        // ── CLIENTES ESTRELLA: top 3 clientes con más pedidos ──────
+        const conteo = new Map<number, { nombre: string; pedidos: number; total: number }>();
+        for (const o of ordenes) {
+          const id = o.user;
+          const nombre = `${o.user_detail?.firstName || ''} ${o.user_detail?.lastName || ''}`.trim() || 'Usuario';
+          const monto = parseFloat(o.total || '0');
+          const actual = conteo.get(id) ?? { nombre, pedidos: 0, total: 0 };
+          actual.pedidos += 1;
+          actual.total += monto;
+          conteo.set(id, actual);
+        }
+        const top = [...conteo.entries()]
+          .map(([id, v]) => ({ id, ...v }))
+          .sort((a, b) => b.pedidos - a.pedidos || b.total - a.total)
+          .slice(0, 3);
+        this.clientesEstrella.set(top);
 
         // ── Entregas pendientes ────────────────────────────────────
         const pendientesEntrega = data.entregas.filter((e: any) => e.deliveryStatus?.toLowerCase() === 'pending');
@@ -159,16 +178,20 @@ export class DashboardComponent implements OnInit {
         this.mensajesRecientes.set(data.mensajes.slice(0, 5));
 
         // ── GRÁFICO: Órdenes por estado ────────────────────────────
-        const estados = ['pending', 'shipped', 'delivered', 'cancelled'];
+        const estados = ['pending', 'assigned', 'preparing', 'ready', 'delivered', 'cancelled'];
         const colores: Record<string, string> = {
           pending: '#E65100',
-          shipped: '#1565C0',
+          assigned: '#7C3AED',
+          preparing: '#1565C0',
+          ready: '#0F766E',
           delivered: '#2E7D32',
           cancelled: '#C62828'
         };
         const labels: Record<string, string> = {
           pending: 'Pendientes',
-          shipped: 'Enviadas',
+          assigned: 'Asignadas',
+          preparing: 'Preparando',
+          ready: 'Listas',
           delivered: 'Completadas',
           cancelled: 'Canceladas'
         };
@@ -190,7 +213,7 @@ export class DashboardComponent implements OnInit {
             return creada.getDate() === fecha.getDate() &&
                    creada.getMonth() === fecha.getMonth() &&
                    creada.getFullYear() === fecha.getFullYear() &&
-                   o.orderStatus?.toLowerCase() === 'delivered';
+                   this.estadosConVenta.has(o.orderStatus?.toLowerCase() || '');
           });
           const totalDia = ordenesDia.reduce((sum, o) => sum + parseFloat(o.total || '0'), 0);
           ventasSemana.push({ dia: fechaStr, total: totalDia });

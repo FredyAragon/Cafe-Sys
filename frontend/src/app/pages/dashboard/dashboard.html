@@ -23,27 +23,23 @@
     <!-- ── ACCESOS RÁPIDOS ──────────────────────────────────────────── -->
     <div class="quick-actions">
       <a routerLink="/admin/productos" class="quick-btn">
-        <span class="quick-icon">☕</span>
-        <span>Gestionar Productos</span>
+        <span class="quick-label">Gestionar productos</span>
       </a>
       <a routerLink="/admin/categorias" class="quick-btn">
-        <span class="quick-icon">📂</span>
-        <span>Gestionar Categorías</span>
+        <span class="quick-label">Gestionar categorías</span>
       </a>
       <a routerLink="/admin/ordenes" class="quick-btn">
-        <span class="quick-icon">📋</span>
-        <span>Ver Órdenes</span>
+        <span class="quick-label">Ver órdenes</span>
       </a>
       <a routerLink="/admin/usuarios" class="quick-btn">
-        <span class="quick-icon">👥</span>
-        <span>Gestionar Usuarios</span>
+        <span class="quick-label">Gestionar usuarios</span>
       </a>
     </div>
 
     <!-- ── TARJETAS DE ESTADÍSTICAS (1ª fila) ──────────────────────────── -->
     <div class="stats-grid">
       <div class="stat-card stat-ventas">
-        <div class="stat-icon">💰</div>
+        <div class="stat-icon" aria-hidden="true">V</div>
         <div class="stat-details">
           <h3>Ventas de hoy</h3>
           <p class="stat-value">{{ totalVentasHoy() }}</p>
@@ -51,7 +47,7 @@
       </div>
 
       <div class="stat-card stat-ordenes">
-        <div class="stat-icon">📋</div>
+        <div class="stat-icon" aria-hidden="true">O</div>
         <div class="stat-details">
           <h3>Órdenes pendientes</h3>
           <p class="stat-value">{{ ordenesPendientes() }}</p>
@@ -59,7 +55,7 @@
       </div>
 
       <div class="stat-card stat-productos">
-        <div class="stat-icon">☕</div>
+        <div class="stat-icon" aria-hidden="true">P</div>
         <div class="stat-details">
           <h3>Productos activos</h3>
           <p class="stat-value">{{ productosActivos() }}</p>
@@ -67,7 +63,7 @@
       </div>
 
       <div class="stat-card stat-clientes">
-        <div class="stat-icon">👥</div>
+        <div class="stat-icon" aria-hidden="true">C</div>
         <div class="stat-details">
           <h3>Clientes registrados</h3>
           <p class="stat-value">{{ clientesRegistrados() }}</p>
@@ -78,7 +74,7 @@
     <!-- ── TARJETAS DE ESTADÍSTICAS (2ª fila) ──────────────────────────── -->
     <div class="stats-grid">
       <div class="stat-card stat-categorias">
-        <div class="stat-icon">📂</div>
+        <div class="stat-icon" aria-hidden="true">CT</div>
         <div class="stat-details">
           <h3>Categorías activas</h3>
           <p class="stat-value">{{ categoriasActivas() }}</p>
@@ -86,7 +82,7 @@
       </div>
 
       <div class="stat-card stat-total-ordenes">
-        <div class="stat-icon">📦</div>
+        <div class="stat-icon" aria-hidden="true">TO</div>
         <div class="stat-details">
           <h3>Total órdenes</h3>
           <p class="stat-value">{{ totalOrdenes() }}</p>
@@ -94,7 +90,7 @@
       </div>
 
       <div class="stat-card stat-repartidores">
-        <div class="stat-icon">🚚</div>
+        <div class="stat-icon" aria-hidden="true">R</div>
         <div class="stat-details">
           <h3>Repartidores</h3>
           <p class="stat-value">{{ repartidoresActivos() }}</p>
@@ -102,7 +98,7 @@
       </div>
 
       <div class="stat-card stat-entregas">
-        <div class="stat-icon">📬</div>
+        <div class="stat-icon" aria-hidden="true">E</div>
         <div class="stat-details">
           <h3>Entregas pendientes</h3>
           <p class="stat-value">{{ entregasPendientes() }}</p>
@@ -113,7 +109,7 @@
     <!-- ── TARJETAS DE ESTADÍSTICAS (3ª fila) ──────────────────────────── -->
     <div class="stats-grid">
       <div class="stat-card stat-promociones">
-        <div class="stat-icon">🏷️</div>
+        <div class="stat-icon" aria-hidden="true">PR</div>
         <div class="stat-details">
           <h3>Promociones activas</h3>
           <p class="stat-value">{{ promocionesActivas() }}</p>
@@ -121,7 +117,7 @@
       </div>
 
       <div class="stat-card stat-resenas">
-        <div class="stat-icon">⭐</div>
+        <div class="stat-icon" aria-hidden="true">RS</div>
         <div class="stat-details">
           <h3>Reseñas recibidas</h3>
           <p class="stat-value">{{ resenasRecientes() }}</p>
@@ -129,19 +125,18 @@
       </div>
 
       <div class="stat-card stat-mensajes">
-        <div class="stat-icon">✉️</div>
+        <div class="stat-icon" aria-hidden="true">MS</div>
         <div class="stat-details">
           <h3>Mensajes no leídos</h3>
           <p class="stat-value">{{ mensajesNoLeidos() }}</p>
         </div>
       </div>
 
-      <div class="stat-card stat-total">
-        <div class="stat-icon">📊</div>
+      <div class="stat-card stat-archivadas">
+        <div class="stat-icon" aria-hidden="true">AR</div>
         <div class="stat-details">
-          <h3>Resumen</h3>
-          <p class="stat-value">{{ totalOrdenes() + productosActivos() + clientesRegistrados() }}</p>
-          <small>Entidades activas</small>
+          <h3>Órdenes archivadas</h3>
+          <p class="stat-value">{{ ordenesArchivadas() }}</p>
         </div>
       </div>
     </div>
@@ -150,7 +145,7 @@
     <div class="charts-row">
       <!-- Gráfico: Órdenes por estado -->
       <div class="panel chart-panel">
-        <h2>📊 Órdenes por Estado</h2>
+        <h2>Órdenes por Estado</h2>
         <div class="bar-chart">
           @for (item of ordenesPorEstado(); track item.estado) {
             <div class="bar-item">
@@ -170,7 +165,7 @@
 
       <!-- Gráfico: Ventas por día -->
       <div class="panel chart-panel">
-        <h2>📈 Ventas (últimos 7 días)</h2>
+        <h2>Ventas (últimos 7 días)</h2>
         <div class="line-chart">
           @for (item of ventasPorDia(); track item.dia) {
             <div class="line-item">
@@ -190,7 +185,7 @@
 
     <!-- ── TIMELINE DE ACTIVIDAD RECIENTE ──────────────────────────────── -->
     <div class="panel timeline-panel">
-      <h2>🕐 Actividad Reciente</h2>
+      <h2>Actividad Reciente</h2>
       @if (actividadReciente().length > 0) {
         <div class="timeline">
           @for (act of actividadReciente(); track act.texto) {
@@ -208,9 +203,31 @@
       }
     </div>
 
+    <!-- ── CLIENTES ESTRELLA ───────────────────────────────────────────── -->
+    <div class="panel stars-panel">
+      <h2>Clientes Estrella</h2>
+      <p class="stars-sub">Top 3 clientes con más pedidos realizados</p>
+      @if (clientesEstrella().length > 0) {
+        <div class="stars-list">
+          @for (cliente of clientesEstrella(); track cliente.id; let i = $index) {
+            <div class="star-item" [class.star-top]="i === 0">
+              <div class="star-rank">{{ i + 1 }}</div>
+              <div class="star-info">
+                <p class="star-name">{{ cliente.nombre }}</p>
+                <p class="star-meta">{{ cliente.pedidos }} pedido(s) · S/ {{ cliente.total.toFixed(2) }}</p>
+              </div>
+              <div class="star-badge" aria-hidden="true">{{ i === 0 ? '👑' : i === 1 ? '🥈' : '🥉' }}</div>
+            </div>
+          }
+        </div>
+      } @else {
+        <p class="empty-message">Aún no hay clientes con pedidos.</p>
+      }
+    </div>
+
     <!-- ── TABLA DE ÓRDENES RECIENTES ──────────────────────────────────── -->
     <div class="panel recent-orders-panel">
-      <h2>📋 Órdenes Recientes</h2>
+      <h2>Órdenes Recientes</h2>
       <div class="table-wrapper" *ngIf="ordenesRecientes().length > 0; else noOrders">
         <table class="orders-table">
           <thead>
@@ -229,10 +246,10 @@
               <td>S/ {{ orden.total }}</td>
               <td>
                 <span class="badge" [ngClass]="{
-                  'badge-pending': orden.orderStatus.toLowerCase() === 'pending',
+                  'badge-pending': orden.orderStatus.toLowerCase() === 'pending' || orden.orderStatus.toLowerCase() === 'assigned',
                   'badge-completed': orden.orderStatus.toLowerCase() === 'delivered',
                   'badge-cancelled': orden.orderStatus.toLowerCase() === 'cancelled',
-                  'badge-shipped': orden.orderStatus.toLowerCase() === 'shipped'
+                  'badge-shipped': orden.orderStatus.toLowerCase() === 'preparing' || orden.orderStatus.toLowerCase() === 'ready'
                 }">
                   {{ orden.orderStatus }}
                 </span>
