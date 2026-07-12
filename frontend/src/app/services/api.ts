@@ -129,7 +129,7 @@ export interface Ubicacion {
 })
 export class ApiService {
 
-  private readonly API_URL = getApiUrl();
+  private readonly API_URL = 'http://127.0.0.1:8081/apps/core';
 
   /** Tiempo máximo de espera para cada petición (ms) */
   private readonly TIMEOUT = 10_000;
