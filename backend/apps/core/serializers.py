@@ -1,3 +1,4 @@
+from decimal import Decimal
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import exceptions
@@ -155,7 +156,7 @@ class PromotionsSerializer(serializers.ModelSerializer):
         model  = Promotions
         fields = (
             'id', 'name', 'description', 'discount',
-            'discountType', 'startDate', 'endDate',
+            'discountType', 'imageUrl', 'startDate', 'endDate',
             'status', 'created', 'modified'
         )
         read_only_fields = ('id', 'created', 'modified')
@@ -248,12 +249,26 @@ class OrdersSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         details_data = validated_data.pop('details_data', [])
+
+        # Calcular el total real a partir de los detalles
+        computed_total = Decimal('0')
+        for detail in details_data:
+            qty = Decimal(str(detail['quantity']))
+            unit_price = Decimal(str(detail['unitPrice']))
+            subtotal = (qty * unit_price).quantize(Decimal('0.01'))
+            computed_total += subtotal
+
+        computed_total = computed_total.quantize(Decimal('0.01'))
+
+        # Usar el total calculado, ignorando el que envía el cliente
+        validated_data['total'] = computed_total
+
         order = Orders.objects.create(**validated_data)
+
         for detail in details_data:
             qty = detail['quantity']
             unit_price = detail['unitPrice']
-            # Calcular subtotal antes de crear porque el modelo valida el campo
-            subtotal = round(qty * float(unit_price), 2)
+            subtotal = (Decimal(str(qty)) * Decimal(str(unit_price))).quantize(Decimal('0.01'))
             OrderDetails.objects.create(
                 order=order,
                 product_id=detail['product'],
@@ -341,6 +356,7 @@ class ReviewsSerializer(serializers.ModelSerializer):
         fields = (
             'id', 'user', 'user_name',
             'product', 'product_name',
+            'order',
             'rating', 'comment',
             'status', 'created', 'modified'
         )

@@ -1,88 +1,77 @@
 <div class="users-container">
-  <div class="panel form-panel">
-    <h3>Editar Usuario</h3>
-    <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="admin-form">
-      <div class="form-row">
-        <div class="form-group">
-          <label>Nombre</label>
-          <input type="text" formControlName="first_name" placeholder="Nombre del usuario">
-        </div>
-        <div class="form-group">
-          <label>Apellido</label>
-          <input type="text" formControlName="last_name" placeholder="Apellido del usuario">
-        </div>
-      </div>
-      
-      <div class="form-row">
-        <div class="form-group">
-          <label>Correo Electrónico</label>
-          <input type="email" formControlName="email" placeholder="correo@dominio.com">
-        </div>
-        <div class="form-group">
-          <label>Contraseña</label>
-          <input type="password" formControlName="password" placeholder="Dejar en blanco para mantener actual">
-        </div>
-      </div>
-
-      <div class="form-row">
-        <div class="form-group">
-          <label>Rol</label>
-          <select formControlName="role">
-            <option value="Customer">Cliente</option>
-            <option value="Admin">Admin</option>
-            <option value="Driver">Conductor</option>
-            <option value="Employee">Empleado</option>
-          </select>
-        </div>
-        <div class="form-group checkbox-group">
-          <input type="checkbox" id="is_staff" formControlName="is_staff">
-          <label for="is_staff">Acceso staff</label>
-        </div>
-      </div>
-
-      <div class="form-row align-center">
-        <div class="info-message" *ngIf="!isEditing">Selecciona un usuario en la lista para editar sus datos.</div>
-        <div class="form-actions">
-          <button type="button" class="btn-secondary" *ngIf="isEditing" (click)="resetForm()">Cancelar</button>
-          <button type="submit" class="btn-primary" [disabled]="userForm.invalid || !isEditing">
-            Actualizar
-          </button>
-        </div>
-      </div>
-    </form>
-  </div>
-
   <div class="panel table-panel">
     <h3>Registro de Usuarios</h3>
-    <table class="admin-table">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Nombre Completo</th>
-          <th>Correo</th>
-          <th>Rol</th>
-          <th>Staff</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let user of users">
-          <td>{{ user.id }}</td>
-          <td>{{ user.firstName }} {{ user.lastName }}</td>
-          <td>{{ user.email }}</td>
-          <td>{{ user.role }}</td>
-          <td>
-            <span class="badge" [class.badge-admin]="user.is_staff">{{ user.is_staff ? 'Sí' : 'No' }}</span>
-          </td>
-          <td class="actions">
-            <button class="btn-action edit" (click)="editUser(user)">Editar</button>
-            <button class="btn-action delete" (click)="deleteUser(user.id)">Eliminar</button>
-          </td>
-        </tr>
-        <tr *ngIf="users.length === 0">
-          <td colspan="6" class="empty-state">No hay usuarios registrados o cargando datos...</td>
-        </tr>
-      </tbody>
-    </table>
+    <p class="subtitle">Edita directamente en la tabla haciendo clic en el botón "Editar".</p>
+
+    @if (cargando()) {
+      <div class="loading-state">
+        <div class="spinner"></div>
+        <p>Cargando usuarios...</p>
+      </div>
+    }
+
+    @if (!cargando() && error()) {
+      <div class="alert alert-error">{{ error() }}</div>
+    }
+
+    <div class="table-wrapper" [style.display]="cargando() || (!cargando() && error()) ? 'none' : 'block'">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th (click)="sortUsers('id')" class="sortable">ID {{ sortKey === 'id' ? (sortDir === 'asc' ? '▲' : '▼') : '' }}</th>
+            <th (click)="sortUsers('firstName')" class="sortable">Nombre {{ sortKey === 'firstName' ? (sortDir === 'asc' ? '▲' : '▼') : '' }}</th>
+            <th (click)="sortUsers('lastName')" class="sortable">Apellido {{ sortKey === 'lastName' ? (sortDir === 'asc' ? '▲' : '▼') : '' }}</th>
+            <th (click)="sortUsers('email')" class="sortable">Correo {{ sortKey === 'email' ? (sortDir === 'asc' ? '▲' : '▼') : '' }}</th>
+            <th (click)="sortUsers('role')" class="sortable">Rol {{ sortKey === 'role' ? (sortDir === 'asc' ? '▲' : '▼') : '' }}</th>
+            <th (click)="sortUsers('is_staff')" class="sortable">Staff {{ sortKey === 'is_staff' ? (sortDir === 'asc' ? '▲' : '▼') : '' }}</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (user of users; track user.id) {
+            <tr>
+              @if (editingId === user.id) {
+                <td>{{ user.id }}</td>
+                <td><input type="text" class="inline-input" [(ngModel)]="editData.firstName" placeholder="Nombre"></td>
+                <td><input type="text" class="inline-input" [(ngModel)]="editData.lastName" placeholder="Apellido"></td>
+                <td><input type="email" class="inline-input" [(ngModel)]="editData.email" placeholder="Correo"></td>
+                <td>
+                  <select class="inline-select" [(ngModel)]="editData.role">
+                    @for (role of roles; track role) {
+                      <option [value]="role">{{ role }}</option>
+                    }
+                  </select>
+                </td>
+                <td>
+                  <span class="badge" [class.badge-admin]="editData.role === 'Admin' || editData.role === 'Employee' || editData.role === 'Driver'">
+                    {{ (editData.role === 'Admin' || editData.role === 'Employee' || editData.role === 'Driver') ? 'Sí' : 'No' }}
+                  </span>
+                </td>
+                <td class="actions">
+                  <button class="btn-action save" (click)="saveEdit(user)">Guardar</button>
+                  <button class="btn-action cancel" (click)="cancelEdit()">Cancelar</button>
+                </td>
+              } @else {
+                <td>{{ user.id }}</td>
+                <td>{{ user.firstName }}</td>
+                <td>{{ user.lastName }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.role }}</td>
+                <td><span class="badge" [class.badge-admin]="user.is_staff">{{ user.is_staff ? 'Sí' : 'No' }}</span></td>
+                <td class="actions">
+                  <button class="btn-action edit" (click)="startEdit(user)">Editar</button>
+                  <button class="btn-action delete" (click)="deleteUser(user.id)">Eliminar</button>
+                </td>
+              }
+            </tr>
+          }
+          @if (users.length === 0) {
+            <tr>
+              <td colspan="7" class="empty-state">No hay usuarios registrados o cargando datos...</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>

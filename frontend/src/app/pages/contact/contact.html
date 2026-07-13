@@ -1,6 +1,6 @@
 <section class="contact-page">
   <div class="page-header">
-    <h1>💬 Contáctanos</h1>
+    <h1>Contáctanos</h1>
     <p>¿Tienes alguna consulta, sugerencia o pedido especial? Estamos aquí para ayudarte.</p>
   </div>
 
@@ -8,7 +8,7 @@
     <div class="contact-info-side">
       <div class="contact-method-card">
         <div class="method-item">
-          <span class="method-icon">📞</span>
+          <span class="method-icon">T</span>
           <div>
             <h4>Teléfono</h4>
             <p>+51 991 293 300</p>
@@ -16,7 +16,7 @@
           </div>
         </div>
         <div class="method-item">
-          <span class="method-icon">✉️</span>
+          <span class="method-icon">E</span>
           <div>
             <h4>Email</h4>
             <p>hola&#64;cafesys.com</p>
@@ -24,7 +24,7 @@
           </div>
         </div>
         <div class="method-item">
-          <span class="method-icon">📍</span>
+          <span class="method-icon">D</span>
           <div>
             <h4>Dirección</h4>
             <p>Av. Ejército 305, Cercado<br/>Arequipa, Perú</p>
@@ -35,9 +35,9 @@
       <div class="social-card">
         <h4>Síguenos</h4>
         <div class="social-links">
-          <a href="#" class="social-link" title="Facebook">📘 Facebook</a>
-          <a href="#" class="social-link" title="Instagram">📸 Instagram</a>
-          <a href="#" class="social-link" title="WhatsApp">💬 WhatsApp</a>
+          <a href="#" class="social-link" title="Facebook">Facebook</a>
+          <a href="#" class="social-link" title="Instagram">Instagram</a>
+          <a href="#" class="social-link" title="WhatsApp">WhatsApp</a>
         </div>
       </div>
     </div>
@@ -45,7 +45,7 @@
     <div class="contact-form-wrapper">
       @if (mensajeEnviado()) {
         <div class="contact-success">
-          <span class="success-icon">✅</span>
+          <span class="success-icon">OK</span>
           <h3>¡Mensaje enviado con éxito!</h3>
           <p>Gracias por contactarnos. Te responderemos a la brevedad posible.</p>
         </div>
@@ -53,7 +53,7 @@
 
       @if (errorEnvio()) {
         <div class="contact-error">
-          <span>⚠️</span> {{ errorEnvio() }}
+          <span>!</span> {{ errorEnvio() }}
         </div>
       }
 
@@ -116,7 +116,7 @@
           @if (enviando()) {
             <span class="btn-loading">⏳ Enviando...</span>
           } @else {
-            <span>✉️ Enviar mensaje</span>
+            <span>Enviar mensaje</span>
           }
         </button>
       </form>
@@ -124,7 +124,7 @@
   </div>
 
   <div class="faq-section">
-    <h2>❓ Preguntas Frecuentes</h2>
+    <h2>Preguntas Frecuentes</h2>
     <div class="faq-grid">
       <div class="faq-item">
         <h4>¿Cuánto tiempo tardan en responder?</h4>

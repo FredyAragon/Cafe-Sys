@@ -37,7 +37,11 @@ export interface UsuarioSesion {
 })
 export class AuthService {
 
+<<<<<<< HEAD
   private readonly API_URL = getApiUrl();
+=======
+  private readonly API_URL = 'http://127.0.0.1:8081/apps/core';
+>>>>>>> main
 
   // Guardamos los tokens en memoria (más seguro que localStorage para tokens de acceso)
   private _accessToken  = signal<string | null>(null);

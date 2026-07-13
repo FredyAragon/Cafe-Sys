@@ -1,0 +1,152 @@
+.promotions-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.panel-header h1 {
+  color: #3E2723;
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.admin-table th,
+.admin-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #E4D9CC;
+  color: #3E2723;
+}
+
+.admin-table th {
+  background: #F5F0EA;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  color: #6D4C41;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-action {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.85rem;
+  padding: 4px 10px;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+
+.btn-action.edit {
+  color: #1565C0;
+}
+
+.btn-action.edit:hover {
+  background: rgba(21, 101, 192, 0.1);
+}
+
+.btn-action.delete {
+  color: #C62828;
+}
+
+.btn-action.delete:hover {
+  background: rgba(198, 40, 40, 0.1);
+}
+
+.form-card {
+  border: 1px solid #E4D9CC;
+  border-radius: 16px;
+  padding: 24px;
+  background: #fff;
+  margin-top: 20px;
+}
+
+.form-card h3 {
+  margin-top: 0;
+  color: #3E2723;
+}
+
+.form-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.form-row label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.9rem;
+  color: #4E342E;
+}
+
+.form-row input,
+.form-row select {
+  padding: 8px 10px;
+  border: 1px solid #E4D9CC;
+  border-radius: 8px;
+  background: #FAF5ED;
+  color: #3E2723;
+}
+
+.form-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 16px;
+}
+
+.btn-primary {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 30px;
+  background: #3E2723;
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.btn-primary:disabled {
+  background: #A1887F;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  padding: 10px 20px;
+  border: 2px solid #D4A373;
+  border-radius: 30px;
+  background: transparent;
+  color: #6D4C41;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.empty-state {
+  color: #6D4C41;
+  text-align: center;
+  padding: 20px;
+}
+
+.alert-error {
+  color: #991B1B;
+  background: #FDE8E8;
+  border: 1px solid #F5A5A5;
+  padding: 10px 14px;
+  border-radius: 10px;
+}

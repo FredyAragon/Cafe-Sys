@@ -30,7 +30,7 @@
 <!-- ──────────── PROMOCIONES ACTIVAS ──────────── -->
 @if (promociones().length > 0) {
   <section class="promo-section">
-    <h2 class="section-title">🎉 Promociones Especiales</h2>
+    <h2 class="section-title">Promociones Especiales</h2>
     <div class="promos-grid">
       @for (promo of promociones(); track promo.id) {
         <div class="promo-card">
@@ -48,7 +48,7 @@
 <!-- ──────────── PRODUCTOS DESTACADOS ──────────── -->
 @if (productosDestacados().length > 0) {
   <section class="featured-section">
-    <h2 class="section-title">☕ Productos Destacados</h2>
+    <h2 class="section-title">Productos Destacados</h2>
     <div class="featured-grid">
       @for (p of productosDestacados(); track p.id) {
         <div class="featured-card">
@@ -56,7 +56,7 @@
             @if (p.imageUrl) {
               <img [src]="p.imageUrl" [alt]="p.name" loading="lazy" />
             } @else {
-              <div class="feat-placeholder">☕</div>
+              <div class="feat-placeholder">Cafe</div>
             }
           </div>
           <div class="feat-body">
@@ -73,7 +73,7 @@
 <!-- ──────────── TESTIMONIOS / RESEÑAS ──────────── -->
 @if (resenas().length > 0) {
   <section class="reviews-section">
-    <h2 class="section-title">⭐ Lo que dicen nuestros clientes</h2>
+    <h2 class="section-title">Lo que dicen nuestros clientes</h2>
     <div class="reviews-grid">
       @for (r of resenas(); track r.id) {
         <div class="review-card">
@@ -95,8 +95,8 @@
   <h2>¿Listo para disfrutar?</h2>
   <p>Visítanos en nuestro local o haz tu pedido en línea.</p>
   <div class="cta-buttons">
-    <a routerLink="/tienda/menu" class="cta-btn primary">🍽️ Ver Menú</a>
-    <a routerLink="/tienda/ubicacion" class="cta-btn secondary">📍 Nuestra Ubicación</a>
-    <a routerLink="/tienda/contacto" class="cta-btn secondary">💬 Contáctanos</a>
+    <a routerLink="/tienda/menu" class="cta-btn primary">Ver menú</a>
+    <a routerLink="/tienda/ubicacion" class="cta-btn secondary">Nuestra ubicación</a>
+    <a routerLink="/tienda/contacto" class="cta-btn secondary">Contáctanos</a>
   </div>
 </section>

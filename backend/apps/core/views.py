@@ -1,6 +1,7 @@
 from rest_framework import viewsets, filters, status
 from rest_framework.permissions import IsAuthenticated, AllowAny, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
+from rest_framework.decorators import action
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .serializers import CustomTokenObtainPairSerializer
 from django.shortcuts import render
@@ -168,6 +169,66 @@ class OrdersViewSet(viewsets.ModelViewSet):
         if self.action in ('list', 'retrieve'):
             return [AllowAny()]
         return [IsAuthenticated()]
+
+    @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
+    def advance_status(self, request, pk=None):
+        order = self.get_object()
+        user = request.user
+
+        if not getattr(user, 'is_staff', False) and getattr(user, 'role', '') not in {'Employee', 'Driver'}:
+            return Response({'detail': 'No tienes permisos para gestionar órdenes.'}, status=status.HTTP_403_FORBIDDEN)
+
+        next_statuses = {
+            'pending': 'assigned',
+            'assigned': 'preparing',
+            'preparing': 'ready',
+            'ready': 'delivered',
+        }
+
+        current = order.orderStatus
+        next_status = next_statuses.get(current)
+        if not next_status:
+            return Response({'detail': f'La orden ya está en estado final: {current}'}, status=status.HTTP_400_BAD_REQUEST)
+
+        order.orderStatus = next_status
+        order.modified_id = user
+        order.save()
+
+        return Response(OrdersSerializer(order, context={'request': request}).data, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
+    def archive(self, request, pk=None):
+        order = self.get_object()
+        user = request.user
+
+        if not getattr(user, 'is_staff', False) and getattr(user, 'role', '') not in {'Employee', 'Driver'}:
+            return Response({'detail': 'No tienes permisos para gestionar órdenes.'}, status=status.HTTP_403_FORBIDDEN)
+
+        order.status = 'inactive'
+        order.modified_id = user
+        order.save()
+
+        return Response(OrdersSerializer(order, context={'request': request}).data, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
+    def cancel(self, request, pk=None):
+        order = self.get_object()
+        user = request.user
+
+        # Solo el dueño de la orden puede cancelarla
+        if order.user_id != user.id:
+            return Response({'detail': 'Solo puedes cancelar tus propias órdenes.'}, status=status.HTTP_403_FORBIDDEN)
+
+        # Solo se puede cancelar si está en pending
+        if order.orderStatus != 'pending':
+            return Response({'detail': 'Solo puedes cancelar órdenes en estado pendiente.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        order.orderStatus = 'cancelled'
+        order.status = 'inactive'
+        order.modified_id = user
+        order.save()
+
+        return Response(OrdersSerializer(order, context={'request': request}).data, status=status.HTTP_200_OK)
 
 
 # ──────────────────────────────────────────────

@@ -2,16 +2,16 @@
 
   <!-- Header del menú -->
   <div class="menu-header">
-    <h1>☕ Nuestro Menú</h1>
+    <h1>Nuestro Menú</h1>
     <p>Selecciona tus productos favoritos y agrégalos a la cesta</p>
   </div>
 
   <!-- Mensaje feedback -->
   @if (mensaje()) {
-    <div class="toast">✅ {{ mensaje() }}</div>
+      <div class="toast">{{ mensaje() }}</div>
   }
   @if (error()) {
-    <div class="alert alert-error">⚠️ {{ error() }}</div>
+      <div class="alert alert-error">{{ error() }}</div>
   }
 
   <!-- Filtros de categoría -->
@@ -46,7 +46,7 @@
             @if (p.imageUrl) {
               <img [src]="p.imageUrl" [alt]="p.name" loading="lazy" />
             } @else {
-              <div class="img-placeholder">☕</div>
+              <div class="img-placeholder">C</div>
             }
           </div>
           <!-- Info -->
@@ -60,7 +60,7 @@
                 class="btn-add"
                 [class.added]="feedbackId() === p.id"
                 (click)="agregarAlCarrito(p)">
-                @if (feedbackId() === p.id) { ✔ Añadido } @else { 🛒 Añadir }
+                @if (feedbackId() === p.id) { Añadido } @else { Añadir }
               </button>
             </div>
           </div>
@@ -73,12 +73,12 @@
   @if (detalleProducto(); as prod) {
     <div class="modal-overlay" (click)="cerrarDetalle()">
       <div class="modal-content" (click)="$event.stopPropagation()">
-        <button class="modal-close" (click)="cerrarDetalle()">✖</button>
+        <button class="modal-close" (click)="cerrarDetalle()">X</button>
         <div class="modal-img">
           @if (prod.imageUrl) {
             <img [src]="prod.imageUrl" [alt]="prod.name" />
           } @else {
-            <div class="img-placeholder large">☕</div>
+            <div class="img-placeholder large">C</div>
           }
         </div>
         <h2>{{ prod.name }}</h2>
@@ -87,7 +87,7 @@
         <div class="modal-footer">
           <span class="modal-precio">S/. {{ prod.price }}</span>
           <button class="btn-add" (click)="agregarAlCarrito(prod); cerrarDetalle()">
-            🛒 Añadir a la cesta
+            Añadir a la cesta
           </button>
         </div>
       </div>

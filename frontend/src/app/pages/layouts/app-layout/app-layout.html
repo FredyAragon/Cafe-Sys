@@ -7,6 +7,7 @@
     <nav class="center-nav">
       @if (usuario()) {
         <a routerLink="/tienda/menu" routerLinkActive="active">Menú</a>
+        <a routerLink="/tienda/mis-pedidos" routerLinkActive="active">Mis Pedidos</a>
         <a routerLink="/tienda/ubicacion" routerLinkActive="active">Ubicación</a>
         <a routerLink="/tienda/contacto" routerLinkActive="active">Contacto</a>
       }
@@ -16,7 +17,7 @@
       @if (usuario()) {
         <a *ngIf="usuario()?.is_staff" routerLink="/admin/dashboard" class="btn-outline">Volver al admin</a>
         <a routerLink="/tienda/carrito" class="cart-btn">
-          🛒 Cesta <span class="badge">{{ cartCount() }}</span>
+          Cesta <span class="badge">{{ cartCount() }}</span>
         </a>
         <div class="user-dropdown">
           <span class="user-name">Hola, {{ usuario()!.firstName }}</span>

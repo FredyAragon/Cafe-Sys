@@ -1,0 +1,87 @@
+<div class="promotions-container">
+  <div class="panel">
+    <div class="panel-header">
+      <h1>Promociones</h1>
+      <button class="btn-primary" type="button" (click)="nuevo()">Nueva promocion</button>
+    </div>
+
+    @if (cargando()) {
+      <p>Cargando promociones...</p>
+    }
+
+    @if (!cargando() && error()) {
+      <div class="alert alert-error">{{ error() }}</div>
+    }
+
+    @if (!cargando() && !error() && promotions().length === 0) {
+      <p class="empty-state">No hay promociones registradas.</p>
+    }
+
+    @if (!cargando() && !error()) {
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Tipo</th>
+            <th>Descuento</th>
+            <th>Inicio</th>
+            <th>Fin</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (p of promotions(); track p.id) {
+            <tr>
+              <td>{{ p.id }}</td>
+              <td>{{ p.name }}</td>
+              <td>{{ p.discountType }}</td>
+              <td>{{ p.discount }}</td>
+              <td>{{ p.startDate }}</td>
+              <td>{{ p.endDate }}</td>
+              <td>{{ p.status }}</td>
+              <td class="actions">
+                <button class="btn-action edit" type="button" (click)="editar(p)">Editar</button>
+                <button class="btn-action delete" type="button" (click)="eliminar(p)">Eliminar</button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+
+    @if (editId !== null || mostrandoForm()) {
+      <div class="form-card">
+        <h3>{{ editId ? 'Editar promocion' : 'Nueva promocion' }}</h3>
+        <div class="form-row">
+          <label>Nombre<input type="text" [ngModel]="form().name" (ngModelChange)="actualizarCampo('name', $event)" /></label>
+          <label>Descuento<input type="number" [ngModel]="form().discount" (ngModelChange)="actualizarCampo('discount', $event)" /></label>
+        </div>
+        <div class="form-row">
+          <label>Tipo
+            <select [ngModel]="form().discountType" (ngModelChange)="actualizarCampo('discountType', $event)">
+              <option value="percentage">Porcentaje</option>
+              <option value="fixed">Monto fijo</option>
+            </select>
+          </label>
+          <label>Estado
+            <select [ngModel]="form().status" (ngModelChange)="actualizarCampo('status', $event)">
+              <option value="active">Activo</option>
+              <option value="inactive">Inactivo</option>
+            </select>
+          </label>
+        </div>
+        <div class="form-row">
+          <label>Imagen URL<input type="text" [ngModel]="form().imageUrl" (ngModelChange)="actualizarCampo('imageUrl', $event)" /></label>
+          <label>Inicio<input type="date" [ngModel]="form().startDate" (ngModelChange)="actualizarCampo('startDate', $event)" /></label>
+          <label>Fin<input type="date" [ngModel]="form().endDate" (ngModelChange)="actualizarCampo('endDate', $event)" /></label>
+        </div>
+        <div class="form-actions">
+          <button class="btn-secondary" type="button" (click)="cancelar()">Cancelar</button>
+          <button class="btn-primary" type="button" (click)="guardar()" [disabled]="guardando()">Guardar</button>
+        </div>
+      </div>
+    }
+  </div>
+</div>
