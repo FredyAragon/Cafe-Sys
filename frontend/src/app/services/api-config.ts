@@ -6,7 +6,7 @@
 
 export function getApiBaseUrl(): string {
   if (typeof window === 'undefined') {
-    return 'http://127.0.0.1:8081';
+    return 'https://cafesys-backend.onrender.com';
   }
   const hostname = window.location.hostname;
   const isLocal =

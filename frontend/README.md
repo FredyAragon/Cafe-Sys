@@ -20,12 +20,12 @@ frontend/
 │   └── favicon.ico
 ├── src/
 │   ├── app/
-│   │   ├── guards/         # 🔒 Protección de rutas
+│   │   ├── guards/         # Protección de rutas
 │   │   │   ├── auth.guard.ts
 │   │   │   └── role.guard.ts
-│   │   ├── interceptors/   # 🔄 Interceptores HTTP
+│   │   ├── interceptors/   # Interceptores HTTP
 │   │   │   └── auth.interceptor.ts
-│   │   ├── pages/          # 📄 Vistas y páginas de la aplicación
+│   │   ├── pages/          # Vistas y páginas de la aplicación
 │   │   │   ├── admin/      # Panel de administración
 │   │   │   │   ├── mensajes/
 │   │   │   │   ├── ordenes/
@@ -39,10 +39,12 @@ frontend/
 │   │   │   ├── location/   # Ubicación de sucursales
 │   │   │   ├── login/      # Autenticación
 │   │   │   ├── menu/       # Carta / Menú
+│   │   │   ├── mis-pedidos/# Historial de pedidos del usuario
 │   │   │   ├── products/   # Detalle y gestión de productos
 │   │   │   └── register/   # Registro de usuarios
-│   │   ├── services/       # 🔌 Servicios y lógica de negocio
+│   │   ├── services/       # Servicios y lógica de negocio
 │   │   │   ├── api-config.ts
+│   │   │   ├── api.spec.ts # Pruebas unitarias del servicio API
 │   │   │   ├── api.ts
 │   │   │   ├── auth.service.ts
 │   │   │   └── cart.service.ts
