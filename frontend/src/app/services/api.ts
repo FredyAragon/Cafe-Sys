@@ -1,160 +1,274 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
-import { Observable, tap, switchMap, map } from 'rxjs';
+import { Observable, timeout } from 'rxjs';
 import { getApiUrl } from './api-config';
 
-// ── Tipos que refleja exactamente lo que Django devuelve ──────────────────────
-export interface LoginCredentials {
-  email: string;
-  password: string;
-}
-
-export interface RegisterCredentials {
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-}
-
-export interface AuthTokens {
-  access: string;
-  refresh: string;
-}
-
-export interface UsuarioSesion {
+// ── Tipos básicos que devuelve Django ──────────────────────────────────────
+export interface Categoria {
   id: number;
-  email: string;
+  name: string;
+  description: string | null;
+  imageUrl: string | null;
+  status: string;
+}
+
+export interface NuevaCategoria {
+  name: string;
+  description?: string;
+  imageUrl?: string;
+  status?: string;
+}
+
+export interface Producto {
+  id: number;
+  name: string;
+  description: string | null;
+  price: string;          // DRF serializa DecimalField como string
+  imageUrl: string | null;
+  category: number;
+  category_name: string;
+  status: string;
+}
+
+export interface NuevoProducto {
+  name: string;
+  description?: string;
+  price: number;
+  imageUrl?: string;
+  category: number;
+  status?: string;
+}
+
+// ── Órdenes ─────────────────────────────────────────────────────────────────
+export interface OrderDetailData {
+  product: number;
+  quantity: number;
+  unitPrice: number;
+}
+
+export interface NewOrder {
+  user: number;
+  location: number;
+  orderStatus: string;
+  total: number;
+  notes?: string;
+  details_data?: OrderDetailData[];
+}
+
+export interface ProductDetail {
+  id: number;
+  name: string;
+  price: string;
+  imageUrl: string | null;
+  status: string;
+}
+
+/** Formato plano devuelto por GET /order-details/ */
+export interface OrderDetailFlat {
+  id: number;
+  order: number;
+  product: number;
+  product_name: string;
+  quantity: number;
+  unitPrice: string;
+  subtotal: string;
+  status: string;
+  created: string;
+  modified: string;
+}
+
+/** Formato anidado dentro de una orden (GET /orders/) */
+export interface OrderDetailNested {
+  id: number;
+  product: number;
+  product_detail: ProductDetail;
+  quantity: number;
+  unitPrice: string;
+  subtotal: string;
+  status: string;
+}
+
+export interface UserDetail {
+  id: number;
   firstName: string;
   lastName: string;
+  email: string;
   role: string;
+  status: string;
   is_staff: boolean;
 }
 
-// ── Servicio ──────────────────────────────────────────────────────────────────
+export interface Order {
+  id: number;
+  user: number;
+  user_detail: UserDetail;
+  location: number;
+  orderStatus: string;
+  total: string;
+  notes: string | null;
+  details: OrderDetailNested[];
+  status: string;
+  created: string;
+  modified: string;
+}
+
+// ── Ubicaciones ─────────────────────────────────────────────────────────────
+export interface Ubicacion {
+  id: number;
+  user: number;
+  alias: string;
+  address: string;
+  reference: string | null;
+  isDefault: boolean;
+  status: string;
+  created: string;
+  modified: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService {
+export class ApiService {
 
   private readonly API_URL = 'http://127.0.0.1:8081/apps/core';
 
-  // Guardamos los tokens en memoria (más seguro que localStorage para tokens de acceso)
-  private _accessToken  = signal<string | null>(null);
-  private _refreshToken = signal<string | null>(null);
-  private _usuario      = signal<UsuarioSesion | null>(null);
+  /** Tiempo máximo de espera para cada petición (ms) */
+  private readonly TIMEOUT = 10_000;
 
-  // Señal pública: ¿hay sesión activa?
-  readonly estaAutenticado = computed(() => this._accessToken() !== null);
+  constructor(private readonly http: HttpClient) {}
 
-  // Señal pública: datos del usuario logueado
-  readonly usuario = computed(() => this._usuario());
-
-  constructor(
-    private http: HttpClient,
-    private router: Router
-  ) {
-    // Al iniciar la app, intentamos restaurar la sesión desde sessionStorage
-    // (sessionStorage se borra al cerrar la pestaña — más seguro que localStorage)
-    this._restaurarSesion();
+  // ── PRODUCTOS ─────────────────────────────────────────────────────────────
+  getProducts(): Observable<Producto[]> {
+    return this.http.get<Producto[]>(`${this.API_URL}/products/`).pipe(timeout(this.TIMEOUT));
   }
 
-  // ── LOGIN ─────────────────────────────────────────────────────────────────
-  login(credenciales: LoginCredentials): Observable<UsuarioSesion> {
-    return this.http.post<AuthTokens>(`${this.API_URL}/token/`, credenciales).pipe(
-      tap(tokens => {
-        // Guardamos los tokens en memoria y sessionStorage
-        this._guardarTokens(tokens);
-      }),
-      map(tokens => this._decodificarToken(tokens.access)),
-      switchMap(payload => {
-        if (!payload?.user_id) {
-          throw new Error('Token inválido: falta user_id');
-        }
-        return this.http.get<UsuarioSesion>(`${this.API_URL}/users/${payload.user_id}/`);
-      }),
-      tap(usuario => {
-        this._usuario.set(usuario);
-        sessionStorage.setItem('cafesys_usuario', JSON.stringify(usuario));
-      })
-    );
+  createProduct(productData: NuevoProducto): Observable<Producto> {
+    return this.http.post<Producto>(`${this.API_URL}/products/`, productData).pipe(timeout(this.TIMEOUT));
   }
 
-  // ── REGISTER ─────────────────────────────────────────────────────────────
-  register(credenciales: RegisterCredentials): Observable<UsuarioSesion> {
-    return this.http.post<UsuarioSesion>(`${this.API_URL}/users/`, credenciales);
+  updateProduct(id: number, productData: Partial<NuevoProducto>): Observable<Producto> {
+    return this.http.patch<Producto>(`${this.API_URL}/products/${id}/`, productData).pipe(timeout(this.TIMEOUT));
   }
 
-  // ── LOGOUT ────────────────────────────────────────────────────────────────
-  logout(): void {
-    // Limpiamos todo — memoria y sessionStorage
-    this._accessToken.set(null);
-    this._refreshToken.set(null);
-    this._usuario.set(null);
-    sessionStorage.clear();
-
-    // Redirigimos al login
-    this.router.navigate(['/login']);
+  deleteProduct(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.API_URL}/products/${id}/`).pipe(timeout(this.TIMEOUT));
   }
 
-  // ── OBTENER TOKEN (lo usa el interceptor) ─────────────────────────────────
-  getAccessToken(): string | null {
-    return this._accessToken();
+  // ── CATEGORÍAS ────────────────────────────────────────────────────────────
+  getCategories(): Observable<Categoria[]> {
+    return this.http.get<Categoria[]>(`${this.API_URL}/categories/`).pipe(timeout(this.TIMEOUT));
   }
 
-  // ── REFRESH TOKEN ─────────────────────────────────────────────────────────
-  refreshAccessToken(): Observable<AuthTokens> {
-    const refresh = this._refreshToken();
-    return this.http.post<AuthTokens>(`${this.API_URL}/token/refresh/`, { refresh }).pipe(
-      tap(tokens => this._guardarTokens(tokens))
-    );
+  createCategory(categoryData: NuevaCategoria): Observable<Categoria> {
+    return this.http.post<Categoria>(`${this.API_URL}/categories/`, categoryData).pipe(timeout(this.TIMEOUT));
   }
 
-  // ── PRIVADOS ──────────────────────────────────────────────────────────────
-
-  private _guardarTokens(tokens: AuthTokens): void {
-    this._accessToken.set(tokens.access);
-    this._refreshToken.set(tokens.refresh);
-    // El refresh token sí lo guardamos en sessionStorage para sobrevivir recargas
-    sessionStorage.setItem('cafesys_refresh', tokens.refresh);
-    sessionStorage.setItem('cafesys_access', tokens.access);
+  updateCategory(id: number, categoryData: Partial<NuevaCategoria>): Observable<Categoria> {
+    return this.http.patch<Categoria>(`${this.API_URL}/categories/${id}/`, categoryData).pipe(timeout(this.TIMEOUT));
   }
 
-  private _restaurarSesion(): void {
-    const access  = sessionStorage.getItem('cafesys_access');
-    const refresh = sessionStorage.getItem('cafesys_refresh');
-    const usuario = sessionStorage.getItem('cafesys_usuario');
-
-    if (access && refresh) {
-      // Verificamos que el token no haya expirado antes de restaurarlo
-      if (!this._tokenExpirado(access)) {
-        this._accessToken.set(access);
-        this._refreshToken.set(refresh);
-        if (usuario) {
-          this._usuario.set(JSON.parse(usuario));
-        }
-      } else {
-        // Token expirado — limpiamos todo para forzar login de nuevo
-        sessionStorage.clear();
-      }
-    }
+  deleteCategory(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.API_URL}/categories/${id}/`).pipe(timeout(this.TIMEOUT));
   }
 
-  private _decodificarToken(token: string): any {
-    try {
-      const payload = token.split('.')[1];
-      const base64 = payload.replace(/-/g, '+').replace(/_/g, '/');
-      const padded = base64.padEnd(Math.ceil(base64.length / 4) * 4, '=');
-      return JSON.parse(atob(padded));
-    } catch {
-      return null;
-    }
+  // ── UBICACIONES ───────────────────────────────────────────────────────────
+  getLocations(): Observable<Ubicacion[]> {
+    return this.http.get<Ubicacion[]>(`${this.API_URL}/locations/`).pipe(timeout(this.TIMEOUT));
   }
 
-  private _tokenExpirado(token: string): boolean {
-    const payload = this._decodificarToken(token);
-    if (!payload?.exp) return true;
-    // exp está en segundos, Date.now() en milisegundos
-    return Date.now() >= payload.exp * 1000;
+  createLocation(locationData: { user: number; alias: string; address: string; reference?: string; isDefault?: boolean }): Observable<Ubicacion> {
+    return this.http.post<Ubicacion>(`${this.API_URL}/locations/`, locationData).pipe(timeout(this.TIMEOUT));
+  }
+
+  // ── ÓRDENES ───────────────────────────────────────────────────────────────
+  getOrders(): Observable<Order[]> {
+    return this.http.get<Order[]>(`${this.API_URL}/orders/`).pipe(timeout(this.TIMEOUT));
+  }
+
+  createOrder(orderData: NewOrder): Observable<Order> {
+    return this.http.post<Order>(`${this.API_URL}/orders/`, orderData).pipe(timeout(this.TIMEOUT));
+  }
+
+  advanceOrderStatus(id: number): Observable<Order> {
+    return this.http.post<Order>(`${this.API_URL}/orders/${id}/advance_status/`, {}).pipe(timeout(this.TIMEOUT));
+  }
+
+  archiveOrder(id: number): Observable<Order> {
+    return this.http.post<Order>(`${this.API_URL}/orders/${id}/archive/`, {}).pipe(timeout(this.TIMEOUT));
+  }
+
+  cancelOrder(id: number): Observable<Order> {
+    return this.http.post<Order>(`${this.API_URL}/orders/${id}/cancel/`, {}).pipe(timeout(this.TIMEOUT));
+  }
+
+  // ── DETALLES DE ÓRDENES ───────────────────────────────────────────────────
+  getOrderDetails(): Observable<OrderDetailFlat[]> {
+    return this.http.get<OrderDetailFlat[]>(`${this.API_URL}/order-details/`).pipe(timeout(this.TIMEOUT));
+  }
+
+  createOrderDetail(detailData: { order: number; product: number; quantity: number; unitPrice: number }): Observable<OrderDetailFlat> {
+    return this.http.post<OrderDetailFlat>(`${this.API_URL}/order-details/`, detailData).pipe(timeout(this.TIMEOUT));
+  }
+
+  // ── USUARIOS ───────────────────────────────────────────────────────────────
+  getUsers(): Observable<UserDetail[]> {
+    return this.http.get<UserDetail[]>(`${this.API_URL}/users/`).pipe(timeout(this.TIMEOUT));
+  }
+
+  updateUser(id: number, data: Partial<UserDetail>): Observable<UserDetail> {
+    return this.http.patch<UserDetail>(`${this.API_URL}/users/${id}/`, data).pipe(timeout(this.TIMEOUT));
+  }
+
+  deleteUser(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.API_URL}/users/${id}/`).pipe(timeout(this.TIMEOUT));
+  }
+
+  // ── DRIVERS ────────────────────────────────────────────────────────────────
+  getDrivers(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.API_URL}/drivers/`).pipe(timeout(this.TIMEOUT));
+  }
+
+  // ── DELIVERIES ─────────────────────────────────────────────────────────────
+  getDeliveries(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.API_URL}/deliveries/`).pipe(timeout(this.TIMEOUT));
+  }
+
+  // ── PROMOTIONS ─────────────────────────────────────────────────────────────
+  getPromotions(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.API_URL}/promotions/`).pipe(timeout(this.TIMEOUT));
+  }
+
+  createPromotion(data: any): Observable<any> {
+    return this.http.post<any>(`${this.API_URL}/promotions/`, data).pipe(timeout(this.TIMEOUT));
+  }
+
+  updatePromotion(id: number, data: any): Observable<any> {
+    return this.http.patch<any>(`${this.API_URL}/promotions/${id}/`, data).pipe(timeout(this.TIMEOUT));
+  }
+
+  deletePromotion(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.API_URL}/promotions/${id}/`).pipe(timeout(this.TIMEOUT));
+  }
+
+  // ── REVIEWS ────────────────────────────────────────────────────────────────
+  getReviews(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.API_URL}/reviews/`).pipe(timeout(this.TIMEOUT));
+  }
+
+  createReview(reviewData: { user: number; order: number; product?: number; rating: number; comment?: string }): Observable<any> {
+    return this.http.post<any>(`${this.API_URL}/reviews/`, reviewData).pipe(timeout(this.TIMEOUT));
+  }
+
+  // ── MESSAGES ───────────────────────────────────────────────────────────────
+  getMessages(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.API_URL}/messages/`).pipe(timeout(this.TIMEOUT));
+  }
+
+  createMessage(messageData: { subject: string; body: string }): Observable<any> {
+    return this.http.post<any>(`${this.API_URL}/messages/`, messageData).pipe(timeout(this.TIMEOUT));
+  }
+
+  updateMessage(id: number, data: Partial<{ isRead: boolean; status: string }>): Observable<any> {
+    return this.http.patch<any>(`${this.API_URL}/messages/${id}/`, data).pipe(timeout(this.TIMEOUT));
   }
 }
