@@ -130,7 +130,7 @@ export interface Ubicacion {
 })
 export class ApiService {
 
-  private readonly API_URL = 'https://cafesys-backend.onrender.com';
+  private readonly API_URL = getApiUrl();
 
   /** Tiempo máximo de espera para cada petición (ms) */
   private readonly TIMEOUT = 10_000;

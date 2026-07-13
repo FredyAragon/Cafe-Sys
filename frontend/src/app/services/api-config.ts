@@ -1,11 +1,20 @@
 export function getApiBaseUrl(): string {
-  // Al poner el prefijo aquí, proteges tus endpoints si tus servicios llaman a esta función directamente
-  return 'https://cafesys-backend.onrender.com/apps/core';
+  if (typeof window === 'undefined') {
+    return 'http://127.0.0.1:8081';
+  }
+  const hostname = window.location.hostname;
+  const isLocal =
+    hostname === 'localhost' ||
+    hostname === '127.0.0.1' ||
+    hostname === '[::1]';
+
+  // Si quieres que en local también use Render, quita este if o cámbialo.
+  // Como me dijiste que apunte al de Render, devolvemos la de Render directo:
+  return 'https://cafesys-backend.onrender.com';
 }
 
 export const API_PREFIX = '/apps/core';
 
 export function getApiUrl(): string {
-  // Evitamos duplicar el prefijo por si acaso
-  return getApiBaseUrl();
+  return `${getApiBaseUrl()}${API_PREFIX}`;
 }

@@ -37,7 +37,7 @@ export interface UsuarioSesion {
 })
 export class AuthService {
 
-  private readonly API_URL = 'https://cafesys-backend.onrender.com';
+  private readonly API_URL = getApiUrl();
 
   // Guardamos los tokens en memoria (más seguro que localStorage para tokens de acceso)
   private _accessToken  = signal<string | null>(null);
