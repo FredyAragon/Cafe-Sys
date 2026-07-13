@@ -3,14 +3,15 @@
 Sistema web de gestión para cafeterías — backend con Django en Render, frontend con Angular en Vercel y base de datos PostgreSQL en Supabase.
 
 ---
-
 ## Links del proyecto
 
 | Recurso | URL |
 | :--- | :--- |
 | Backend (Render) | https://cafesys-backend.onrender.com |
 | Base de datos (Supabase) | https://supabase.com/dashboard/project/uybtqkpxkcivbzpgcsrm |
+| Frontend (Vercel) | https://cafe-sys.vercel.app |
 | Repositorio | https://github.com/FredyAragon/Cafe-Sys |
+
 
 ---
 
