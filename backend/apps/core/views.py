@@ -10,7 +10,8 @@ from django.conf import settings
 from .models import (
     Users, Categories, Products,
     Promotions, ProductsPromotions, Orders, OrderDetails,
-    Locations, Reviews, Messages
+    Locations, Reviews, Messages,
+    Drivers, Vehicles, Deliveries
 )
 from .serializers import (
     UsersSerializer, 
@@ -23,6 +24,9 @@ from .serializers import (
     OrdersSerializer, OrderDetailsSerializer,
     ReviewsSerializer,
     MessagesSerializer,
+    DriversSerializer,
+    VehiclesSerializer,
+    DeliveriesSerializer,
 )
 
 # apps/core/views.py
@@ -288,3 +292,41 @@ class MessagesViewSet(viewsets.ModelViewSet):
         if self.request.method == 'POST':
             return [AllowAny()]
         return [IsAuthenticated()]
+    
+# ──────────────────────────────────────────────
+# DRIVERS
+# ──────────────────────────────────────────────
+class DriversViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
+    queryset         = Drivers.objects.select_related('user').all()
+    serializer_class = DriversSerializer
+    filter_backends  = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields    = ['license', 'user__firstName', 'user__lastName']
+    ordering_fields  = ['license', 'created']
+    ordering         = ['license']
+
+
+# ──────────────────────────────────────────────
+# VEHICLES
+# ──────────────────────────────────────────────
+class VehiclesViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
+    queryset         = Vehicles.objects.select_related('driver').all()
+    serializer_class = VehiclesSerializer
+    filter_backends  = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields    = ['plate', 'model', 'driver__license']
+    ordering_fields  = ['plate', 'model', 'created']
+    ordering         = ['plate']
+
+
+# ──────────────────────────────────────────────
+# DELIVERIES
+# ──────────────────────────────────────────────
+class DeliveriesViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
+    queryset         = Deliveries.objects.select_related('order', 'driver', 'vehicle').all()
+    serializer_class = DeliveriesSerializer
+    filter_backends  = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields    = ['order__id', 'driver__license']
+    ordering_fields  = ['created', 'deliveryStatus', 'departureAt']
+    ordering         = ['-created']

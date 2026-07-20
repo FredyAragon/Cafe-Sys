@@ -6,6 +6,9 @@ from .products_promotions import ProductsPromotions
 from .locations           import Locations
 from .orders              import Orders
 from .order_details       import OrderDetails
+from .drivers             import Drivers
+from .vehicles            import Vehicles
+from .deliveries          import Deliveries
 from .reviews             import Reviews
 from .messages            import Messages
 
