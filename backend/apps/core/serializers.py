@@ -9,7 +9,7 @@ from apps.core.models.validators import validate_not_blank
 from .models import (
     Users, Categories, Products,
     Promotions, ProductsPromotions, Orders, OrderDetails,
-    Locations, Deliveries, Drivers, Vehicles, Reviews, Messages
+    Locations, Reviews, Messages
 )
 
 User = get_user_model()
