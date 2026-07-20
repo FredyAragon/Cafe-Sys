@@ -10,7 +10,7 @@ from django.conf import settings
 from .models import (
     Users, Categories, Products,
     Promotions, ProductsPromotions, Orders, OrderDetails,
-    Locations, Deliveries, Drivers, Vehicles, Reviews, Messages
+    Reviews, Messages
 )
 from .serializers import (
     UsersSerializer, 
@@ -19,11 +19,7 @@ from .serializers import (
     ProductsSerializer,
     PromotionsSerializer,
     ProductsPromotionsSerializer,
-    LocationsSerializer,
     OrdersSerializer, OrderDetailsSerializer,
-    DriversSerializer,
-    VehiclesSerializer,
-    DeliveriesSerializer,
     ReviewsSerializer,
     MessagesSerializer,
 )
@@ -143,19 +139,6 @@ class ProductsPromotionsViewSet(viewsets.ModelViewSet):
 
 
 # ──────────────────────────────────────────────
-# LOCATIONS
-# ──────────────────────────────────────────────
-class LocationsViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated]
-    queryset         = Locations.objects.select_related('user').all()
-    serializer_class = LocationsSerializer
-    filter_backends  = [filters.SearchFilter, filters.OrderingFilter]
-    search_fields    = ['address', 'alias', 'user__email']
-    ordering_fields  = ['alias', 'created']
-    ordering         = ['alias']
-
-
-# ──────────────────────────────────────────────
 # ORDERS
 # ──────────────────────────────────────────────
 class OrdersViewSet(viewsets.ModelViewSet):
@@ -256,46 +239,6 @@ class OrderDetailsViewSet(viewsets.ModelViewSet):
         if self.action in ('list', 'retrieve'):
             return [AllowAny()]
         return [IsAuthenticated()]
-
-
-# ──────────────────────────────────────────────
-# DRIVERS
-# ──────────────────────────────────────────────
-class DriversViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated]
-    queryset         = Drivers.objects.select_related('user').all()
-    serializer_class = DriversSerializer
-    filter_backends  = [filters.SearchFilter, filters.OrderingFilter]
-    search_fields    = ['license', 'user__firstName', 'user__lastName']
-    ordering_fields  = ['license', 'created']
-    ordering         = ['license']
-
-
-# ──────────────────────────────────────────────
-# VEHICLES
-# ──────────────────────────────────────────────
-class VehiclesViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated]
-    queryset         = Vehicles.objects.select_related('driver').all()
-    serializer_class = VehiclesSerializer
-    filter_backends  = [filters.SearchFilter, filters.OrderingFilter]
-    search_fields    = ['plate', 'model', 'driver__license']
-    ordering_fields  = ['plate', 'model', 'created']
-    ordering         = ['plate']
-
-
-# ──────────────────────────────────────────────
-# DELIVERIES
-# ──────────────────────────────────────────────
-class DeliveriesViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated]
-    queryset         = Deliveries.objects.select_related('order', 'driver', 'vehicle').all()
-    serializer_class = DeliveriesSerializer
-    filter_backends  = [filters.SearchFilter, filters.OrderingFilter]
-    search_fields    = ['order__id', 'driver__license']
-    ordering_fields  = ['created', 'deliveryStatus', 'departureAt']
-    ordering         = ['-created']
-
 
 # ──────────────────────────────────────────────
 # REVIEWS

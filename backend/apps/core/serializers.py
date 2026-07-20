@@ -180,19 +180,6 @@ class ProductsPromotionsSerializer(serializers.ModelSerializer):
 
 
 # ──────────────────────────────────────────────
-# LOCATIONS
-# ──────────────────────────────────────────────
-class LocationsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model  = Locations
-        fields = (
-            'id', 'user', 'alias', 'address',
-            'reference', 'isDefault', 'status', 'created', 'modified'
-        )
-        read_only_fields = ('id', 'created', 'modified')
-
-
-# ──────────────────────────────────────────────
 # ORDERS
 # ──────────────────────────────────────────────
 class OrderDetailsSerializer(serializers.ModelSerializer):
@@ -282,61 +269,6 @@ class OrdersSerializer(serializers.ModelSerializer):
         # En update ignoramos details_data, solo actualizamos campos planos
         validated_data.pop('details_data', None)
         return super().update(instance, validated_data)
-
-
-# ──────────────────────────────────────────────
-# DRIVERS
-# ──────────────────────────────────────────────
-class DriversSerializer(serializers.ModelSerializer):
-    user_name = serializers.SerializerMethodField()
-
-    def get_user_name(self, obj):
-        if obj.user:
-            return f"{obj.user.firstName} {obj.user.lastName}"
-        return None
-
-    class Meta:
-        model  = Drivers
-        fields = (
-            'id', 'user', 'user_name',
-            'license', 'phone', 'status', 'created', 'modified'
-        )
-        read_only_fields = ('id', 'user_name', 'created', 'modified')
-
-
-# ──────────────────────────────────────────────
-# VEHICLES
-# ──────────────────────────────────────────────
-class VehiclesSerializer(serializers.ModelSerializer):
-    driver_license = serializers.CharField(source='driver.license', read_only=True)
-
-    class Meta:
-        model  = Vehicles
-        fields = (
-            'id', 'driver', 'driver_license',
-            'plate', 'model', 'status', 'created', 'modified'
-        )
-        read_only_fields = ('id', 'driver_license', 'created', 'modified')
-
-
-# ──────────────────────────────────────────────
-# DELIVERIES
-# ──────────────────────────────────────────────
-class DeliveriesSerializer(serializers.ModelSerializer):
-    order_detail = OrdersSerializer(source='order', read_only=True)
-    driver_detail = DriversSerializer(source='driver', read_only=True)
-    vehicle_detail = VehiclesSerializer(source='vehicle', read_only=True)
-
-    class Meta:
-        model = Deliveries
-        fields = (
-            'id', 'order', 'order_detail', 
-            'driver', 'driver_detail', 
-            'vehicle', 'vehicle_detail',
-            'deliveryStatus', 'departureAt', 'deliveredAt',
-            'status', 'created', 'modified'
-        )
-        read_only_fields = ('id', 'order_detail', 'driver_detail', 'vehicle_detail', 'deliveredAt', 'created', 'modified')
 
 
 # ──────────────────────────────────────────────

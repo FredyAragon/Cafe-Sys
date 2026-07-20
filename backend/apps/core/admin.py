@@ -3,7 +3,7 @@ from django.contrib.auth.admin import UserAdmin
 from .models import (
     Users, Categories, Products,
     Promotions, ProductsPromotions, Orders, OrderDetails,
-    Locations, Deliveries, Drivers, Vehicles, Reviews, Messages
+    Reviews, Messages
 )
 
 # =====================================================================
@@ -102,41 +102,6 @@ class OrderDetailsAdmin(admin.ModelAdmin):
     list_filter   = ('status',)
     search_fields = ('order__id', 'product__name')
     ordering      = ('order',)
-
-
-@admin.register(Locations)
-class LocationsAdmin(admin.ModelAdmin):
-    list_display  = ('id', 'user', 'alias', 'address', 'isDefault', 'status')
-    list_filter   = ('status', 'isDefault')
-    search_fields = ('user__firstName', 'user__lastName', 'address', 'alias')
-    ordering      = ('user__lastName',)
-
-
-# =====================================================================
-# MÓDULO LOGÍSTICA Y ENTREGAS (DRIVERS & VEHICLES)
-# =====================================================================
-@admin.register(Drivers)
-class DriversAdmin(admin.ModelAdmin):
-    list_display  = ('id', 'user', 'license', 'phone', 'status', 'created')
-    list_filter   = ('status',)
-    search_fields = ('license', 'user__firstName', 'user__lastName')
-    ordering      = ('license',)
-
-
-@admin.register(Vehicles)
-class VehiclesAdmin(admin.ModelAdmin):
-    list_display  = ('id', 'plate', 'model', 'driver', 'status', 'created')
-    list_filter   = ('status',)
-    search_fields = ('plate', 'model', 'driver__license')
-    ordering      = ('plate',)
-
-
-@admin.register(Deliveries)
-class DeliveriesAdmin(admin.ModelAdmin):
-    list_display  = ('id', 'order', 'driver', 'vehicle', 'deliveryStatus', 'departureAt', 'deliveredAt', 'status')
-    list_filter   = ('deliveryStatus', 'status')
-    search_fields = ('order__id', 'driver__license')
-    ordering      = ('-created',)
 
 
 # =====================================================================
