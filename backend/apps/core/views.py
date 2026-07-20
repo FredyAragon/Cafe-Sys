@@ -28,24 +28,25 @@ from .serializers import (
 # apps/core/views.py
 from django.shortcuts import render
 
+# URL real de tu despliegue en Vercel
+VERCEL_URL = 'https://cafe-sys.vercel.app'  # <-- Aquicito pones el subdominio correcto
+
 def index_gateway_view(request):
     context = {
-        'frontend_url': 'https://tu-app-cafesys.vercel.app',
+        'frontend_url': VERCEL_URL,
         'project_description': 'CafeSys es una plataforma integral para la gestión de pedidos y logística de cafeterías.'
     }
-    # Cambiado de 'index.html' a 'core/index.html'
     return render(request, 'core/index.html', context)
 
 def home_django_view(request):
     context = {
-        'frontend_url': 'https://tu-app-cafesys.vercel.app',
+        'frontend_url': VERCEL_URL,
         'tarjetas': [
             {'front': 'Nuestro Origen', 'back': 'Granos seleccionados de las mejores fincas para garantizar una taza perfecta.'},
             {'front': 'El Ambiente', 'back': 'Un espacio diseñado bajo principios de armonía para que te relajes y disfrutes.'},
             {'front': 'Sabor Único', 'back': 'Tueste artesanal que resalta las notas a chocolate, caramelo y frutos secos.'}
         ]
     }
-    # Cambiado de 'home_django.html' (o 'index.html') a 'core/home_django.html'
     return render(request, 'core/home_django.html', context)
 
 # ──────────────────────────────────────────────
