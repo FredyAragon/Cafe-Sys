@@ -5,6 +5,7 @@ from rest_framework.decorators import action
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .serializers import CustomTokenObtainPairSerializer
 from django.shortcuts import render
+from django.conf import settings
 
 from .models import (
     Users, Categories, Products,
@@ -27,19 +28,28 @@ from .serializers import (
     MessagesSerializer,
 )
 
-def index_backend(request):
+# apps/core/views.py
+from django.shortcuts import render
+
+def index_gateway_view(request):
     context = {
-        # Tu URL principal de producción en Vercel
-        'frontend_url': 'https://cafe-sys.vercel.app',
-        # Descripición mejorada para el proyecto
-        'project_description': (
-            "CafeSys es una plataforma web integral diseñada para optimizar la gestión y operación "
-            "de una cafetería. El sistema automatiza procesos clave permitiendo una interacción "
-            "fluida entre administradores (control de inventario, gestión de pedidos, reportes y usuarios) "
-            "y clientes (exploración del menú, pedidos en línea y seguimiento en tiempo real)."
-        )
+        'frontend_url': 'https://tu-app-cafesys.vercel.app',
+        'project_description': 'CafeSys es una plataforma integral para la gestión de pedidos y logística de cafeterías.'
     }
+    # Cambiado de 'index.html' a 'core/index.html'
     return render(request, 'core/index.html', context)
+
+def home_django_view(request):
+    context = {
+        'frontend_url': 'https://tu-app-cafesys.vercel.app',
+        'tarjetas': [
+            {'front': 'Nuestro Origen', 'back': 'Granos seleccionados de las mejores fincas para garantizar una taza perfecta.'},
+            {'front': 'El Ambiente', 'back': 'Un espacio diseñado bajo principios de armonía para que te relajes y disfrutes.'},
+            {'front': 'Sabor Único', 'back': 'Tueste artesanal que resalta las notas a chocolate, caramelo y frutos secos.'}
+        ]
+    }
+    # Cambiado de 'home_django.html' (o 'index.html') a 'core/home_django.html'
+    return render(request, 'core/home_django.html', context)
 
 # ──────────────────────────────────────────────
 # AUTHENTICATION VIEW
