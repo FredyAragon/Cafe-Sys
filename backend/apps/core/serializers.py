@@ -180,6 +180,19 @@ class ProductsPromotionsSerializer(serializers.ModelSerializer):
 
 
 # ──────────────────────────────────────────────
+# LOCATIONS
+# ──────────────────────────────────────────────
+class LocationsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model  = Locations
+        fields = (
+            'id', 'user', 'alias', 'address',
+            'reference', 'isDefault', 'status', 'created', 'modified'
+        )
+        read_only_fields = ('id', 'created', 'modified')
+
+
+# ──────────────────────────────────────────────
 # ORDERS
 # ──────────────────────────────────────────────
 class OrderDetailsSerializer(serializers.ModelSerializer):

@@ -10,7 +10,7 @@ from django.conf import settings
 from .models import (
     Users, Categories, Products,
     Promotions, ProductsPromotions, Orders, OrderDetails,
-    Reviews, Messages
+    Locations, Reviews, Messages
 )
 from .serializers import (
     UsersSerializer, 
@@ -18,6 +18,7 @@ from .serializers import (
     CategoriesSerializer,
     ProductsSerializer,
     PromotionsSerializer,
+    LocationsSerializer,
     ProductsPromotionsSerializer,
     OrdersSerializer, OrderDetailsSerializer,
     ReviewsSerializer,
@@ -124,6 +125,19 @@ class PromotionsViewSet(viewsets.ModelViewSet):
     search_fields    = ['name', 'description']
     ordering_fields  = ['name', 'startDate', 'endDate']
     ordering         = ['-startDate']
+
+
+# ──────────────────────────────────────────────
+# LOCATIONS
+# ──────────────────────────────────────────────
+class LocationsViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
+    queryset         = Locations.objects.select_related('user').all()
+    serializer_class = LocationsSerializer
+    filter_backends  = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields    = ['address', 'alias', 'user__email']
+    ordering_fields  = ['alias', 'created']
+    ordering         = ['alias']
 
 
 # ──────────────────────────────────────────────

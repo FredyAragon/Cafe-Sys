@@ -3,7 +3,7 @@ from django.contrib.auth.admin import UserAdmin
 from .models import (
     Users, Categories, Products,
     Promotions, ProductsPromotions, Orders, OrderDetails,
-    Reviews, Messages
+    Locations, Reviews, Messages
 )
 
 # =====================================================================
@@ -102,6 +102,14 @@ class OrderDetailsAdmin(admin.ModelAdmin):
     list_filter   = ('status',)
     search_fields = ('order__id', 'product__name')
     ordering      = ('order',)
+
+
+@admin.register(Locations)
+class LocationsAdmin(admin.ModelAdmin):
+    list_display  = ('id', 'user', 'alias', 'address', 'isDefault', 'status')
+    list_filter   = ('status', 'isDefault')
+    search_fields = ('user__firstName', 'user__lastName', 'address', 'alias')
+    ordering      = ('user__lastName',)
 
 
 # =====================================================================
