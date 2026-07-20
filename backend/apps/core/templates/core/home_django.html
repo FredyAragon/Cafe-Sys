@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CafeSys | Inicio</title>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-main: #F9F6F0;
+            --text-dark: #3E2723;
+            --accent-caramel: #D4A373;
+            --btn-primary: #6B2F14;
+            --btn-primary-hover: #5A270F;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-dark);
+            font-family: system-ui, -apple-system, sans-serif;
+            margin: 0;
+        }
+
+        /* NAVBAR */
+        .navbar-cafesys {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 5%;
+            background: #FFFFFF;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .brand-logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #3E2723;
+            text-decoration: none;
+        }
+
+        .btn-nav-outline {
+            border: 1px solid #3E2723;
+            color: #3E2723;
+            padding: 8px 20px;
+            border-radius: 999px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-nav-outline:hover {
+            background-color: #3E2723;
+            color: #FFFDF8;
+        }
+
+        .btn-nav-solid {
+            background-color: #3E2723;
+            color: #FFFDF8;
+            padding: 8px 20px;
+            border-radius: 999px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-nav-solid:hover {
+            background-color: var(--btn-primary);
+        }
+
+        /* HERO */
+        .hero-section {
+            background-image: url('https://images.unsplash.com/photo-1497935586351-b67a49e012bf?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            height: 70vh;
+            min-height: 480px;
+            position: relative;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(44, 26, 17, 0.65);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 20px;
+        }
+
+        .hero-btn {
+            display: inline-block;
+            background-color: var(--btn-primary);
+            color: #FFFDF8;
+            padding: 14px 32px;
+            font-size: 1rem;
+            font-weight: 700;
+            border-radius: 999px;
+            text-decoration: none;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+        }
+
+        .hero-btn:hover {
+            background-color: var(--btn-primary-hover);
+            transform: scale(1.05);
+        }
+
+        /* FLIP CARDS */
+        .flip-card {
+            width: 300px;
+            height: 200px;
+            perspective: 1000px;
+        }
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.8s cubic-bezier(0.4, 0.2, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+        .flip-card:hover .flip-card-inner { transform: rotateY(180deg); }
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%; height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+        .flip-card-front {
+            background-color: #FFFFFF;
+            color: var(--text-dark);
+            border-bottom: 5px solid var(--accent-caramel);
+        }
+        .flip-card-back {
+            background-color: var(--text-dark);
+            color: #F9F6F0;
+            transform: rotateY(180deg);
+            border-bottom: 5px solid var(--accent-caramel);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVBAR (Cualquier acción de login/registro va a Vercel) -->
+    <header class="navbar-cafesys">
+        <a href="/" class="brand-logo flex items-center gap-2">
+            <i class="fa-solid fa-mug-hot"></i> CafeSys
+        </a>
+        
+        <div class="flex items-center gap-3">
+            <!-- Botón para regresar al Gateway -->
+            <a href="{% url 'index_gateway' %}" class="text-xs text-amber-900 hover:underline font-semibold mr-2">
+                ← Volver al Gateway
+            </a>
+            
+            <!-- CTAs que redirigen directamente al Frontend en Vercel -->
+            <a href="{{ frontend_url }}/auth/login" target="_blank" class="btn-nav-outline">Ingresar</a>
+            <a href="{{ frontend_url }}/auth/register" target="_blank" class="btn-nav-solid">Registrarse</a>
+        </div>
+    </header>
+
+    <!-- HERO BANNER -->
+    <section class="hero-section">
+        <div class="hero-overlay">
+            <div class="max-w-2xl text-center space-y-4 animate__animated animate__fadeIn">
+                <h1 class="text-4xl md:text-5xl font-extrabold text-white">
+                    Encuentra tu centro en cada sorbo
+                </h1>
+                <p class="text-stone-200 text-base md:text-lg">
+                    Bienvenido a CafeSys. Un equilibrio perfecto entre sabor, energía y tranquilidad.
+                </p>
+                <div class="pt-4">
+                    <!-- Redirige a la sección interactiva en Vercel -->
+                    <a href="{{ frontend_url }}/tienda/menu" target="_blank" class="hero-btn">
+                        Explorar Menú Digital en Vercel <i class="fa-solid fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CARACTERÍSTICAS (FLIP CARDS) -->
+    <section class="py-16 px-4">
+        <h2 class="text-2xl md:text-3xl font-bold text-center text-stone-800 mb-10">¿Qué nos hace especiales?</h2>
+        <div class="flex flex-wrap justify-center gap-6 max-w-6xl mx-auto">
+            {% for card in tarjetas %}
+            <div class="flip-card">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front">
+                        <h3 class="font-bold text-xl text-stone-800">{{ card.front }}</h3>
+                    </div>
+                    <div class="flip-card-back">
+                        <p class="text-sm">{{ card.back }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- FOOTER CON LINKS A VERCEL -->
+    <footer class="bg-stone-900 text-stone-400 py-10 px-4">
+        <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 text-sm">
+            <div>
+                <h3 class="text-white font-bold text-base mb-3">CafeSys</h3>
+                <p class="text-xs">Página servida por Django Backend (Render). Todas las interacciones de cliente se ejecutan en Angular (Vercel).</p>
+            </div>
+            <div>
+                <h3 class="text-white font-bold text-base mb-3">Acceso Rápido (Vercel)</h3>
+                <ul class="space-y-2 text-xs">
+                    <li><a href="{{ frontend_url }}/tienda/menu" target="_blank" class="hover:text-amber-400">Ver Menú</a></li>
+                    <li><a href="{{ frontend_url }}/tienda/ubicacion" target="_blank" class="hover:text-amber-400">Nuestra Ubicación</a></li>
+                    <li><a href="{{ frontend_url }}/auth/login" target="_blank" class="hover:text-amber-400">Iniciar Sesión</a></li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="text-white font-bold text-base mb-3">Servicios Backend</h3>
+                <ul class="space-y-2 text-xs">
+                    <li><a href="/admin/" class="hover:text-amber-400">Panel Django Admin</a></li>
+                    <li><a href="/apps/core/" class="hover:text-amber-400">REST API Docs</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

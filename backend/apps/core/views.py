@@ -5,11 +5,13 @@ from rest_framework.decorators import action
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .serializers import CustomTokenObtainPairSerializer
 from django.shortcuts import render
+from django.conf import settings
 
 from .models import (
     Users, Categories, Products,
     Promotions, ProductsPromotions, Orders, OrderDetails,
-    Locations, Deliveries, Drivers, Vehicles, Reviews, Messages
+    Locations, Reviews, Messages,
+    Drivers, Vehicles, Deliveries
 )
 from .serializers import (
     UsersSerializer, 
@@ -17,29 +19,39 @@ from .serializers import (
     CategoriesSerializer,
     ProductsSerializer,
     PromotionsSerializer,
-    ProductsPromotionsSerializer,
     LocationsSerializer,
+    ProductsPromotionsSerializer,
     OrdersSerializer, OrderDetailsSerializer,
+    ReviewsSerializer,
+    MessagesSerializer,
     DriversSerializer,
     VehiclesSerializer,
     DeliveriesSerializer,
-    ReviewsSerializer,
-    MessagesSerializer,
 )
 
-def index_backend(request):
+# apps/core/views.py
+from django.shortcuts import render
+
+# URL real de tu despliegue en Vercel
+VERCEL_URL = 'https://cafe-sys.vercel.app'  # <-- Aquicito pones el subdominio correcto
+
+def index_gateway_view(request):
     context = {
-        # Tu URL principal de producción en Vercel
-        'frontend_url': 'https://cafe-sys.vercel.app',
-        # Descripición mejorada para el proyecto
-        'project_description': (
-            "CafeSys es una plataforma web integral diseñada para optimizar la gestión y operación "
-            "de una cafetería. El sistema automatiza procesos clave permitiendo una interacción "
-            "fluida entre administradores (control de inventario, gestión de pedidos, reportes y usuarios) "
-            "y clientes (exploración del menú, pedidos en línea y seguimiento en tiempo real)."
-        )
+        'frontend_url': VERCEL_URL,
+        'project_description': 'CafeSys es una plataforma integral para la gestión de pedidos y logística de cafeterías.'
     }
     return render(request, 'core/index.html', context)
+
+def home_django_view(request):
+    context = {
+        'frontend_url': VERCEL_URL,
+        'tarjetas': [
+            {'front': 'Nuestro Origen', 'back': 'Granos seleccionados de las mejores fincas para garantizar una taza perfecta.'},
+            {'front': 'El Ambiente', 'back': 'Un espacio diseñado bajo principios de armonía para que te relajes y disfrutes.'},
+            {'front': 'Sabor Único', 'back': 'Tueste artesanal que resalta las notas a chocolate, caramelo y frutos secos.'}
+        ]
+    }
+    return render(request, 'core/home_django.html', context)
 
 # ──────────────────────────────────────────────
 # AUTHENTICATION VIEW
@@ -121,18 +133,6 @@ class PromotionsViewSet(viewsets.ModelViewSet):
 
 
 # ──────────────────────────────────────────────
-# PRODUCTS PROMOTIONS
-# ──────────────────────────────────────────────
-class ProductsPromotionsViewSet(viewsets.ModelViewSet):
-    queryset         = ProductsPromotions.objects.select_related('product', 'promotion').all()
-    serializer_class = ProductsPromotionsSerializer
-    filter_backends  = [filters.SearchFilter, filters.OrderingFilter]
-    search_fields    = ['product__name', 'promotion__name']
-    ordering_fields  = ['product__name', 'created']
-    ordering         = ['product__name']
-
-
-# ──────────────────────────────────────────────
 # LOCATIONS
 # ──────────────────────────────────────────────
 class LocationsViewSet(viewsets.ModelViewSet):
@@ -143,6 +143,18 @@ class LocationsViewSet(viewsets.ModelViewSet):
     search_fields    = ['address', 'alias', 'user__email']
     ordering_fields  = ['alias', 'created']
     ordering         = ['alias']
+
+
+# ──────────────────────────────────────────────
+# PRODUCTS PROMOTIONS
+# ──────────────────────────────────────────────
+class ProductsPromotionsViewSet(viewsets.ModelViewSet):
+    queryset         = ProductsPromotions.objects.select_related('product', 'promotion').all()
+    serializer_class = ProductsPromotionsSerializer
+    filter_backends  = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields    = ['product__name', 'promotion__name']
+    ordering_fields  = ['product__name', 'created']
+    ordering         = ['product__name']
 
 
 # ──────────────────────────────────────────────
@@ -247,7 +259,40 @@ class OrderDetailsViewSet(viewsets.ModelViewSet):
             return [AllowAny()]
         return [IsAuthenticated()]
 
+# ──────────────────────────────────────────────
+# REVIEWS
+# ──────────────────────────────────────────────
+class ReviewsViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    queryset         = Reviews.objects.select_related('user', 'product').all()
+    serializer_class = ReviewsSerializer
+    filter_backends  = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields    = ['user__email', 'product__name', 'comment']
+    ordering_fields  = ['rating', 'created']
+    ordering         = ['-created']
 
+
+# ──────────────────────────────────────────────
+# MESSAGES
+# ──────────────────────────────────────────────
+class MessagesViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
+    queryset         = Messages.objects.select_related('user').all()
+    serializer_class = MessagesSerializer
+    filter_backends  = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields    = ['subject', 'body', 'user__email']
+    ordering_fields  = ['created', 'isRead']
+    ordering         = ['-created']
+
+    def get_permissions(self):
+        """
+        Permitir POST sin autenticación para el formulario de contacto público.
+        El resto de operaciones requieren autenticación.
+        """
+        if self.request.method == 'POST':
+            return [AllowAny()]
+        return [IsAuthenticated()]
+    
 # ──────────────────────────────────────────────
 # DRIVERS
 # ──────────────────────────────────────────────
@@ -285,38 +330,3 @@ class DeliveriesViewSet(viewsets.ModelViewSet):
     search_fields    = ['order__id', 'driver__license']
     ordering_fields  = ['created', 'deliveryStatus', 'departureAt']
     ordering         = ['-created']
-
-
-# ──────────────────────────────────────────────
-# REVIEWS
-# ──────────────────────────────────────────────
-class ReviewsViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticatedOrReadOnly]
-    queryset         = Reviews.objects.select_related('user', 'product').all()
-    serializer_class = ReviewsSerializer
-    filter_backends  = [filters.SearchFilter, filters.OrderingFilter]
-    search_fields    = ['user__email', 'product__name', 'comment']
-    ordering_fields  = ['rating', 'created']
-    ordering         = ['-created']
-
-
-# ──────────────────────────────────────────────
-# MESSAGES
-# ──────────────────────────────────────────────
-class MessagesViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated]
-    queryset         = Messages.objects.select_related('user').all()
-    serializer_class = MessagesSerializer
-    filter_backends  = [filters.SearchFilter, filters.OrderingFilter]
-    search_fields    = ['subject', 'body', 'user__email']
-    ordering_fields  = ['created', 'isRead']
-    ordering         = ['-created']
-
-    def get_permissions(self):
-        """
-        Permitir POST sin autenticación para el formulario de contacto público.
-        El resto de operaciones requieren autenticación.
-        """
-        if self.request.method == 'POST':
-            return [AllowAny()]
-        return [IsAuthenticated()]
